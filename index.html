@@ -3,1485 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow, noarchive">
 <title>Punky — Autonomous Agent Platform</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg-primary: #0a0e17;
-  --bg-secondary: #111827;
-  --bg-card: #1a2035;
-  --bg-elevated: #1f2a42;
-  --border: #2a3654;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent-blue: #3b82f6;
-  --accent-purple: #8b5cf6;
-  --accent-emerald: #10b981;
-  --accent-amber: #f59e0b;
-  --accent-red: #ef4444;
-  --accent-cyan: #06b6d4;
-  --glow-blue: rgba(59, 130, 246, 0.15);
-  --glow-purple: rgba(139, 92, 246, 0.15);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Outfit', sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-code, .mono { font-family: 'JetBrains Mono', monospace; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-/* Background mesh */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: 
-    radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.03) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-#root { position: relative; z-index: 1; }
-
-/* Layout */
-.app-container { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 260px;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 50;
-}
-.main-content {
-  flex: 1;
-  margin-left: 260px;
-  padding: 24px 32px;
-  min-height: 100vh;
-}
-
-/* Sidebar */
-.logo-area {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.logo-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 18px; color: white;
-}
-.logo-text { font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
-.logo-ver { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
-
-.nav-section {
-  padding: 16px 12px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--text-muted);
-}
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 16px; margin: 2px 8px;
-  border-radius: 8px; cursor: pointer;
-  font-size: 14px; font-weight: 500;
-  color: var(--text-secondary);
-  transition: all 0.15s ease;
-}
-.nav-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
-.nav-item.active {
-  background: var(--glow-blue);
-  color: var(--accent-blue);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-.nav-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Cards */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-.card-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 16px;
-}
-.card-title { font-size: 16px; font-weight: 600; }
-
-/* Depth badges */
-.depth-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 6px;
-  font-size: 13px; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-}
-.depth-1 { background: rgba(239,68,68,0.2); color: #ef4444; }
-.depth-2 { background: rgba(245,158,11,0.2); color: #f59e0b; }
-.depth-3 { background: rgba(234,179,8,0.2); color: #eab308; }
-.depth-4 { background: rgba(16,185,129,0.2); color: #10b981; }
-.depth-5 { background: rgba(59,130,246,0.2); color: #3b82f6; }
-.depth-0 { background: rgba(100,116,139,0.2); color: #64748b; }
-
-/* Priority badges */
-.priority-badge {
-  display: inline-flex; padding: 2px 8px; border-radius: 4px;
-  font-size: 11px; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-}
-.p-P0 { background: rgba(239,68,68,0.2); color: #ef4444; }
-.p-P1 { background: rgba(245,158,11,0.2); color: #f59e0b; }
-.p-P2 { background: rgba(59,130,246,0.2); color: #3b82f6; }
-.p-P3 { background: rgba(100,116,139,0.2); color: #94a3b8; }
-
-/* Status badges */
-.status-badge {
-  display: inline-flex; padding: 3px 10px; border-radius: 12px;
-  font-size: 12px; font-weight: 500;
-}
-.s-done { background: rgba(16,185,129,0.15); color: #10b981; }
-.s-in_progress { background: rgba(59,130,246,0.15); color: #3b82f6; }
-.s-testing { background: rgba(139,92,246,0.15); color: #8b5cf6; }
-.s-planned { background: rgba(245,158,11,0.15); color: #f59e0b; }
-.s-backlog { background: rgba(100,116,139,0.15); color: #94a3b8; }
-.s-blocked { background: rgba(239,68,68,0.15); color: #ef4444; }
-
-/* Progress bar */
-.progress-bar {
-  height: 8px; background: var(--bg-elevated); border-radius: 4px;
-  overflow: hidden; position: relative;
-}
-.progress-fill {
-  height: 100%; border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-/* Stat grid */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
-.stat-card {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-}
-.stat-value { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
-/* Table */
-.data-table { width: 100%; border-collapse: collapse; }
-.data-table th {
-  text-align: left; padding: 10px 12px;
-  font-size: 11px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.8px; color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-}
-.data-table td {
-  padding: 12px; border-bottom: 1px solid rgba(42,54,84,0.5);
-  font-size: 14px;
-}
-.data-table tr:hover td { background: rgba(59,130,246,0.03); }
-
-/* Criteria icons */
-.criteria-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.criteria-item {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 11px; color: var(--text-muted);
-}
-.criteria-item.pass { color: var(--accent-emerald); }
-.criteria-item.fail { color: var(--accent-red); opacity: 0.6; }
-
-/* Chat */
-.chat-container {
-  display: flex; flex-direction: column;
-  height: calc(100vh - 100px);
-}
-.chat-messages {
-  flex: 1; overflow-y: auto; padding: 20px 0;
-}
-.chat-msg {
-  max-width: 75%; padding: 12px 16px;
-  border-radius: 12px; margin-bottom: 12px;
-  font-size: 14px; line-height: 1.6;
-}
-.chat-msg.user {
-  background: var(--accent-blue);
-  color: white; margin-left: auto;
-  border-bottom-right-radius: 4px;
-}
-.chat-msg.assistant {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-}
-.chat-input-area {
-  display: flex; gap: 12px; padding: 16px 0;
-  border-top: 1px solid var(--border);
-}
-.chat-input {
-  flex: 1; padding: 12px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text-primary);
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.chat-input:focus { border-color: var(--accent-blue); }
-.chat-send {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-  color: white; border: none; border-radius: 10px;
-  font-weight: 600; cursor: pointer;
-  transition: opacity 0.15s;
-}
-.chat-send:hover { opacity: 0.9; }
-.chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Memory Map */
-.memory-map-container {
-  position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  height: calc(100vh - 160px);
-}
-.memory-map-container svg { width: 100%; height: 100%; }
-.memory-map-controls {
-  position: absolute; top: 16px; left: 16px;
-  display: flex; gap: 8px; z-index: 10;
-}
-.map-control {
-  padding: 6px 14px;
-  background: rgba(26,32,53,0.9);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  font-size: 12px; cursor: pointer;
-  backdrop-filter: blur(8px);
-}
-.map-control:hover { background: var(--bg-elevated); color: var(--text-primary); }
-.map-control.active { border-color: var(--accent-blue); color: var(--accent-blue); }
-
-.memory-panel {
-  position: absolute; right: 0; top: 0; bottom: 0;
-  width: 320px;
-  background: rgba(17,24,39,0.95);
-  border-left: 1px solid var(--border);
-  padding: 20px;
-  overflow-y: auto;
-  backdrop-filter: blur(12px);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-}
-.memory-panel.open { transform: translateX(0); }
-.memory-panel-close {
-  position: absolute; top: 12px; right: 12px;
-  background: none; border: none; color: var(--text-muted);
-  cursor: pointer; font-size: 18px;
-}
-
-.map-search {
-  position: absolute; top: 16px; right: 16px;
-  z-index: 10;
-}
-.map-search input {
-  padding: 8px 14px;
-  background: rgba(26,32,53,0.9);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 13px;
-  width: 220px;
-  outline: none;
-  backdrop-filter: blur(8px);
-}
-.map-search input:focus { border-color: var(--accent-blue); }
-.map-legend {
-  position: absolute; bottom: 16px; left: 16px;
-  display: flex; gap: 16px; z-index: 10;
-  padding: 10px 16px;
-  background: rgba(26,32,53,0.9);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-}
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-/* Kanban */
-.kanban-board {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  overflow-x: auto;
-}
-.kanban-col {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  min-height: 400px;
-}
-.kanban-col-header {
-  font-size: 12px; font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 10px;
-  display: flex; justify-content: space-between;
-}
-.kanban-count {
-  background: var(--bg-elevated);
-  padding: 1px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-}
-.kanban-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-.kanban-card:hover { border-color: var(--accent-blue); }
-.kanban-card-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
-.kanban-card-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-
-/* Loading */
-.spinner {
-  width: 32px; height: 32px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent-blue);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.page-header {
-  margin-bottom: 24px;
-}
-.page-title {
-  font-size: 24px; font-weight: 700;
-  letter-spacing: -0.5px;
-}
-.page-subtitle {
-  font-size: 14px; color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* Filter bar */
-.filter-bar {
-  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
-}
-.filter-btn {
-  padding: 6px 14px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  font-size: 12px; cursor: pointer;
-}
-.filter-btn.active { border-color: var(--accent-blue); color: var(--accent-blue); background: var(--glow-blue); }
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--border:#2a2a3e;--text:#e4e4f0;--text2:#8888a8;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00d68f;--red:#ff6b6b;--orange:#ffa94d;--blue:#4dabf7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+input,select,textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--accent)}
+button{cursor:pointer;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;padding:10px 20px;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:6px 14px;font-size:12px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.badge-green{background:rgba(0,214,143,.15);color:var(--green)}
+.badge-red{background:rgba(255,107,107,.15);color:var(--red)}
+.badge-orange{background:rgba(255,169,77,.15);color:var(--orange)}
+.badge-blue{background:rgba(77,171,247,.15);color:var(--blue)}
+.badge-purple{background:rgba(108,92,231,.15);color:var(--accent2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px}
+.card-hover:hover{border-color:var(--accent);transform:translateY(-2px);transition:all .2s}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeIn .3s ease-out}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pulse{animation:pulse 2s infinite}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
+const { useState, useEffect, useCallback } = React;
 
-// ─── Config ─────────────────────────────────────────────────────────
-const API_BASE = window.location.hostname === 'localhost' 
-  ? 'https://router.jspriggins.com' 
-  : 'https://router.jspriggins.com';
-const API_KEY = localStorage.getItem('punky_api_key') || '';
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8081' : 'https://api.jspriggins.com';
 
-function api(path, opts = {}) {
-  const key = localStorage.getItem('punky_api_key') || '';
-  return fetch(`${API_BASE}${path}`, {
-    ...opts,
-    headers: {
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      ...(opts.headers || {}),
-    },
-  }).then(r => r.json()).catch(e => ({ error: e.message }));
-}
-
-// ─── Memory type colors ──────────────────────────────────────────────
-const TYPE_COLORS = {
-  fact: '#3b82f6',
-  preference: '#8b5cf6',
-  goal: '#10b981',
-  event: '#f59e0b',
-  relationship: '#06b6d4',
-  general: '#94a3b8',
+// ─── API Client ───────────────────────────────────────────────────
+const api = {
+  token: null,
+  apiKey: null,
+  async req(method, path, body) {
+    const h = {'Content-Type': 'application/json'};
+    if (this.token) h['Authorization'] = `Bearer ${this.token}`;
+    else if (this.apiKey) h['X-API-Key'] = this.apiKey;
+    const r = await fetch(`${API}${path}`, {method, headers: h, body: body ? JSON.stringify(body) : undefined});
+    if (r.status === 204) return null;
+    const data = await r.json().catch(() => null);
+    if (!r.ok) throw new Error(data?.detail || `HTTP ${r.status}`);
+    return data;
+  },
+  get: (p) => api.req('GET', p),
+  post: (p, b) => api.req('POST', p, b),
+  patch: (p, b) => api.req('PATCH', p, b),
+  del: (p) => api.req('DELETE', p),
 };
 
-// ─── Navigation ──────────────────────────────────────────────────────
-const NAV_USER = [
-  { id: 'chat', label: 'Chat', color: '#3b82f6' },
-  { id: 'memory-map', label: 'Memory Map', color: '#8b5cf6' },
-  { id: 'agents', label: 'Agents', color: '#10b981' },
-  { id: 'settings', label: 'Settings', color: '#94a3b8' },
-];
+// ─── Icons (inline SVG) ──────────────────────────────────────────
+const Icon = ({name, size=18}) => {
+  const icons = {
+    bot: <path d="M12 8V4H8M2 14h20M6 14v4h12v-4M6 8h12a2 2 0 012 2v4H4v-4a2 2 0 012-2z"/>,
+    play: <polygon points="5 3 19 12 5 21 5 3"/>,
+    plug: <path d="M12 22v-5M5 12H2M22 12h-3M12 2v5M7 7L5 5M17 7l2-2M17 17l2 2M7 17L5 19M12 12m-3 0a3 3 0 106 0 3 3 0 00-6 0z"/>,
+    dollar: <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>,
+    home: <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>,
+    logout: <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>,
+    check: <polyline points="20 6 9 17 4 12"/>,
+    x: <path d="M18 6L6 18M6 6l12 12"/>,
+    clock: <circle cx="12" cy="12" r="10"/>,
+    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>,
+    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
+  };
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons[name]}</svg>;
+};
 
-const NAV_ADMIN = [
-  { id: 'health', label: 'System Health', color: '#10b981' },
-  { id: 'depth', label: 'Depth Dashboard', color: '#f59e0b' },
-  { id: 'roadmap', label: 'Roadmap Tracker', color: '#3b82f6' },
-  { id: 'blog', label: 'Community Blog', color: '#8b5cf6' },
-  { id: 'endpoints', label: 'Endpoint Inventory', color: '#06b6d4' },
-];
-
-// ─── App ─────────────────────────────────────────────────────────────
-function App() {
-  const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('punky_api_key'));
-  const [mode, setMode] = useState('user'); // 'user' or 'admin'
-  const [page, setPage] = useState('chat');
-  const [health, setHealth] = useState(null);
-
-  useEffect(() => {
-    if (authenticated) {
-      api('/health').then(d => setHealth(d));
-    }
-  }, [authenticated]);
-
-  if (!authenticated) return <LoginPage onAuth={() => setAuthenticated(true)} />;
-
-  const nav = mode === 'user' ? NAV_USER : NAV_ADMIN;
-
-  return (
-    <div className="app-container">
-      <div className="sidebar">
-        <div className="logo-area">
-          <div className="logo-icon">P</div>
-          <div>
-            <div className="logo-text">Punky</div>
-            <div className="logo-ver">v1.4.4 • Phase 1</div>
-          </div>
-        </div>
-
-        <div style={{padding: '12px 8px'}}>
-          <div style={{display:'flex', background:'var(--bg-elevated)', borderRadius:8, padding:3}}>
-            <button onClick={() => { setMode('user'); setPage('chat'); }}
-              style={{flex:1, padding:'6px 0', borderRadius:6, border:'none',
-                background: mode==='user' ? 'var(--accent-blue)' : 'transparent',
-                color: mode==='user' ? 'white' : 'var(--text-muted)',
-                fontWeight:600, fontSize:12, cursor:'pointer', fontFamily:'Outfit'}}>
-              User
-            </button>
-            <button onClick={() => { setMode('admin'); setPage('health'); }}
-              style={{flex:1, padding:'6px 0', borderRadius:6, border:'none',
-                background: mode==='admin' ? 'var(--accent-purple)' : 'transparent',
-                color: mode==='admin' ? 'white' : 'var(--text-muted)',
-                fontWeight:600, fontSize:12, cursor:'pointer', fontFamily:'Outfit'}}>
-              Admin
-            </button>
-          </div>
-        </div>
-
-        <div className="nav-section">{mode === 'user' ? 'Platform' : 'Operations'}</div>
-        {nav.map(n => (
-          <div key={n.id}
-            className={`nav-item ${page === n.id ? 'active' : ''}`}
-            onClick={() => setPage(n.id)}>
-            <div className="nav-dot" style={{background: n.color}} />
-            {n.label}
-          </div>
-        ))}
-
-        <div style={{marginTop:'auto', padding:16, borderTop:'1px solid var(--border)'}}>
-          <div style={{fontSize:11, color:'var(--text-muted)'}}>
-            {health ? `Up ${Math.floor(health.uptime_seconds/3600)}h ${Math.floor((health.uptime_seconds%3600)/60)}m` : 'Connecting...'}
-          </div>
-          <div style={{fontSize:11, color:'var(--text-muted)', marginTop:4, cursor:'pointer'}}
-            onClick={() => { localStorage.removeItem('punky_api_key'); setAuthenticated(false); }}>
-            Sign out
-          </div>
-        </div>
-      </div>
-
-      <div className="main-content">
-        {page === 'chat' && <ChatPage />}
-        {page === 'memory-map' && <MemoryMapPage />}
-        {page === 'agents' && <AgentsPage />}
-        {page === 'settings' && <SettingsPage />}
-        {page === 'health' && <HealthPage />}
-        {page === 'depth' && <DepthDashboard />}
-        {page === 'roadmap' && <RoadmapTracker />}
-        {page === 'blog' && <BlogPage />}
-        {page === 'endpoints' && <EndpointsPage />}
-      </div>
-    </div>
-  );
-}
-
-// ─── Login ───────────────────────────────────────────────────────────
-function LoginPage({ onAuth }) {
-  const [key, setKey] = useState('');
-  const [error, setError] = useState('');
+// ─── Login Screen ─────────────────────────────────────────────────
+function LoginPage({onLogin}) {
+  const [mode, setMode] = useState('login'); // login | register
+  const [form, setForm] = useState({name:'', email:'', password:'', slug:''});
+  const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleLogin(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const handleRegister = async () => {
+    setLoading(true); setErr('');
     try {
-      const r = await fetch(`${API_BASE}/health`, {
-        headers: { 'Authorization': `Bearer ${key}` }
-      });
-      const d = await r.json();
-      if (d.status === 'healthy') {
-        localStorage.setItem('punky_api_key', key);
-        onAuth();
-      } else {
-        setError('Invalid API key');
-      }
-    } catch(e) { setError('Connection failed'); }
-    setLoading(false);
-  }
+      const t = await api.post('/v1/tenants', {name: form.name, owner_email: form.email});
+      await api.post('/v1/auth/set-password', {tenant_id: t.slug, email: form.email, password: form.password});
+      const login = await api.post('/v1/auth/login', {tenant_id: t.slug, email: form.email, password: form.password});
+      api.token = login.access_token; api.apiKey = t.api_key;
+      onLogin({...login, slug: t.slug, api_key: t.api_key, tenant_id: t.tenant_id});
+    } catch(e) { setErr(e.message); } finally { setLoading(false); }
+  };
+
+  const handleLogin = async () => {
+    setLoading(true); setErr('');
+    try {
+      const login = await api.post('/v1/auth/login', {tenant_id: form.slug, email: form.email, password: form.password});
+      api.token = login.access_token;
+      onLogin({...login, slug: form.slug});
+    } catch(e) { setErr(e.message); } finally { setLoading(false); }
+  };
 
   return (
-    <div style={{display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh'}}>
-      <div style={{width:400}}>
-        <div style={{textAlign:'center', marginBottom:40}}>
-          <div className="logo-icon" style={{width:56,height:56,fontSize:28,margin:'0 auto 16px',borderRadius:14}}>P</div>
-          <div style={{fontSize:28, fontWeight:700}}>Punky</div>
-          <div style={{color:'var(--text-muted)', fontSize:14, marginTop:4}}>Autonomous Agent Platform</div>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',padding:20}}>
+      <div className="card fade-in" style={{maxWidth:420,width:'100%'}}>
+        <div style={{textAlign:'center',marginBottom:32}}>
+          <div style={{fontSize:40,marginBottom:8}}>⚡</div>
+          <h1 style={{fontSize:28,fontWeight:800,background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>Punky</h1>
+          <p style={{color:'var(--text2)',fontSize:14,marginTop:4}}>Autonomous Agent Platform</p>
         </div>
-        <form onSubmit={handleLogin} className="card">
-          <div style={{marginBottom:16}}>
-            <label style={{fontSize:13, fontWeight:500, color:'var(--text-secondary)', display:'block', marginBottom:6}}>API Key</label>
-            <input type="password" value={key} onChange={e => setKey(e.target.value)}
-              className="chat-input" placeholder="pk_live_..."
-              style={{width:'100%'}} />
-          </div>
-          {error && <div style={{color:'var(--accent-red)', fontSize:13, marginBottom:12}}>{error}</div>}
-          <button type="submit" className="chat-send" style={{width:'100%'}} disabled={loading || !key}>
-            {loading ? 'Connecting...' : 'Sign In'}
-          </button>
-        </form>
-        <div style={{textAlign:'center', marginTop:16, fontSize:12, color:'var(--text-muted)'}}>
-          Private instance • Not for public access
+        <div style={{display:'flex',gap:8,marginBottom:24}}>
+          <button className={mode==='login'?'btn-primary':'btn-ghost'} style={{flex:1}} onClick={()=>setMode('login')}>Sign In</button>
+          <button className={mode==='register'?'btn-primary':'btn-ghost'} style={{flex:1}} onClick={()=>setMode('register')}>Register</button>
         </div>
+        {mode==='register' && <input placeholder="Organization name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} style={{marginBottom:12}}/>}
+        {mode==='login' && <input placeholder="Tenant slug" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})} style={{marginBottom:12}}/>}
+        <input placeholder="Email" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={{marginBottom:12}}/>
+        <input placeholder="Password" type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} style={{marginBottom:16}} onKeyDown={e=>e.key==='Enter'&&(mode==='login'?handleLogin():handleRegister())}/>
+        {err && <div style={{color:'var(--red)',fontSize:13,marginBottom:12}}>{err}</div>}
+        <button className="btn-primary" style={{width:'100%'}} onClick={mode==='login'?handleLogin:handleRegister} disabled={loading}>
+          {loading ? 'Loading...' : mode==='login' ? 'Sign In' : 'Create Account'}
+        </button>
       </div>
     </div>
   );
 }
 
-// ─── Chat ────────────────────────────────────────────────────────────
-function ChatPage() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [sending, setSending] = useState(false);
-  const msgsEnd = useRef(null);
-
-  useEffect(() => { msgsEnd.current?.scrollIntoView({behavior:'smooth'}); }, [messages]);
-
-  async function sendMessage(e) {
-    e.preventDefault();
-    if (!input.trim() || sending) return;
-    const userMsg = input.trim();
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-    setSending(true);
-    try {
-      const data = await api('/v1/chat/completions', {
-        method: 'POST',
-        body: JSON.stringify({
-          model: 'auto',
-          messages: [...messages, { role: 'user', content: userMsg }],
-        }),
-      });
-      const reply = data.choices?.[0]?.message?.content || data.error?.message || 'No response';
-      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-    } catch(e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${e.message}` }]);
-    }
-    setSending(false);
-  }
-
+// ─── Sidebar ───────────────────────────────────────────────────────
+function Sidebar({active, setActive, session, onLogout}) {
+  const items = [{id:'dashboard',icon:'home',label:'Dashboard'},{id:'agents',icon:'bot',label:'Agents'},{id:'runs',icon:'play',label:'Runs'},{id:'connectors',icon:'plug',label:'Connectors'},{id:'billing',icon:'dollar',label:'Billing'}];
   return (
-    <div className="chat-container">
-      <div className="page-header">
-        <div className="page-title">Chat</div>
-        <div className="page-subtitle">Talk to Punky — auto-routed to the best model</div>
+    <div style={{width:220,background:'var(--surface)',borderRight:'1px solid var(--border)',display:'flex',flexDirection:'column',height:'100vh',position:'fixed'}}>
+      <div style={{padding:'20px 16px',borderBottom:'1px solid var(--border)'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8}}><span style={{fontSize:24}}>⚡</span><span style={{fontWeight:800,fontSize:18}}>Punky</span></div>
+        <div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:4}}>{session?.slug || 'workspace'}</div>
       </div>
-      <div className="chat-messages">
-        {messages.length === 0 && (
-          <div style={{textAlign:'center', padding:'80px 0', color:'var(--text-muted)'}}>
-            <div style={{fontSize:48, marginBottom:16}}>💬</div>
-            <div style={{fontSize:16}}>Start a conversation</div>
-            <div style={{fontSize:13, marginTop:8}}>Messages are routed to the optimal model based on complexity</div>
+      <nav style={{flex:1,padding:'12px 8px'}}>
+        {items.map(it=>(
+          <div key={it.id} onClick={()=>setActive(it.id)} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:8,cursor:'pointer',marginBottom:2,background:active===it.id?'var(--surface2)':'transparent',color:active===it.id?'var(--text)':'var(--text2)',transition:'all .15s'}}>
+            <Icon name={it.icon} size={16}/><span style={{fontSize:14,fontWeight:active===it.id?600:400}}>{it.label}</span>
           </div>
-        )}
-        {messages.map((m, i) => (
-          <div key={i} className={`chat-msg ${m.role}`}>{m.content}</div>
         ))}
-        {sending && <div className="chat-msg assistant" style={{opacity:0.6}}>Thinking...</div>}
-        <div ref={msgsEnd} />
+      </nav>
+      <div style={{padding:16,borderTop:'1px solid var(--border)'}}>
+        <button className="btn-ghost btn-sm" style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'center',gap:6}} onClick={onLogout}><Icon name="logout" size={14}/>Sign Out</button>
       </div>
-      <form onSubmit={sendMessage} className="chat-input-area">
-        <input className="chat-input" value={input} onChange={e => setInput(e.target.value)}
-          placeholder="Type a message..." disabled={sending} />
-        <button type="submit" className="chat-send" disabled={sending || !input.trim()}>Send</button>
-      </form>
     </div>
   );
 }
 
-// ─── Memory Map ──────────────────────────────────────────────────────
-function MemoryMapPage() {
-  const svgRef = useRef(null);
-  const [graphData, setGraphData] = useState(null);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api('/api/v1/dashboard/graph').then(d => {
-      setGraphData(d);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!graphData || !svgRef.current) return;
-    
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
-    
-    const width = svgRef.current.clientWidth;
-    const height = svgRef.current.clientHeight;
-    
-    const g = svg.append('g');
-    
-    // Zoom
-    const zoom = d3.zoom()
-      .scaleExtent([0.2, 5])
-      .on('zoom', (event) => g.attr('transform', event.transform));
-    svg.call(zoom);
-    
-    // Process nodes
-    let nodes = (graphData.nodes || []).map((n, i) => ({
-      ...n,
-      id: n.id || `node_${i}`,
-      type: n.type || 'general',
-      importance: n.importance || 0.5,
-      label: (n.content || n.label || n.id || '').slice(0, 40),
-    }));
-    
-    let edges = (graphData.edges || []).map(e => ({
-      source: e.source,
-      target: e.target,
-      type: e.type || 'relates_to',
-    }));
-    
-    // Filter
-    if (filter !== 'all') {
-      const ids = new Set(nodes.filter(n => n.type === filter).map(n => n.id));
-      nodes = nodes.filter(n => ids.has(n.id));
-      edges = edges.filter(e => ids.has(e.source) && ids.has(e.target));
-    }
-    
-    // Search highlight
-    const searchMatch = searchTerm 
-      ? new Set(nodes.filter(n => n.label.toLowerCase().includes(searchTerm.toLowerCase())).map(n => n.id))
-      : null;
-    
-    // Simulation
-    const sim = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(edges).id(d => d.id).distance(80))
-      .force('charge', d3.forceManyBody().strength(-200))
-      .force('center', d3.forceCenter(width/2, height/2))
-      .force('collision', d3.forceCollide().radius(d => 10 + d.importance * 20));
-    
-    // Edges
-    const link = g.append('g')
-      .selectAll('line')
-      .data(edges)
-      .join('line')
-      .attr('stroke', 'rgba(148,163,184,0.15)')
-      .attr('stroke-width', 1);
-    
-    // Nodes
-    const node = g.append('g')
-      .selectAll('circle')
-      .data(nodes)
-      .join('circle')
-      .attr('r', d => 6 + d.importance * 16)
-      .attr('fill', d => TYPE_COLORS[d.type] || TYPE_COLORS.general)
-      .attr('stroke', d => d.pinned ? '#f59e0b' : 'rgba(255,255,255,0.1)')
-      .attr('stroke-width', d => d.pinned ? 3 : 1)
-      .attr('opacity', d => {
-        if (searchMatch && !searchMatch.has(d.id)) return 0.15;
-        return 0.4 + d.importance * 0.6;
-      })
-      .attr('cursor', 'pointer')
-      .on('click', (event, d) => setSelectedNode(d))
-      .call(d3.drag()
-        .on('start', (event, d) => { if (!event.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-        .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
-        .on('end', (event, d) => { if (!event.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
-      );
-    
-    // Labels for important nodes
-    const labels = g.append('g')
-      .selectAll('text')
-      .data(nodes.filter(n => n.importance > 0.6))
-      .join('text')
-      .text(d => d.label.slice(0, 20))
-      .attr('font-size', 10)
-      .attr('fill', 'var(--text-muted)')
-      .attr('font-family', 'Outfit')
-      .attr('dx', d => 10 + d.importance * 16)
-      .attr('dy', 4)
-      .attr('opacity', d => searchMatch && !searchMatch.has(d.id) ? 0.1 : 0.7);
-    
-    sim.on('tick', () => {
-      link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-      node.attr('cx', d => d.x).attr('cy', d => d.y);
-      labels.attr('x', d => d.x).attr('y', d => d.y);
-    });
-    
-    // Initial zoom to fit
-    setTimeout(() => {
-      svg.transition().duration(500).call(
-        zoom.transform,
-        d3.zoomIdentity.translate(width/2, height/2).scale(0.8).translate(-width/2, -height/2)
-      );
-    }, 1000);
-    
-    return () => sim.stop();
-  }, [graphData, filter, searchTerm]);
-
-  if (loading) return <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'80vh'}}><div className="spinner" /></div>;
-
-  const stats = graphData?.stats || {};
-  const types = [...new Set((graphData?.nodes || []).map(n => n.type || 'general'))];
-
+// ─── Dashboard ────────────────────────────────────────────────────
+function Dashboard({}) {
+  const [data, setData] = useState({agents:[], runs:[], usage:{}});
+  useEffect(()=>{
+    Promise.all([api.get('/v1/agents').catch(()=>[]), api.get('/v1/runs').catch(()=>[]), api.get('/v1/billing/usage').catch(()=>({}))]).then(([a,r,u])=>setData({agents:a,runs:r,usage:u}));
+  },[]);
+  const cards = [
+    {label:'Agents', value:data.agents.length, icon:'bot', color:'var(--accent2)'},
+    {label:'Total Runs', value:data.runs.length, icon:'play', color:'var(--green)'},
+    {label:'Cost (USD)', value:`$${(data.usage?.total_cost_usd||0).toFixed(4)}`, icon:'dollar', color:'var(--orange)'},
+    {label:'Succeeded', value:data.runs.filter(r=>r.status==='succeeded').length, icon:'check', color:'var(--green)'},
+  ];
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Memory Map</div>
-        <div className="page-subtitle">
-          {graphData?.nodes?.length || 0} memories • {graphData?.edges?.length || 0} connections
-        </div>
+    <div className="fade-in">
+      <h2 style={{fontSize:24,fontWeight:700,marginBottom:24}}>Dashboard</h2>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16,marginBottom:32}}>
+        {cards.map((c,i)=>(
+          <div key={i} className="card" style={{display:'flex',alignItems:'center',gap:16}}>
+            <div style={{width:44,height:44,borderRadius:10,background:`${c.color}20`,display:'flex',alignItems:'center',justifyContent:'center',color:c.color}}><Icon name={c.icon} size={20}/></div>
+            <div><div style={{fontSize:11,color:'var(--text2)',fontWeight:600,textTransform:'uppercase',letterSpacing:'.5px'}}>{c.label}</div><div style={{fontSize:22,fontWeight:700,marginTop:2}} className="mono">{c.value}</div></div>
+          </div>
+        ))}
       </div>
-      
-      <div className="memory-map-container">
-        <div className="memory-map-controls">
-          <button className={`map-control ${filter==='all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
-          {types.map(t => (
-            <button key={t} className={`map-control ${filter===t ? 'active' : ''}`} onClick={() => setFilter(t)}>
-              <span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:TYPE_COLORS[t]||'#94a3b8',marginRight:6}} />
-              {t}
-            </button>
-          ))}
-        </div>
-        
-        <div className="map-search">
-          <input placeholder="Search memories..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-        </div>
-        
-        <svg ref={svgRef} />
-        
-        <div className="map-legend">
-          {Object.entries(TYPE_COLORS).map(([type, color]) => (
-            <div key={type} className="legend-item">
-              <div className="legend-dot" style={{background: color}} />
-              {type}
-            </div>
-          ))}
-        </div>
-        
-        <div className={`memory-panel ${selectedNode ? 'open' : ''}`}>
-          {selectedNode && (
-            <>
-              <button className="memory-panel-close" onClick={() => setSelectedNode(null)}>✕</button>
-              <div style={{marginBottom:16}}>
-                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
-                  <div style={{width:12,height:12,borderRadius:'50%',background:TYPE_COLORS[selectedNode.type]||'#94a3b8'}} />
-                  <span style={{fontSize:12,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--text-muted)'}}>
-                    {selectedNode.type}
-                  </span>
-                </div>
-                <div style={{fontSize:15,fontWeight:500,lineHeight:1.5}}>{selectedNode.label || selectedNode.content || 'No content'}</div>
-              </div>
-              <div style={{fontSize:12,color:'var(--text-muted)'}}>
-                <div style={{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}}>
-                  <span>Importance</span>
-                  <span className="mono" style={{color:'var(--text-primary)'}}>{(selectedNode.importance * 100).toFixed(0)}%</span>
-                </div>
-                <div style={{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}}>
-                  <span>Source</span>
-                  <span className="mono" style={{color:'var(--text-primary)'}}>{selectedNode.source || 'api'}</span>
-                </div>
-                <div style={{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}}>
-                  <span>ID</span>
-                  <span className="mono" style={{color:'var(--text-primary)',fontSize:10}}>{selectedNode.id?.slice(0,16)}</span>
-                </div>
-                {selectedNode.tags?.length > 0 && (
-                  <div style={{padding:'8px 0'}}>
-                    <span>Tags: </span>
-                    {selectedNode.tags.map(t => (
-                      <span key={t} style={{background:'var(--bg-elevated)',padding:'2px 8px',borderRadius:4,fontSize:11,marginRight:4}}>{t}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+      <h3 style={{fontSize:16,fontWeight:600,marginBottom:12}}>Recent Runs</h3>
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        <table><thead><tr><th>Task</th><th>Status</th><th>Cost</th><th>Time</th></tr></thead>
+        <tbody>{data.runs.slice(0,8).map(r=>(
+          <tr key={r.id}><td style={{maxWidth:300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.task}</td>
+          <td><span className={`badge badge-${r.status==='succeeded'?'green':r.status==='failed'?'red':r.status==='running'?'blue':'purple'}`}>{r.status}</span></td>
+          <td className="mono" style={{fontSize:13}}>${(r.total_cost_usd||0).toFixed(4)}</td>
+          <td style={{color:'var(--text2)',fontSize:13}}>{r.created_at?.slice(11,19)}</td></tr>
+        ))}{data.runs.length===0 && <tr><td colSpan={4} style={{color:'var(--text2)',textAlign:'center',padding:32}}>No runs yet — submit your first task!</td></tr>}</tbody></table>
       </div>
     </div>
   );
 }
 
-// ─── Agents ──────────────────────────────────────────────────────────
-function AgentsPage() {
+// ─── Agents Page ──────────────────────────────────────────────────
+function AgentsPage({}) {
   const [agents, setAgents] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api('/api/v1/agents').then(d => {
-      setAgents(d.agents || d.items || (Array.isArray(d) ? d : []));
-      setLoading(false);
-    });
-  }, []);
-
+  const [show, setShow] = useState(false);
+  const [form, setForm] = useState({name:'',description:'',agent_type:'general',system_prompt:'',default_tier:'CHEAP',risk_level:'low',max_steps:10});
+  const load = useCallback(()=>api.get('/v1/agents').then(setAgents).catch(()=>{}),[]);
+  useEffect(()=>{load()},[load]);
+  const create = async()=>{await api.post('/v1/agents',form);setShow(false);load();};
+  const activate = async(id)=>{await api.patch(`/v1/agents/${id}/activate`);load();};
+  const pause = async(id)=>{await api.patch(`/v1/agents/${id}/pause`);load();};
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Agents</div>
-        <div className="page-subtitle">{agents.length} configured agents</div>
+    <div className="fade-in">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+        <h2 style={{fontSize:24,fontWeight:700}}>Agents</h2>
+        <button className="btn-primary" onClick={()=>setShow(!show)}>+ New Agent</button>
       </div>
-      {loading ? <div className="spinner" /> : (
-        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:16}}>
-          {agents.length === 0 ? (
-            <div className="card" style={{gridColumn:'1/-1', textAlign:'center', padding:40, color:'var(--text-muted)'}}>
-              No agents configured yet. Agents will be available in Phase 2.
-            </div>
-          ) : agents.map((a, i) => (
-            <div key={i} className="card">
-              <div style={{fontWeight:600, marginBottom:8}}>{a.name || a.id}</div>
-              <div style={{fontSize:13, color:'var(--text-secondary)', marginBottom:8}}>{a.description || a.type}</div>
-              <div className={`status-badge s-${a.status || 'backlog'}`}>{a.status || 'inactive'}</div>
-            </div>
-          ))}
+      {show && <div className="card" style={{marginBottom:20}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+          <input placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>
+          <select value={form.agent_type} onChange={e=>setForm({...form,agent_type:e.target.value})}><option>general</option><option>researcher</option><option>coder</option><option>guardian</option></select>
+          <input placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} style={{gridColumn:'span 2'}}/>
+          <textarea placeholder="System prompt" value={form.system_prompt} onChange={e=>setForm({...form,system_prompt:e.target.value})} rows={3} style={{gridColumn:'span 2',resize:'vertical'}}/>
+          <select value={form.default_tier} onChange={e=>setForm({...form,default_tier:e.target.value})}><option>CHEAP</option><option>MEDIUM</option><option>PREMIUM</option><option>RESEARCH</option></select>
+          <select value={form.risk_level} onChange={e=>setForm({...form,risk_level:e.target.value})}><option>low</option><option>medium</option><option>high</option></select>
         </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Settings ────────────────────────────────────────────────────────
-function SettingsPage() {
-  return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Settings</div>
-        <div className="page-subtitle">Account and API configuration</div>
-      </div>
-      <div className="card">
-        <div className="card-title" style={{marginBottom:12}}>API Key</div>
-        <div className="mono" style={{fontSize:13, color:'var(--text-muted)', background:'var(--bg-elevated)', padding:'10px 14px', borderRadius:8}}>
-          {localStorage.getItem('punky_api_key')?.slice(0,12)}...{localStorage.getItem('punky_api_key')?.slice(-8)}
-        </div>
-      </div>
-      <div className="card">
-        <div className="card-title" style={{marginBottom:12}}>Plan</div>
-        <div style={{fontSize:14, color:'var(--text-secondary)'}}>Self-Hosted • Unlimited • €12.59/mo infrastructure</div>
+        <div style={{marginTop:12,display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={create}>Create</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
+      </div>}
+      <div style={{display:'grid',gap:12}}>
+        {agents.map(a=>(
+          <div key={a.id} className="card card-hover" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div><div style={{fontWeight:600}}>{a.name}</div><div style={{fontSize:13,color:'var(--text2)',marginTop:2}}>{a.agent_type} · {a.default_tier} · risk:{a.risk_level}</div><div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:4}}>{a.id}</div></div>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <span className={`badge badge-${a.status==='active'?'green':'orange'}`}>{a.status}</span>
+              {a.status==='draft'&&<button className="btn-primary btn-sm" onClick={()=>activate(a.id)}>Activate</button>}
+              {a.status==='active'&&<button className="btn-ghost btn-sm" onClick={()=>pause(a.id)}>Pause</button>}
+            </div>
+          </div>
+        ))}
+        {agents.length===0&&<div className="card" style={{textAlign:'center',color:'var(--text2)',padding:40}}>No agents yet — create one to get started</div>}
       </div>
     </div>
   );
 }
 
-// ─── Health Dashboard ────────────────────────────────────────────────
-function HealthPage() {
-  const [health, setHealth] = useState(null);
-  const [env, setEnv] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    Promise.all([
-      api('/health'),
-      api('/api/v1/environment/dashboard'),
-    ]).then(([h, e]) => {
-      setHealth(h);
-      setEnv(e);
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) return <div className="spinner" />;
-
-  const sys = env?.system || {};
-  const upH = Math.floor((health?.uptime_seconds || 0) / 3600);
-  const upM = Math.floor(((health?.uptime_seconds || 0) % 3600) / 60);
-
+// ─── Runs Page ────────────────────────────────────────────────────
+function RunsPage({}) {
+  const [runs, setRuns] = useState([]);
+  const [agents, setAgents] = useState([]);
+  const [show, setShow] = useState(false);
+  const [form, setForm] = useState({agent_id:'',task:'',mode:'execute'});
+  const [detail, setDetail] = useState(null);
+  const [steps, setSteps] = useState([]);
+  const load = useCallback(()=>{api.get('/v1/runs').then(setRuns).catch(()=>{});api.get('/v1/agents').then(setAgents).catch(()=>[]);},[]);
+  useEffect(()=>{load()},[load]);
+  const submit = async()=>{await api.post('/v1/runs',form);setShow(false);setTimeout(load,1500);load();};
+  const viewSteps = async(r)=>{setDetail(r);const s=await api.get(`/v1/runs/${r.id}/steps`).catch(()=>[]);setSteps(s);};
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">System Health</div>
-        <div className="page-subtitle">Real-time infrastructure monitoring</div>
+    <div className="fade-in">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+        <h2 style={{fontSize:24,fontWeight:700}}>Runs</h2>
+        <div style={{display:'flex',gap:8}}><button className="btn-ghost btn-sm" onClick={load}>↻ Refresh</button><button className="btn-primary" onClick={()=>setShow(!show)}>+ Submit Task</button></div>
       </div>
-      
-      <div className="stat-grid">
-        <div className="stat-card">
-          <div className="stat-value" style={{color: health?.status === 'healthy' ? 'var(--accent-emerald)' : 'var(--accent-red)'}}>
-            {health?.status === 'healthy' ? '●' : '○'}
-          </div>
-          <div className="stat-label">Status: {health?.status || 'unknown'}</div>
+      {show && <div className="card" style={{marginBottom:20}}>
+        <select value={form.agent_id} onChange={e=>setForm({...form,agent_id:e.target.value})} style={{marginBottom:12}}>
+          <option value="">Select agent...</option>{agents.filter(a=>a.status==='active').map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
+        <textarea placeholder="Task description..." value={form.task} onChange={e=>setForm({...form,task:e.target.value})} rows={3} style={{marginBottom:12,resize:'vertical'}}/>
+        <div style={{display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={submit} disabled={!form.agent_id||!form.task}>Submit</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
+      </div>}
+      {detail && <div className="card" style={{marginBottom:20}}>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}><h3 style={{fontWeight:600}}>Run Details</h3><button className="btn-ghost btn-sm" onClick={()=>setDetail(null)}>✕ Close</button></div>
+        <div style={{fontSize:13,color:'var(--text2)',marginBottom:8}}>{detail.task}</div>
+        <div style={{display:'flex',gap:16,marginBottom:16,fontSize:13}}>
+          <span className={`badge badge-${detail.status==='succeeded'?'green':detail.status==='failed'?'red':'blue'}`}>{detail.status}</span>
+          <span className="mono">${(detail.total_cost_usd||0).toFixed(4)}</span>
+          <span>{detail.step_count} steps</span>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{upH}h {upM}m</div>
-          <div className="stat-label">Uptime</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{sys.cpu_cores || '?'}</div>
-          <div className="stat-label">CPU Cores</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{sys.memory_pct ? `${sys.memory_pct}%` : '?'}</div>
-          <div className="stat-label">Memory Usage</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{sys.disk_pct ? `${sys.disk_pct}%` : '?'}</div>
-          <div className="stat-label">Disk Usage</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{sys.load_1m || '?'}</div>
-          <div className="stat-label">Load Average</div>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="card-title" style={{marginBottom:12}}>Services</div>
-        <table className="data-table">
-          <thead><tr><th>Service</th><th>Status</th><th>Details</th></tr></thead>
-          <tbody>
-            {['PostgreSQL', 'Valkey', 'Qdrant', 'Ollama', 'Doc Sidecar'].map(s => (
-              <tr key={s}>
-                <td style={{fontWeight:500}}>{s}</td>
-                <td><span className="status-badge s-done">Running</span></td>
-                <td style={{color:'var(--text-muted)', fontSize:13}}>
-                  {s === 'PostgreSQL' && 'Primary database'}
-                  {s === 'Valkey' && 'Session & cache store'}
-                  {s === 'Qdrant' && 'Vector search'}
-                  {s === 'Ollama' && 'Local LLM inference'}
-                  {s === 'Doc Sidecar' && 'Document processing'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <h4 style={{fontSize:13,fontWeight:600,color:'var(--text2)',marginBottom:8}}>Steps</h4>
+        {steps.map((s,i)=>(<div key={s.id} style={{padding:'10px 14px',background:'var(--surface2)',borderRadius:8,marginBottom:6,fontSize:13}}>
+          <div style={{display:'flex',justifyContent:'space-between'}}><span><span style={{color:'var(--accent2)',fontWeight:600}}>#{s.sequence}</span> {s.step_type}</span><span className={`badge badge-${s.status==='succeeded'?'green':'red'}`} style={{fontSize:10}}>{s.status}</span></div>
+          <div style={{color:'var(--text2)',marginTop:4}}>{s.description}</div>
+          {s.duration_ms!=null&&<div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:2}}>{s.duration_ms}ms · ${(s.cost_usd||0).toFixed(4)}</div>}
+        </div>))}
+        {steps.length===0&&<div style={{color:'var(--text2)',fontSize:13}}>No steps recorded</div>}
+      </div>}
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        <table><thead><tr><th>Task</th><th>Agent</th><th>Status</th><th>Cost</th><th>Steps</th><th></th></tr></thead>
+        <tbody>{runs.map(r=>(
+          <tr key={r.id}>
+            <td style={{maxWidth:250,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.task}</td>
+            <td className="mono" style={{fontSize:12}}>{(r.agent_id||'').slice(0,8)}</td>
+            <td><span className={`badge badge-${r.status==='succeeded'?'green':r.status==='failed'?'red':r.status==='running'?'blue':'purple'}`}>{r.status}</span></td>
+            <td className="mono" style={{fontSize:13}}>${(r.total_cost_usd||0).toFixed(4)}</td>
+            <td className="mono">{r.step_count}</td>
+            <td><button className="btn-ghost btn-sm" onClick={()=>viewSteps(r)}>Details</button></td>
+          </tr>
+        ))}</tbody></table>
       </div>
     </div>
   );
 }
 
-// ─── Depth Dashboard ─────────────────────────────────────────────────
-function DepthDashboard() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedCat, setSelectedCat] = useState(null);
-
-  useEffect(() => {
-    api('/api/v1/depth/assessments').then(d => {
-      if (d.categories) setData(d);
-      else setData(buildLocalDepthData());
-      setLoading(false);
-    }).catch(() => {
-      setData(buildLocalDepthData());
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) return <div className="spinner" />;
-  if (!data) return <div className="card">No depth data available</div>;
-
-  const pct = data.percentage || 0;
-  const barColor = pct < 50 ? 'var(--accent-red)' : pct < 80 ? 'var(--accent-amber)' : 'var(--accent-emerald)';
-  const criteria = ['has_persistence','has_error_handling','has_load_test','has_docs','has_monitoring','is_demo_ready'];
-  const criteriaLabels = { has_persistence:'Persistence', has_error_handling:'Error Handling', has_load_test:'Load Test', has_docs:'Docs', has_monitoring:'Monitoring', is_demo_ready:'Demo Ready' };
-
+// ─── Connectors Page ──────────────────────────────────────────────
+function ConnectorsPage({}) {
+  const [conns, setConns] = useState([]);
+  const [show, setShow] = useState(false);
+  const [form, setForm] = useState({name:'',connector_type:'github',config:{}});
+  const load = useCallback(()=>api.get('/v1/connectors').then(setConns).catch(()=>{}),[]);
+  useEffect(()=>{load()},[load]);
+  const create = async()=>{await api.post('/v1/connectors',form);setShow(false);load();};
+  const remove = async(id)=>{await api.del(`/v1/connectors/${id}`);load();};
+  const types = ['github','gitlab','slack','webhook','browser','custom'];
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Depth Tracking Dashboard</div>
-        <div className="page-subtitle">Platform maturity across all {data.total_categories} capability categories</div>
+    <div className="fade-in">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+        <h2 style={{fontSize:24,fontWeight:700}}>Connectors</h2>
+        <button className="btn-primary" onClick={()=>setShow(!show)}>+ Add Connector</button>
       </div>
-
-      {/* Summary bar */}
-      <div className="card" style={{background: 'linear-gradient(135deg, var(--bg-card), var(--bg-elevated))'}}>
-        <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12}}>
-          <div>
-            <span style={{fontSize:36, fontWeight:800, fontFamily:'JetBrains Mono'}}>{data.at_depth_4_plus}</span>
-            <span style={{fontSize:18, color:'var(--text-muted)'}}> / {data.total_categories}</span>
-            <span style={{fontSize:14, color:'var(--text-muted)', marginLeft:8}}>at Depth 4+</span>
-          </div>
-          <div style={{textAlign:'right'}}>
-            <div style={{fontSize:28, fontWeight:700, fontFamily:'JetBrains Mono', color: barColor}}>{pct.toFixed(0)}%</div>
-            <div style={{fontSize:12, color:'var(--text-muted)'}}>Production Ready</div>
-          </div>
+      {show && <div className="card" style={{marginBottom:20}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+          <input placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>
+          <select value={form.connector_type} onChange={e=>setForm({...form,connector_type:e.target.value})}>{types.map(t=><option key={t}>{t}</option>)}</select>
         </div>
-        <div className="progress-bar" style={{height:12, borderRadius:6}}>
-          <div className="progress-fill" style={{width:`${pct}%`, background: `linear-gradient(90deg, ${barColor}, var(--accent-blue))`}} />
-        </div>
-        <div style={{display:'flex', justifyContent:'space-between', marginTop:8, fontSize:11, color:'var(--text-muted)'}}>
-          <span>Avg depth: {data.avg_depth}</span>
-          <span>Target: 100% by Phase 9</span>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="stat-grid" style={{gridTemplateColumns:'repeat(5,1fr)'}}>
-        {[1,2,3,4,5].map(d => {
-          const count = data.categories.filter(c => c.current_depth === d).length;
-          return (
-            <div key={d} className="stat-card">
-              <div style={{display:'flex', alignItems:'center', gap:8}}>
-                <div className={`depth-badge depth-${d}`}>{d}</div>
-                <div>
-                  <div className="stat-value" style={{fontSize:20}}>{count}</div>
-                  <div className="stat-label">Depth {d}</div>
-                </div>
-              </div>
+        <div style={{marginTop:12,display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={create}>Create</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
+      </div>}
+      <div style={{display:'grid',gap:12}}>
+        {conns.map(c=>(
+          <div key={c.id} className="card card-hover" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div><div style={{fontWeight:600}}>{c.name}</div><div style={{fontSize:13,color:'var(--text2)',marginTop:2}}>{c.connector_type}</div></div>
+            <div style={{display:'flex',gap:8,alignItems:'center'}}>
+              <span className={`badge badge-${c.status==='active'?'green':'orange'}`}>{c.status}</span>
+              <button className="btn-ghost btn-sm" onClick={()=>remove(c.id)}>Delete</button>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Category table */}
-      <div className="card">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Endpoints</th>
-              <th>Current</th>
-              <th>Target</th>
-              <th>Phase</th>
-              <th>Criteria</th>
-              <th>Top Blocker</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.categories.map((cat, i) => (
-              <tr key={i} onClick={() => setSelectedCat(selectedCat === i ? null : i)} style={{cursor:'pointer'}}>
-                <td style={{fontWeight:500}}>{cat.category}</td>
-                <td className="mono" style={{fontSize:13}}>{cat.endpoint_count}</td>
-                <td><div className={`depth-badge depth-${cat.current_depth}`}>{cat.current_depth}</div></td>
-                <td><div className={`depth-badge depth-${cat.target_depth}`}>{cat.target_depth}</div></td>
-                <td className="mono" style={{fontSize:13}}>P{cat.target_phase || '?'}</td>
-                <td>
-                  <div className="criteria-row">
-                    {criteria.map(c => (
-                      <span key={c} className={`criteria-item ${cat[c] ? 'pass' : 'fail'}`} title={criteriaLabels[c]}>
-                        {cat[c] ? '✓' : '✗'}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td style={{fontSize:12, color:'var(--text-muted)', maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>
-                  {(cat.blockers && cat.blockers[0]) || cat.notes?.slice(0, 40) || '—'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Depth criteria legend */}
-      <div className="card" style={{background:'var(--bg-secondary)'}}>
-        <div style={{fontSize:12, fontWeight:600, marginBottom:8, color:'var(--text-muted)'}}>DEPTH 4 CRITERIA (7 CHECKS)</div>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:8}}>
-          {[
-            ['Persistence', 'State survives restarts (PG/Valkey)'],
-            ['Error Handling', 'Graceful failures, not just happy-path'],
-            ['Integration Tests', '3+ tests against real services'],
-            ['Documentation', 'Working curl examples'],
-            ['Load Tested', '50 concurrent requests without degradation'],
-            ['Monitored', 'Latency, error rate, usage tracked'],
-            ['Demo Ready', 'Non-technical observer understands value'],
-          ].map(([title, desc]) => (
-            <div key={title} style={{fontSize:12}}>
-              <span style={{fontWeight:600, color:'var(--text-primary)'}}>{title}:</span>
-              <span style={{color:'var(--text-muted)', marginLeft:4}}>{desc}</span>
-            </div>
-          ))}
-        </div>
+          </div>
+        ))}
+        {conns.length===0&&<div className="card" style={{textAlign:'center',color:'var(--text2)',padding:40}}>No connectors — add one to integrate external services</div>}
       </div>
     </div>
   );
 }
 
-// Local depth data fallback when API not yet available
-function buildLocalDepthData() {
-  const cats = [
-    { category: 'Core Router & Auth', current_depth: 3, target_depth: 4, target_phase: 1, endpoint_count: 50, test_count: 25, has_persistence: true, has_error_handling: true, has_monitoring: true, notes: 'PG-backed, needs Valkey cache + load tests' },
-    { category: 'Community Blog & Governance', current_depth: 3, target_depth: 4, target_phase: 1, endpoint_count: 80, test_count: 15, has_persistence: true, has_error_handling: true, notes: 'PG-backed, needs load tests and docs' },
-    { category: 'Smart Routing & MCP', current_depth: 3, target_depth: 4, target_phase: 2, endpoint_count: 60, test_count: 20, has_persistence: true, has_error_handling: true, notes: 'Working in production, needs cost telemetry' },
-    { category: 'Encryption & Key Management', current_depth: 3, target_depth: 4, target_phase: 2, endpoint_count: 30, test_count: 10, has_persistence: true, has_error_handling: true, notes: 'AES-GCM + ECDH working' },
-    { category: 'Compliance & GDPR', current_depth: 3, target_depth: 4, target_phase: 2, endpoint_count: 40, test_count: 10, has_persistence: true, notes: 'Needs export fix' },
-    { category: 'Agent Framework & Templates', current_depth: 1, target_depth: 4, target_phase: 5, endpoint_count: 120, notes: 'In-memory stubs, resets on deploy' },
-    { category: 'TTS & Voice', current_depth: 1, target_depth: 4, target_phase: 4, endpoint_count: 25, notes: 'In-memory stubs' },
-    { category: 'TAO & Optimization', current_depth: 1, target_depth: 4, target_phase: 4, endpoint_count: 20, notes: 'In-memory stubs' },
-    { category: 'Multimodal Processing', current_depth: 1, target_depth: 4, target_phase: 4, endpoint_count: 30, notes: 'In-memory stubs' },
-    { category: 'Emotion & NLP', current_depth: 1, target_depth: 4, target_phase: 4, endpoint_count: 15, notes: 'In-memory stubs' },
-    { category: 'Multi-Tenant & Billing', current_depth: 1, target_depth: 4, target_phase: 3, endpoint_count: 30, notes: 'In-memory stubs' },
-    { category: 'Webhooks & Events', current_depth: 1, target_depth: 4, target_phase: 3, endpoint_count: 25, notes: 'In-memory stubs' },
-    { category: 'SQL Agent & Analytics', current_depth: 1, target_depth: 4, target_phase: 3, endpoint_count: 30, test_count: 3, notes: 'Partially PG-backed' },
-    { category: 'RAG & Vector Search', current_depth: 2, target_depth: 4, target_phase: 3, endpoint_count: 25, test_count: 5, has_persistence: true, notes: 'Qdrant working' },
-    { category: 'Adapters & A2A', current_depth: 1, target_depth: 4, target_phase: 5, endpoint_count: 40, notes: 'In-memory stubs' },
-    { category: 'Edge & Multi-Region', current_depth: 1, target_depth: 4, target_phase: 6, endpoint_count: 20, notes: 'In-memory stubs' },
-    { category: 'User Portal', current_depth: 1, target_depth: 4, target_phase: 1, notes: 'Phase 1 — building now' },
-    { category: 'Admin Portal', current_depth: 1, target_depth: 4, target_phase: 1, notes: 'Phase 1 — building now' },
-    { category: 'Memory Map', current_depth: 1, target_depth: 4, target_phase: 1, notes: 'Phase 1 — building now' },
-    { category: 'Dashboard (Legacy)', current_depth: 1, target_depth: 4, target_phase: 2, endpoint_count: 10, notes: 'BUG-2/3/4 — encrypted display' },
-    { category: 'Marketing Site', current_depth: 0, target_depth: 4, target_phase: 7, notes: 'Not yet built' },
-    { category: 'Subscription & Billing', current_depth: 0, target_depth: 4, target_phase: 7, notes: 'Not yet built' },
-    { category: 'Native Apps', current_depth: 0, target_depth: 4, target_phase: 8, notes: 'Not yet built' },
-    { category: 'Marketplace & Federation', current_depth: 0, target_depth: 4, target_phase: 9, notes: 'Not yet built' },
-  ];
-  const at4 = cats.filter(c => c.current_depth >= 4).length;
-  const total = cats.length;
-  return {
-    total_categories: total,
-    at_depth_4_plus: at4,
-    percentage: (at4 / total * 100),
-    avg_depth: +(cats.reduce((s,c) => s + c.current_depth, 0) / total).toFixed(2),
-    categories: cats,
-  };
-}
-
-// ─── Roadmap Tracker ─────────────────────────────────────────────────
-function RoadmapTracker() {
-  const [items, setItems] = useState([]);
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('kanban'); // 'kanban' or 'table'
-  const [filterPhase, setFilterPhase] = useState(null);
-
-  useEffect(() => {
-    Promise.all([
-      api('/api/v1/roadmap/items'),
-      api('/api/v1/roadmap/summary'),
-    ]).then(([itemsRes, summRes]) => {
-      const its = itemsRes.items || [];
-      setItems(its.length > 0 ? its : getLocalRoadmapItems());
-      setSummary(summRes.total_items ? summRes : buildLocalSummary());
-      setLoading(false);
-    }).catch(() => {
-      setItems(getLocalRoadmapItems());
-      setSummary(buildLocalSummary());
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) return <div className="spinner" />;
-
-  const statuses = ['backlog', 'planned', 'in_progress', 'testing', 'done', 'blocked'];
-  const statusLabels = { backlog: 'Backlog', planned: 'Planned', in_progress: 'In Progress', testing: 'Testing', done: 'Done', blocked: 'Blocked' };
-  
-  const filteredItems = filterPhase ? items.filter(i => i.phase === filterPhase) : items;
-  const byStatus = {};
-  statuses.forEach(s => byStatus[s] = filteredItems.filter(i => i.status === s));
-
+// ─── Billing Page ─────────────────────────────────────────────────
+function BillingPage({}) {
+  const [plans, setPlans] = useState([]);
+  const [usage, setUsage] = useState({});
+  useEffect(()=>{
+    api.get('/v1/billing/plans').then(setPlans).catch(()=>{});
+    api.get('/v1/billing/usage').then(setUsage).catch(()=>{});
+  },[]);
   return (
-    <div>
-      <div className="page-header">
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-          <div>
-            <div className="page-title">Roadmap Tracker</div>
-            <div className="page-subtitle">{items.length} items across 10 phases</div>
-          </div>
-          <div style={{display:'flex', gap:8}}>
-            <button className={`filter-btn ${view==='kanban' ? 'active' : ''}`} onClick={() => setView('kanban')}>Kanban</button>
-            <button className={`filter-btn ${view==='table' ? 'active' : ''}`} onClick={() => setView('table')}>Table</button>
-          </div>
+    <div className="fade-in">
+      <h2 style={{fontSize:24,fontWeight:700,marginBottom:24}}>Billing & Usage</h2>
+      <div className="card" style={{marginBottom:24}}>
+        <h3 style={{fontSize:16,fontWeight:600,marginBottom:16}}>Current Period</h3>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:20}}>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Period</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{usage.period||'—'}</div></div>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Runs</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{usage.total_runs||0}</div></div>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Cost</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4,color:'var(--orange)'}}>${(usage.total_cost_usd||0).toFixed(4)}</div></div>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Budget Left</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4,color:'var(--green)'}}>${(usage.budget_remaining_usd||0).toFixed(2)}</div></div>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Input Tokens</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{(usage.total_input_tokens||0).toLocaleString()}</div></div>
+          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Output Tokens</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{(usage.total_output_tokens||0).toLocaleString()}</div></div>
         </div>
       </div>
-
-      {/* Summary stats */}
-      {summary && (
-        <div className="stat-grid" style={{gridTemplateColumns:'repeat(5,1fr)'}}>
-          <div className="stat-card">
-            <div className="stat-value">{summary.total_items}</div>
-            <div className="stat-label">Total Items</div>
+      <h3 style={{fontSize:16,fontWeight:600,marginBottom:12}}>Available Plans</h3>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
+        {plans.map(p=>(
+          <div key={p.tier} className="card card-hover">
+            <div style={{fontSize:13,fontWeight:700,textTransform:'uppercase',color:'var(--accent2)',letterSpacing:1,marginBottom:8}}>{p.tier}</div>
+            <div style={{fontSize:22,fontWeight:800}}>{p.monthly_price_eur===0?'Free':`€${p.monthly_price_eur}/mo`}</div>
+            <div style={{marginTop:12,fontSize:13,color:'var(--text2)',lineHeight:1.8}}>
+              <div>Up to {p.max_agents} agents</div>
+              <div>Up to {p.max_users} users</div>
+              <div>{p.max_runs_per_month?.toLocaleString()||100} runs/mo</div>
+              {p.includes_voice&&<div style={{color:'var(--green)'}}>✓ Voice</div>}
+              {p.includes_premium_models&&<div style={{color:'var(--green)'}}>✓ Premium models</div>}
+            </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-value" style={{color:'var(--accent-emerald)'}}>{summary.pct_done}%</div>
-            <div className="stat-label">Complete</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value" style={{color:'var(--accent-red)'}}>{summary.pct_blocked}%</div>
-            <div className="stat-label">Blocked</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{summary.avg_depth}</div>
-            <div className="stat-label">Avg Depth</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value" style={{color:'var(--accent-blue)'}}>{summary.items_at_depth_4}</div>
-            <div className="stat-label">At Depth 4+</div>
-          </div>
-        </div>
-      )}
-
-      {/* Phase filter */}
-      <div className="filter-bar">
-        <button className={`filter-btn ${!filterPhase ? 'active' : ''}`} onClick={() => setFilterPhase(null)}>All Phases</button>
-        {[1,2,3,4,5,6,7,8,9,10].map(p => (
-          <button key={p} className={`filter-btn ${filterPhase===p ? 'active' : ''}`} onClick={() => setFilterPhase(p)}>P{p}</button>
         ))}
       </div>
-
-      {view === 'kanban' ? (
-        <div className="kanban-board">
-          {statuses.map(status => (
-            <div key={status} className="kanban-col">
-              <div className="kanban-col-header">
-                <span>{statusLabels[status]}</span>
-                <span className="kanban-count">{byStatus[status].length}</span>
-              </div>
-              {byStatus[status].map((item, i) => (
-                <div key={i} className="kanban-card">
-                  <div className="kanban-card-title">{item.title}</div>
-                  <div className="kanban-card-meta">
-                    <span className={`priority-badge p-${item.priority}`}>{item.priority}</span>
-                    <span className="mono" style={{fontSize:11, color:'var(--text-muted)'}}>P{item.phase}</span>
-                    <div style={{display:'flex', alignItems:'center', gap:3}}>
-                      <div className={`depth-badge depth-${item.depth_current}`} style={{width:20,height:20,fontSize:10}}>{item.depth_current}</div>
-                      <span style={{fontSize:10, color:'var(--text-muted)'}}>→</span>
-                      <div className={`depth-badge depth-${item.depth_target}`} style={{width:20,height:20,fontSize:10}}>{item.depth_target}</div>
-                    </div>
-                  </div>
-                  {item.category && <div style={{fontSize:10, color:'var(--text-muted)', marginTop:4}}>{item.category}</div>}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="card">
-          <table className="data-table">
-            <thead>
-              <tr><th>Title</th><th>Phase</th><th>Priority</th><th>Status</th><th>Depth</th><th>Category</th></tr>
-            </thead>
-            <tbody>
-              {filteredItems.map((item, i) => (
-                <tr key={i}>
-                  <td style={{fontWeight:500}}>{item.title}</td>
-                  <td className="mono">P{item.phase}</td>
-                  <td><span className={`priority-badge p-${item.priority}`}>{item.priority}</span></td>
-                  <td><span className={`status-badge s-${item.status}`}>{statusLabels[item.status]}</span></td>
-                  <td>
-                    <div style={{display:'flex', alignItems:'center', gap:4}}>
-                      <div className={`depth-badge depth-${item.depth_current}`} style={{width:22,height:22,fontSize:11}}>{item.depth_current}</div>
-                      <span style={{fontSize:10,color:'var(--text-muted)'}}>→</span>
-                      <div className={`depth-badge depth-${item.depth_target}`} style={{width:22,height:22,fontSize:11}}>{item.depth_target}</div>
-                    </div>
-                  </td>
-                  <td style={{fontSize:12, color:'var(--text-muted)'}}>{item.category || '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }
 
-function getLocalRoadmapItems() {
-  return [
-    { title: 'Deploy & connect Valkey', category: 'Core Router & Auth', phase: 1, priority: 'P0', status: 'done', depth_current: 3, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Fix auth/status info leak', category: 'Core Router & Auth', phase: 1, priority: 'P0', status: 'done', depth_current: 4, depth_target: 4, source: 'audit' },
-    { title: 'Build User Portal shell', category: 'User Portal', phase: 1, priority: 'P0', status: 'in_progress', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Build Admin Portal shell', category: 'Admin Portal', phase: 1, priority: 'P0', status: 'in_progress', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Memory Map (force-directed graph)', category: 'Memory Map', phase: 1, priority: 'P0', status: 'in_progress', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Depth Tracking Dashboard', category: 'Admin Portal', phase: 1, priority: 'P0', status: 'in_progress', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Roadmap Tracker (Kanban)', category: 'Admin Portal', phase: 1, priority: 'P0', status: 'in_progress', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'PG tables for depth/roadmap', category: 'Admin Portal', phase: 1, priority: 'P0', status: 'done', depth_current: 3, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Seed initial depth assessments', category: 'Admin Portal', phase: 1, priority: 'P0', status: 'done', depth_current: 3, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'HTTP Basic Auth on portals', category: 'User Portal', phase: 1, priority: 'P0', status: 'done', depth_current: 3, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'noindex on all portal pages', category: 'User Portal', phase: 1, priority: 'P0', status: 'done', depth_current: 4, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Fix dashboard [encrypted] bug', category: 'Dashboard (Legacy)', phase: 1, priority: 'P1', status: 'planned', depth_current: 1, depth_target: 4, source: 'audit' },
-    { title: 'main.py decomposition', category: 'Core Router & Auth', phase: 1, priority: 'P1', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Migrate in-memory state to Valkey', category: 'Core Router & Auth', phase: 1, priority: 'P1', status: 'planned', depth_current: 2, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Cost-aware model routing', category: 'Smart Routing & MCP', phase: 2, priority: 'P0', status: 'backlog', depth_current: 2, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Tenant budget controls', category: 'Multi-Tenant & Billing', phase: 2, priority: 'P0', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'SRE Guardian agent', category: 'Agent Framework & Templates', phase: 3, priority: 'P0', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Cost Guardian agent', category: 'Agent Framework & Templates', phase: 3, priority: 'P0', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Image analysis pipeline', category: 'Multimodal Processing', phase: 4, priority: 'P1', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Audio pipeline (STT/TTS)', category: 'TTS & Voice', phase: 4, priority: 'P1', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'Agent PG persistence', category: 'Agent Framework & Templates', phase: 5, priority: 'P0', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-    { title: 'A2A protocol implementation', category: 'Adapters & A2A', phase: 5, priority: 'P1', status: 'backlog', depth_current: 1, depth_target: 4, source: 'roadmap_v1' },
-  ];
-}
+// ─── Main App ─────────────────────────────────────────────────────
+function App() {
+  const [session, setSession] = useState(null);
+  const [page, setPage] = useState('dashboard');
 
-function buildLocalSummary() {
-  const items = getLocalRoadmapItems();
-  const byStatus = {};
-  items.forEach(i => byStatus[i.status] = (byStatus[i.status]||0) + 1);
-  const done = byStatus.done || 0;
-  const blocked = byStatus.blocked || 0;
-  return {
-    total_items: items.length,
-    by_status: byStatus,
-    by_phase: {},
-    by_priority: {},
-    pct_done: +(done/items.length*100).toFixed(1),
-    pct_blocked: +(blocked/items.length*100).toFixed(1),
-    avg_depth: +(items.reduce((s,i)=>s+i.depth_current,0)/items.length).toFixed(2),
-    items_at_depth_4: items.filter(i=>i.depth_current>=4).length,
-  };
-}
+  const onLogin = (s) => setSession(s);
+  const onLogout = () => { api.token = null; api.apiKey = null; setSession(null); };
 
-// ─── Community Blog ──────────────────────────────────────────────────
-function BlogPage() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  if (!session) return <LoginPage onLogin={onLogin}/>;
 
-  useEffect(() => {
-    api('/api/v1/community/blog/posts?page=1&per_page=20').then(d => {
-      setPosts(d.posts || d.items || (Array.isArray(d) ? d : []));
-      setLoading(false);
-    });
-  }, []);
+  const pages = {dashboard: Dashboard, agents: AgentsPage, runs: RunsPage, connectors: ConnectorsPage, billing: BillingPage};
+  const PageComponent = pages[page] || Dashboard;
 
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Community Blog</div>
-        <div className="page-subtitle">Agent-generated proposals and discussions</div>
+    <div style={{display:'flex'}}>
+      <Sidebar active={page} setActive={setPage} session={session} onLogout={onLogout}/>
+      <div style={{marginLeft:220,flex:1,padding:32,maxWidth:1100}}>
+        <PageComponent/>
       </div>
-      {loading ? <div className="spinner" /> : (
-        posts.length === 0 ? (
-          <div className="card" style={{textAlign:'center', padding:40, color:'var(--text-muted)'}}>
-            No blog posts yet. Agent community will generate posts as they collaborate.
-          </div>
-        ) : posts.map((p, i) => (
-          <div key={i} className="card">
-            <div style={{fontWeight:600, fontSize:16, marginBottom:8}}>{p.title}</div>
-            <div style={{fontSize:13, color:'var(--text-secondary)', lineHeight:1.6, marginBottom:12}}>
-              {(p.content || p.body || '').slice(0, 300)}...
-            </div>
-            <div style={{fontSize:11, color:'var(--text-muted)', display:'flex', gap:16}}>
-              <span>By {p.author || 'Agent'}</span>
-              {p.created_at && <span>{new Date(p.created_at).toLocaleDateString()}</span>}
-              {p.votes !== undefined && <span>{p.votes} votes</span>}
-            </div>
-          </div>
-        ))
-      )}
     </div>
   );
 }
 
-// ─── Endpoints ───────────────────────────────────────────────────────
-function EndpointsPage() {
-  const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    fetch(`${API_BASE}/openapi.json`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('punky_api_key')}` }
-    }).then(r => r.json()).then(d => {
-      const tagCounts = {};
-      const paths = d.paths || {};
-      let ops = 0;
-      Object.entries(paths).forEach(([path, methods]) => {
-        Object.entries(methods).forEach(([method, detail]) => {
-          ops++;
-          (detail.tags || ['untagged']).forEach(t => {
-            tagCounts[t] = (tagCounts[t] || 0) + 1;
-          });
-        });
-      });
-      setTotal(ops);
-      setTags(Object.entries(tagCounts).sort((a,b) => b[1] - a[1]));
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
-
-  return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">Endpoint Inventory</div>
-        <div className="page-subtitle">{total} operations across {tags.length} tags</div>
-      </div>
-      {loading ? <div className="spinner" /> : (
-        <div className="card">
-          <table className="data-table">
-            <thead><tr><th>Tag</th><th>Endpoints</th><th>Share</th></tr></thead>
-            <tbody>
-              {tags.map(([tag, count]) => (
-                <tr key={tag}>
-                  <td style={{fontWeight:500}}>{tag}</td>
-                  <td className="mono">{count}</td>
-                  <td>
-                    <div className="progress-bar" style={{width:200, height:6}}>
-                      <div className="progress-fill" style={{width:`${count/total*100}%`, background:'var(--accent-blue)'}} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Render ──────────────────────────────────────────────────────────
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
 </script>
 </body>
 </html>
