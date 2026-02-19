@@ -3,375 +3,622 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Punky — Autonomous Agent Platform</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--border:#2a2a3e;--text:#e4e4f0;--text2:#8888a8;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00d68f;--red:#ff6b6b;--orange:#ffa94d;--blue:#4dabf7}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
-.mono{font-family:'JetBrains Mono',monospace}
-input,select,textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color .2s}
-input:focus,select:focus{border-color:var(--accent)}
-button{cursor:pointer;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;padding:10px 20px;transition:all .15s}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
-.btn-sm{padding:6px 14px;font-size:12px}
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
-.badge-green{background:rgba(0,214,143,.15);color:var(--green)}
-.badge-red{background:rgba(255,107,107,.15);color:var(--red)}
-.badge-orange{background:rgba(255,169,77,.15);color:var(--orange)}
-.badge-blue{background:rgba(77,171,247,.15);color:var(--blue)}
-.badge-purple{background:rgba(108,92,231,.15);color:var(--accent2)}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px}
-.card-hover:hover{border-color:var(--accent);transform:translateY(-2px);transition:all .2s}
-table{width:100%;border-collapse:collapse}
-th{text-align:left;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;border-bottom:1px solid var(--border)}
-td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-deep:#0a0e17;--bg-surface:#111827;--bg-card:#1a2233;--bg-hover:#243044;
+  --border:#2a3a52;--border-active:#3b82f6;
+  --text:#e2e8f0;--text-muted:#94a3b8;--text-dim:#64748b;
+  --accent:#3b82f6;--accent-glow:rgba(59,130,246,.15);
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;
+  --font-body:'DM Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --radius:10px;--radius-sm:6px;
+}
+html,body,#root{height:100%;background:var(--bg-deep);color:var(--text);font-family:var(--font-body)}
+a{color:var(--accent);text-decoration:none}
+input,select,textarea{font-family:inherit;font-size:inherit}
+
+/* Layout */
+.app{display:flex;height:100vh}
+.sidebar{width:240px;background:var(--bg-surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-brand{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-brand h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.sidebar-brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.sidebar-nav{flex:1;padding:12px;display:flex;flex-direction:column;gap:2px}
+.nav-item{padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--text-muted);transition:all .15s}
+.nav-item:hover{background:var(--bg-hover);color:var(--text)}
+.nav-item.active{background:var(--accent-glow);color:var(--accent);font-weight:600}
+.nav-item svg{width:18px;height:18px;opacity:.7}
+.nav-section{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);padding:16px 14px 6px;font-weight:600}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar h2{font-size:16px;font-weight:600}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* Cards */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{text-align:center}
+.stat-value{font-size:32px;font-weight:700;font-family:var(--font-mono);line-height:1.2}
+.stat-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+/* Buttons */
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{filter:brightness(1.15)}
+.btn-secondary{background:var(--bg-hover);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{border-color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Forms */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:6px}
+.form-input{width:100%;padding:10px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;outline:none;transition:border-color .15s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text-dim)}
+select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:var(--text-muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tr:hover td{background:var(--bg-hover)}
+
+/* Badges */
+.badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
+.badge-amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.badge-blue{background:rgba(59,130,246,.15);color:var(--accent)}
+.badge-purple{background:rgba(168,85,247,.15);color:var(--purple)}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg-deep)}
+.login-card{width:420px;padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)}
+.login-card h1{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.login-card .subtitle{color:var(--text-muted);margin-bottom:28px;font-size:14px}
+.tab-row{display:flex;gap:4px;margin-bottom:24px;background:var(--bg-surface);border-radius:var(--radius-sm);padding:3px}
+.tab-btn{flex:1;padding:8px;text-align:center;border:none;background:transparent;color:var(--text-muted);border-radius:4px;cursor:pointer;font-size:13px;font-weight:500}
+.tab-btn.active{background:var(--bg-card);color:var(--text)}
+
+/* Chat */
+.chat-container{display:flex;flex-direction:column;height:calc(100vh - 56px)}
+.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.chat-msg{max-width:80%;padding:12px 16px;border-radius:var(--radius);font-size:14px;line-height:1.6}
+.chat-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-msg .meta{font-size:11px;color:var(--text-dim);margin-top:6px}
+.chat-input-bar{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:12px}
+.chat-input-bar input{flex:1}
+.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text-muted);animation:pulse 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{opacity:.3}40%{opacity:1}}
+
+/* Guardian cards */
+.guardian-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s}
+.guardian-card:hover{border-color:var(--accent)}
+.guardian-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.guardian-info{flex:1}
+.guardian-name{font-weight:600;font-size:14px}
+.guardian-role{font-size:12px;color:var(--text-muted)}
+
+/* Responsive */
+@media(max-width:768px){.sidebar{display:none}.content{padding:16px}}
+
+/* Animation */
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.fade-in{animation:fadeIn .3s ease-out}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.pulse{animation:pulse 2s infinite}
+.fade-in{animation:fadeIn .3s ease}
+.mono{font-family:var(--font-mono)}
+.text-muted{color:var(--text-muted)}
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-amber{color:var(--amber)}
+.mt-4{margin-top:16px}
+.mb-4{margin-bottom:16px}
+.flex{display:flex}.gap-3{gap:12px}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.w-full{width:100%}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef, createContext, useContext } = React;
 
-const API = window.location.hostname === 'localhost' ? 'http://localhost:8081' : 'https://api.jspriggins.com';
+// ─── Config ──────────────────────────────────────────────────────────────────
+const API = window.location.hostname === 'localhost'
+  ? 'http://localhost:8081'
+  : 'https://api.jspriggins.com';
 
-// ─── API Client ───────────────────────────────────────────────────
-const api = {
-  token: null,
-  apiKey: null,
-  async req(method, path, body) {
-    const h = {'Content-Type': 'application/json'};
-    if (this.token) h['Authorization'] = `Bearer ${this.token}`;
-    else if (this.apiKey) h['X-API-Key'] = this.apiKey;
-    const r = await fetch(`${API}${path}`, {method, headers: h, body: body ? JSON.stringify(body) : undefined});
-    if (r.status === 204) return null;
-    const data = await r.json().catch(() => null);
-    if (!r.ok) throw new Error(data?.detail || `HTTP ${r.status}`);
-    return data;
-  },
-  get: (p) => api.req('GET', p),
-  post: (p, b) => api.req('POST', p, b),
-  patch: (p, b) => api.req('PATCH', p, b),
-  del: (p) => api.req('DELETE', p),
+// ─── Auth Context ────────────────────────────────────────────────────────────
+const AuthCtx = createContext(null);
+
+function useAuth() {
+  return useContext(AuthCtx);
+}
+
+async function apiFetch(path, opts = {}, token) {
+  const headers = { 'Content-Type': 'application/json', ...opts.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API}${path}`, { ...opts, headers });
+  if (res.status === 401) throw new Error('UNAUTHORIZED');
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+  return data;
+}
+
+// ─── Icons (minimal inline SVGs) ─────────────────────────────────────────────
+const Icons = {
+  dashboard: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+  chat: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,
+  agents: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>,
+  runs: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5,3 19,12 5,21"/></svg>,
+  billing: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+  shield: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  settings: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
+  logout: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+  plus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  refresh: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>,
 };
 
-// ─── Icons (inline SVG) ──────────────────────────────────────────
-const Icon = ({name, size=18}) => {
-  const icons = {
-    bot: <path d="M12 8V4H8M2 14h20M6 14v4h12v-4M6 8h12a2 2 0 012 2v4H4v-4a2 2 0 012-2z"/>,
-    play: <polygon points="5 3 19 12 5 21 5 3"/>,
-    plug: <path d="M12 22v-5M5 12H2M22 12h-3M12 2v5M7 7L5 5M17 7l2-2M17 17l2 2M7 17L5 19M12 12m-3 0a3 3 0 106 0 3 3 0 00-6 0z"/>,
-    dollar: <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>,
-    home: <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>,
-    logout: <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>,
-    check: <polyline points="20 6 9 17 4 12"/>,
-    x: <path d="M18 6L6 18M6 6l12 12"/>,
-    clock: <circle cx="12" cy="12" r="10"/>,
-    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>,
-    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
-  };
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons[name]}</svg>;
-};
-
-// ─── Login Screen ─────────────────────────────────────────────────
-function LoginPage({onLogin}) {
-  const [mode, setMode] = useState('login'); // login | register
-  const [form, setForm] = useState({name:'', email:'', password:'', slug:''});
-  const [err, setErr] = useState('');
+// ─── Login / Bootstrap Page ──────────────────────────────────────────────────
+function LoginPage({ onAuth }) {
+  const [mode, setMode] = useState('login');
+  const [form, setForm] = useState({ email: '', password: '', name: '', tenant: '', slug: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleRegister = async () => {
-    setLoading(true); setErr('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); setError('');
     try {
-      const t = await api.post('/v1/tenants', {name: form.name, owner_email: form.email});
-      await api.post('/v1/auth/set-password', {tenant_id: t.slug, email: form.email, password: form.password});
-      const login = await api.post('/v1/auth/login', {tenant_id: t.slug, email: form.email, password: form.password});
-      api.token = login.access_token; api.apiKey = t.api_key;
-      onLogin({...login, slug: t.slug, api_key: t.api_key, tenant_id: t.tenant_id});
-    } catch(e) { setErr(e.message); } finally { setLoading(false); }
+      if (mode === 'login') {
+        const data = await apiFetch('/v1/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email: form.email, password: form.password }),
+        });
+        onAuth(data.access_token, form.email);
+      } else {
+        const slug = form.slug || form.tenant.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const data = await apiFetch('/v1/bootstrap', {
+          method: 'POST',
+          body: JSON.stringify({
+            tenant_name: form.tenant, tenant_slug: slug,
+            owner_email: form.email, owner_name: form.name, owner_password: form.password,
+          }),
+        });
+        onAuth(data.access_token, form.email);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
   };
 
-  const handleLogin = async () => {
-    setLoading(true); setErr('');
-    try {
-      const login = await api.post('/v1/auth/login', {tenant_id: form.slug, email: form.email, password: form.password});
-      api.token = login.access_token;
-      onLogin({...login, slug: form.slug});
-    } catch(e) { setErr(e.message); } finally { setLoading(false); }
-  };
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   return (
-    <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',padding:20}}>
-      <div className="card fade-in" style={{maxWidth:420,width:'100%'}}>
-        <div style={{textAlign:'center',marginBottom:32}}>
-          <div style={{fontSize:40,marginBottom:8}}>⚡</div>
-          <h1 style={{fontSize:28,fontWeight:800,background:'linear-gradient(135deg,var(--accent),var(--accent2))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>Punky</h1>
-          <p style={{color:'var(--text2)',fontSize:14,marginTop:4}}>Autonomous Agent Platform</p>
+    <div className="login-wrap">
+      <div className="login-card fade-in">
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
+          <div style={{width:12,height:12,borderRadius:'50%',background:'var(--green)',boxShadow:'0 0 10px var(--green)'}}/>
+          <h1>Punky</h1>
         </div>
-        <div style={{display:'flex',gap:8,marginBottom:24}}>
-          <button className={mode==='login'?'btn-primary':'btn-ghost'} style={{flex:1}} onClick={()=>setMode('login')}>Sign In</button>
-          <button className={mode==='register'?'btn-primary':'btn-ghost'} style={{flex:1}} onClick={()=>setMode('register')}>Register</button>
+        <p className="subtitle">Self-hosted autonomous agent platform</p>
+        <div className="tab-row">
+          <button className={`tab-btn ${mode==='login'?'active':''}`} onClick={()=>setMode('login')}>Sign In</button>
+          <button className={`tab-btn ${mode==='bootstrap'?'active':''}`} onClick={()=>setMode('bootstrap')}>Create Account</button>
         </div>
-        {mode==='register' && <input placeholder="Organization name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} style={{marginBottom:12}}/>}
-        {mode==='login' && <input placeholder="Tenant slug" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})} style={{marginBottom:12}}/>}
-        <input placeholder="Email" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={{marginBottom:12}}/>
-        <input placeholder="Password" type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} style={{marginBottom:16}} onKeyDown={e=>e.key==='Enter'&&(mode==='login'?handleLogin():handleRegister())}/>
-        {err && <div style={{color:'var(--red)',fontSize:13,marginBottom:12}}>{err}</div>}
-        <button className="btn-primary" style={{width:'100%'}} onClick={mode==='login'?handleLogin:handleRegister} disabled={loading}>
-          {loading ? 'Loading...' : mode==='login' ? 'Sign In' : 'Create Account'}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Sidebar ───────────────────────────────────────────────────────
-function Sidebar({active, setActive, session, onLogout}) {
-  const items = [{id:'dashboard',icon:'home',label:'Dashboard'},{id:'agents',icon:'bot',label:'Agents'},{id:'runs',icon:'play',label:'Runs'},{id:'connectors',icon:'plug',label:'Connectors'},{id:'billing',icon:'dollar',label:'Billing'}];
-  return (
-    <div style={{width:220,background:'var(--surface)',borderRight:'1px solid var(--border)',display:'flex',flexDirection:'column',height:'100vh',position:'fixed'}}>
-      <div style={{padding:'20px 16px',borderBottom:'1px solid var(--border)'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8}}><span style={{fontSize:24}}>⚡</span><span style={{fontWeight:800,fontSize:18}}>Punky</span></div>
-        <div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:4}}>{session?.slug || 'workspace'}</div>
-      </div>
-      <nav style={{flex:1,padding:'12px 8px'}}>
-        {items.map(it=>(
-          <div key={it.id} onClick={()=>setActive(it.id)} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:8,cursor:'pointer',marginBottom:2,background:active===it.id?'var(--surface2)':'transparent',color:active===it.id?'var(--text)':'var(--text2)',transition:'all .15s'}}>
-            <Icon name={it.icon} size={16}/><span style={{fontSize:14,fontWeight:active===it.id?600:400}}>{it.label}</span>
-          </div>
-        ))}
-      </nav>
-      <div style={{padding:16,borderTop:'1px solid var(--border)'}}>
-        <button className="btn-ghost btn-sm" style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'center',gap:6}} onClick={onLogout}><Icon name="logout" size={14}/>Sign Out</button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Dashboard ────────────────────────────────────────────────────
-function Dashboard({}) {
-  const [data, setData] = useState({agents:[], runs:[], usage:{}});
-  useEffect(()=>{
-    Promise.all([api.get('/v1/agents').catch(()=>[]), api.get('/v1/runs').catch(()=>[]), api.get('/v1/billing/usage').catch(()=>({}))]).then(([a,r,u])=>setData({agents:a,runs:r,usage:u}));
-  },[]);
-  const cards = [
-    {label:'Agents', value:data.agents.length, icon:'bot', color:'var(--accent2)'},
-    {label:'Total Runs', value:data.runs.length, icon:'play', color:'var(--green)'},
-    {label:'Cost (USD)', value:`$${(data.usage?.total_cost_usd||0).toFixed(4)}`, icon:'dollar', color:'var(--orange)'},
-    {label:'Succeeded', value:data.runs.filter(r=>r.status==='succeeded').length, icon:'check', color:'var(--green)'},
-  ];
-  return (
-    <div className="fade-in">
-      <h2 style={{fontSize:24,fontWeight:700,marginBottom:24}}>Dashboard</h2>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16,marginBottom:32}}>
-        {cards.map((c,i)=>(
-          <div key={i} className="card" style={{display:'flex',alignItems:'center',gap:16}}>
-            <div style={{width:44,height:44,borderRadius:10,background:`${c.color}20`,display:'flex',alignItems:'center',justifyContent:'center',color:c.color}}><Icon name={c.icon} size={20}/></div>
-            <div><div style={{fontSize:11,color:'var(--text2)',fontWeight:600,textTransform:'uppercase',letterSpacing:'.5px'}}>{c.label}</div><div style={{fontSize:22,fontWeight:700,marginTop:2}} className="mono">{c.value}</div></div>
-          </div>
-        ))}
-      </div>
-      <h3 style={{fontSize:16,fontWeight:600,marginBottom:12}}>Recent Runs</h3>
-      <div className="card" style={{padding:0,overflow:'hidden'}}>
-        <table><thead><tr><th>Task</th><th>Status</th><th>Cost</th><th>Time</th></tr></thead>
-        <tbody>{data.runs.slice(0,8).map(r=>(
-          <tr key={r.id}><td style={{maxWidth:300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.task}</td>
-          <td><span className={`badge badge-${r.status==='succeeded'?'green':r.status==='failed'?'red':r.status==='running'?'blue':'purple'}`}>{r.status}</span></td>
-          <td className="mono" style={{fontSize:13}}>${(r.total_cost_usd||0).toFixed(4)}</td>
-          <td style={{color:'var(--text2)',fontSize:13}}>{r.created_at?.slice(11,19)}</td></tr>
-        ))}{data.runs.length===0 && <tr><td colSpan={4} style={{color:'var(--text2)',textAlign:'center',padding:32}}>No runs yet — submit your first task!</td></tr>}</tbody></table>
-      </div>
-    </div>
-  );
-}
-
-// ─── Agents Page ──────────────────────────────────────────────────
-function AgentsPage({}) {
-  const [agents, setAgents] = useState([]);
-  const [show, setShow] = useState(false);
-  const [form, setForm] = useState({name:'',description:'',agent_type:'general',system_prompt:'',default_tier:'CHEAP',risk_level:'low',max_steps:10});
-  const load = useCallback(()=>api.get('/v1/agents').then(setAgents).catch(()=>{}),[]);
-  useEffect(()=>{load()},[load]);
-  const create = async()=>{await api.post('/v1/agents',form);setShow(false);load();};
-  const activate = async(id)=>{await api.patch(`/v1/agents/${id}/activate`);load();};
-  const pause = async(id)=>{await api.patch(`/v1/agents/${id}/pause`);load();};
-  return (
-    <div className="fade-in">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-        <h2 style={{fontSize:24,fontWeight:700}}>Agents</h2>
-        <button className="btn-primary" onClick={()=>setShow(!show)}>+ New Agent</button>
-      </div>
-      {show && <div className="card" style={{marginBottom:20}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-          <input placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>
-          <select value={form.agent_type} onChange={e=>setForm({...form,agent_type:e.target.value})}><option>general</option><option>researcher</option><option>coder</option><option>guardian</option></select>
-          <input placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} style={{gridColumn:'span 2'}}/>
-          <textarea placeholder="System prompt" value={form.system_prompt} onChange={e=>setForm({...form,system_prompt:e.target.value})} rows={3} style={{gridColumn:'span 2',resize:'vertical'}}/>
-          <select value={form.default_tier} onChange={e=>setForm({...form,default_tier:e.target.value})}><option>CHEAP</option><option>MEDIUM</option><option>PREMIUM</option><option>RESEARCH</option></select>
-          <select value={form.risk_level} onChange={e=>setForm({...form,risk_level:e.target.value})}><option>low</option><option>medium</option><option>high</option></select>
-        </div>
-        <div style={{marginTop:12,display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={create}>Create</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
-      </div>}
-      <div style={{display:'grid',gap:12}}>
-        {agents.map(a=>(
-          <div key={a.id} className="card card-hover" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div><div style={{fontWeight:600}}>{a.name}</div><div style={{fontSize:13,color:'var(--text2)',marginTop:2}}>{a.agent_type} · {a.default_tier} · risk:{a.risk_level}</div><div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:4}}>{a.id}</div></div>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <span className={`badge badge-${a.status==='active'?'green':'orange'}`}>{a.status}</span>
-              {a.status==='draft'&&<button className="btn-primary btn-sm" onClick={()=>activate(a.id)}>Activate</button>}
-              {a.status==='active'&&<button className="btn-ghost btn-sm" onClick={()=>pause(a.id)}>Pause</button>}
+        <form onSubmit={handleSubmit}>
+          {mode === 'bootstrap' && <>
+            <div className="form-group">
+              <label>Organisation Name</label>
+              <input className="form-input" placeholder="Acme Corp" value={form.tenant} onChange={set('tenant')} required/>
             </div>
+            <div className="form-group">
+              <label>Your Name</label>
+              <input className="form-input" placeholder="Jane Smith" value={form.name} onChange={set('name')} required/>
+            </div>
+          </>}
+          <div className="form-group">
+            <label>Email</label>
+            <input className="form-input" type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required/>
           </div>
-        ))}
-        {agents.length===0&&<div className="card" style={{textAlign:'center',color:'var(--text2)',padding:40}}>No agents yet — create one to get started</div>}
+          <div className="form-group">
+            <label>Password</label>
+            <input className="form-input" type="password" placeholder="••••••••" value={form.password} onChange={set('password')} required minLength={8}/>
+          </div>
+          {error && <p style={{color:'var(--red)',fontSize:13,marginBottom:12}}>{error}</p>}
+          <button className="btn btn-primary w-full" style={{width:'100%',padding:'12px',fontSize:14}} disabled={loading}>
+            {loading ? 'Working...' : mode === 'login' ? 'Sign In' : 'Create Organisation'}
+          </button>
+        </form>
+        <p style={{marginTop:20,fontSize:12,color:'var(--text-dim)',textAlign:'center'}}>
+          Provider-agnostic AI · Your data, your infrastructure
+        </p>
       </div>
     </div>
   );
 }
 
-// ─── Runs Page ────────────────────────────────────────────────────
-function RunsPage({}) {
-  const [runs, setRuns] = useState([]);
-  const [agents, setAgents] = useState([]);
-  const [show, setShow] = useState(false);
-  const [form, setForm] = useState({agent_id:'',task:'',mode:'execute'});
-  const [detail, setDetail] = useState(null);
-  const [steps, setSteps] = useState([]);
-  const load = useCallback(()=>{api.get('/v1/runs').then(setRuns).catch(()=>{});api.get('/v1/agents').then(setAgents).catch(()=>[]);},[]);
-  useEffect(()=>{load()},[load]);
-  const submit = async()=>{await api.post('/v1/runs',form);setShow(false);setTimeout(load,1500);load();};
-  const viewSteps = async(r)=>{setDetail(r);const s=await api.get(`/v1/runs/${r.id}/steps`).catch(()=>[]);setSteps(s);};
+// ─── Dashboard ───────────────────────────────────────────────────────────────
+function Dashboard({ token }) {
+  const [stats, setStats] = useState(null);
+  const [guardians, setGuardians] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [agents, runs, plans, gs] = await Promise.all([
+          apiFetch('/v1/agents', {}, token),
+          apiFetch('/v1/runs', {}, token),
+          apiFetch('/v1/billing/plans', {}, token),
+          apiFetch('/v1/platform/guardians/status', {}, token),
+        ]);
+        setStats({
+          agents: (agents.agents || agents || []).length,
+          runs: (runs.runs || runs || []).length,
+          plans: (plans.plans || plans || []).length,
+          completed: (runs.runs || runs || []).filter(r => r.status === 'completed').length,
+        });
+        setGuardians((gs.guardians || []).slice(0, 6));
+      } catch (e) { console.error(e); }
+    };
+    load();
+  }, [token]);
+
+  if (!stats) return <div className="text-muted" style={{padding:40}}>Loading dashboard...</div>;
+
   return (
     <div className="fade-in">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-        <h2 style={{fontSize:24,fontWeight:700}}>Runs</h2>
-        <div style={{display:'flex',gap:8}}><button className="btn-ghost btn-sm" onClick={load}>↻ Refresh</button><button className="btn-primary" onClick={()=>setShow(!show)}>+ Submit Task</button></div>
+      <div className="card-grid">
+        <div className="card stat-card">
+          <div className="stat-value text-green">{stats.agents}</div>
+          <div className="stat-label">Active Agents</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-value" style={{color:'var(--cyan)'}}>{stats.runs}</div>
+          <div className="stat-label">Total Runs</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-value text-amber">{stats.completed}</div>
+          <div className="stat-label">Completed</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-value" style={{color:'var(--purple)'}}>{guardians.length}</div>
+          <div className="stat-label">Guardians Active</div>
+        </div>
       </div>
-      {show && <div className="card" style={{marginBottom:20}}>
-        <select value={form.agent_id} onChange={e=>setForm({...form,agent_id:e.target.value})} style={{marginBottom:12}}>
-          <option value="">Select agent...</option>{agents.filter(a=>a.status==='active').map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+
+      <h3 style={{fontSize:15,fontWeight:600,marginBottom:12}}>Guardian Agents</h3>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:12}}>
+        {guardians.map((g, i) => (
+          <div className="guardian-card" key={i}>
+            <div className="guardian-avatar" style={{background: g.status === 'active' ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'}}>
+              {g.emoji || '🛡️'}
+            </div>
+            <div className="guardian-info">
+              <div className="guardian-name">{g.name}</div>
+              <div className="guardian-role">{g.role || g.focus || 'Guardian'}</div>
+            </div>
+            <span className={`badge ${g.status==='active'?'badge-green':'badge-amber'}`}>{g.status}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Chat Page ───────────────────────────────────────────────────────────────
+function ChatPage({ token }) {
+  const [agents, setAgents] = useState([]);
+  const [agentId, setAgentId] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const msgsRef = useRef(null);
+
+  useEffect(() => {
+    apiFetch('/v1/agents', {}, token).then(d => {
+      const list = d.agents || d || [];
+      setAgents(list);
+      if (list.length > 0) setAgentId(list[0].id);
+    }).catch(() => {});
+  }, [token]);
+
+  useEffect(() => {
+    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
+  }, [messages]);
+
+  const send = async () => {
+    if (!input.trim() || !agentId || loading) return;
+    const userMsg = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setLoading(true);
+
+    try {
+      const run = await apiFetch('/v1/runs', {
+        method: 'POST',
+        body: JSON.stringify({ agent_id: agentId, input_text: userMsg }),
+      }, token);
+
+      // Poll for completion
+      let result = run;
+      for (let i = 0; i < 30 && result.status !== 'completed' && result.status !== 'failed'; i++) {
+        await new Promise(r => setTimeout(r, 1000));
+        result = await apiFetch(`/v1/runs/${run.id}`, {}, token);
+      }
+
+      const aiText = result.output_text || result.error || 'No response received.';
+      const meta = `${result.model_name || ''} · ${result.total_input_tokens||0}+${result.total_output_tokens||0} tokens · $${(result.total_cost_usd||0).toFixed(4)}`;
+      setMessages(prev => [...prev, { role: 'ai', text: aiText, meta }]);
+    } catch (err) {
+      setMessages(prev => [...prev, { role: 'ai', text: `Error: ${err.message}` }]);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="chat-container">
+      <div style={{padding:'12px 24px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:12}}>
+        <span className="text-muted" style={{fontSize:13}}>Agent:</span>
+        <select className="form-input" style={{width:280,padding:'6px 10px'}} value={agentId} onChange={e=>setAgentId(e.target.value)}>
+          {agents.map(a => <option key={a.id} value={a.id}>{a.name} ({a.model_name || 'default'})</option>)}
         </select>
-        <textarea placeholder="Task description..." value={form.task} onChange={e=>setForm({...form,task:e.target.value})} rows={3} style={{marginBottom:12,resize:'vertical'}}/>
-        <div style={{display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={submit} disabled={!form.agent_id||!form.task}>Submit</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
-      </div>}
-      {detail && <div className="card" style={{marginBottom:20}}>
-        <div style={{display:'flex',justifyContent:'space-between',marginBottom:16}}><h3 style={{fontWeight:600}}>Run Details</h3><button className="btn-ghost btn-sm" onClick={()=>setDetail(null)}>✕ Close</button></div>
-        <div style={{fontSize:13,color:'var(--text2)',marginBottom:8}}>{detail.task}</div>
-        <div style={{display:'flex',gap:16,marginBottom:16,fontSize:13}}>
-          <span className={`badge badge-${detail.status==='succeeded'?'green':detail.status==='failed'?'red':'blue'}`}>{detail.status}</span>
-          <span className="mono">${(detail.total_cost_usd||0).toFixed(4)}</span>
-          <span>{detail.step_count} steps</span>
-        </div>
-        <h4 style={{fontSize:13,fontWeight:600,color:'var(--text2)',marginBottom:8}}>Steps</h4>
-        {steps.map((s,i)=>(<div key={s.id} style={{padding:'10px 14px',background:'var(--surface2)',borderRadius:8,marginBottom:6,fontSize:13}}>
-          <div style={{display:'flex',justifyContent:'space-between'}}><span><span style={{color:'var(--accent2)',fontWeight:600}}>#{s.sequence}</span> {s.step_type}</span><span className={`badge badge-${s.status==='succeeded'?'green':'red'}`} style={{fontSize:10}}>{s.status}</span></div>
-          <div style={{color:'var(--text2)',marginTop:4}}>{s.description}</div>
-          {s.duration_ms!=null&&<div className="mono" style={{fontSize:11,color:'var(--text2)',marginTop:2}}>{s.duration_ms}ms · ${(s.cost_usd||0).toFixed(4)}</div>}
-        </div>))}
-        {steps.length===0&&<div style={{color:'var(--text2)',fontSize:13}}>No steps recorded</div>}
-      </div>}
-      <div className="card" style={{padding:0,overflow:'hidden'}}>
-        <table><thead><tr><th>Task</th><th>Agent</th><th>Status</th><th>Cost</th><th>Steps</th><th></th></tr></thead>
-        <tbody>{runs.map(r=>(
-          <tr key={r.id}>
-            <td style={{maxWidth:250,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.task}</td>
-            <td className="mono" style={{fontSize:12}}>{(r.agent_id||'').slice(0,8)}</td>
-            <td><span className={`badge badge-${r.status==='succeeded'?'green':r.status==='failed'?'red':r.status==='running'?'blue':'purple'}`}>{r.status}</span></td>
-            <td className="mono" style={{fontSize:13}}>${(r.total_cost_usd||0).toFixed(4)}</td>
-            <td className="mono">{r.step_count}</td>
-            <td><button className="btn-ghost btn-sm" onClick={()=>viewSteps(r)}>Details</button></td>
-          </tr>
-        ))}</tbody></table>
       </div>
-    </div>
-  );
-}
-
-// ─── Connectors Page ──────────────────────────────────────────────
-function ConnectorsPage({}) {
-  const [conns, setConns] = useState([]);
-  const [show, setShow] = useState(false);
-  const [form, setForm] = useState({name:'',connector_type:'github',config:{}});
-  const load = useCallback(()=>api.get('/v1/connectors').then(setConns).catch(()=>{}),[]);
-  useEffect(()=>{load()},[load]);
-  const create = async()=>{await api.post('/v1/connectors',form);setShow(false);load();};
-  const remove = async(id)=>{await api.del(`/v1/connectors/${id}`);load();};
-  const types = ['github','gitlab','slack','webhook','browser','custom'];
-  return (
-    <div className="fade-in">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-        <h2 style={{fontSize:24,fontWeight:700}}>Connectors</h2>
-        <button className="btn-primary" onClick={()=>setShow(!show)}>+ Add Connector</button>
-      </div>
-      {show && <div className="card" style={{marginBottom:20}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-          <input placeholder="Name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/>
-          <select value={form.connector_type} onChange={e=>setForm({...form,connector_type:e.target.value})}>{types.map(t=><option key={t}>{t}</option>)}</select>
-        </div>
-        <div style={{marginTop:12,display:'flex',gap:8}}><button className="btn-primary btn-sm" onClick={create}>Create</button><button className="btn-ghost btn-sm" onClick={()=>setShow(false)}>Cancel</button></div>
-      </div>}
-      <div style={{display:'grid',gap:12}}>
-        {conns.map(c=>(
-          <div key={c.id} className="card card-hover" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div><div style={{fontWeight:600}}>{c.name}</div><div style={{fontSize:13,color:'var(--text2)',marginTop:2}}>{c.connector_type}</div></div>
-            <div style={{display:'flex',gap:8,alignItems:'center'}}>
-              <span className={`badge badge-${c.status==='active'?'green':'orange'}`}>{c.status}</span>
-              <button className="btn-ghost btn-sm" onClick={()=>remove(c.id)}>Delete</button>
-            </div>
+      <div className="chat-messages" ref={msgsRef}>
+        {messages.length === 0 && (
+          <div style={{textAlign:'center',color:'var(--text-dim)',marginTop:80}}>
+            <p style={{fontSize:40,marginBottom:12}}>💬</p>
+            <p>Select an agent and start chatting</p>
+            <p style={{fontSize:12,marginTop:4}}>Messages are processed by your self-hosted LLM router</p>
+          </div>
+        )}
+        {messages.map((m, i) => (
+          <div key={i} className={`chat-msg ${m.role}`}>
+            <div style={{whiteSpace:'pre-wrap'}}>{m.text}</div>
+            {m.meta && <div className="meta">{m.meta}</div>}
           </div>
         ))}
-        {conns.length===0&&<div className="card" style={{textAlign:'center',color:'var(--text2)',padding:40}}>No connectors — add one to integrate external services</div>}
+        {loading && (
+          <div className="chat-msg ai">
+            <span className="typing-dot"/> <span className="typing-dot"/> <span className="typing-dot"/>
+          </div>
+        )}
+      </div>
+      <div className="chat-input-bar">
+        <input className="form-input" placeholder="Type a message..." value={input}
+          onChange={e=>setInput(e.target.value)}
+          onKeyDown={e=>e.key==='Enter'&&send()}
+          disabled={loading || !agentId}/>
+        <button className="btn btn-primary" onClick={send} disabled={loading || !agentId}>Send</button>
       </div>
     </div>
   );
 }
 
-// ─── Billing Page ─────────────────────────────────────────────────
-function BillingPage({}) {
+// ─── Agents Page ─────────────────────────────────────────────────────────────
+function AgentsPage({ token }) {
+  const [agents, setAgents] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [form, setForm] = useState({ name: '', model_name: 'groq/llama-3.3-70b-versatile', system_prompt: '', temperature: 0.7, max_tokens: 1024 });
+
+  const load = useCallback(() => {
+    apiFetch('/v1/agents', {}, token).then(d => setAgents(d.agents || d || [])).catch(() => {});
+  }, [token]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const create = async (e) => {
+    e.preventDefault();
+    await apiFetch('/v1/agents', { method: 'POST', body: JSON.stringify(form) }, token);
+    setShowCreate(false);
+    setForm({ name: '', model_name: 'groq/llama-3.3-70b-versatile', system_prompt: '', temperature: 0.7, max_tokens: 1024 });
+    load();
+  };
+
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value });
+
+  return (
+    <div className="fade-in">
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-muted" style={{fontSize:13}}>{agents.length} agent{agents.length!==1?'s':''}</p>
+        <div className="flex gap-3">
+          <button className="btn btn-secondary btn-sm" onClick={load}>{Icons.refresh} Refresh</button>
+          <button className="btn btn-primary btn-sm" onClick={()=>setShowCreate(!showCreate)}>{Icons.plus} New Agent</button>
+        </div>
+      </div>
+
+      {showCreate && (
+        <div className="card mb-4 fade-in">
+          <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>Create Agent</h3>
+          <form onSubmit={create}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+              <div className="form-group"><label>Name</label><input className="form-input" value={form.name} onChange={set('name')} placeholder="Research Assistant" required/></div>
+              <div className="form-group"><label>Model</label>
+                <select className="form-input" value={form.model_name} onChange={set('model_name')}>
+                  <option value="groq/llama-3.3-70b-versatile">Groq / LLaMA 3.3 70B</option>
+                  <option value="groq/llama-3.1-8b-instant">Groq / LLaMA 3.1 8B</option>
+                  <option value="anthropic/claude-sonnet-4-20250514">Anthropic / Claude Sonnet</option>
+                  <option value="openai/gpt-4o">OpenAI / GPT-4o</option>
+                  <option value="openai/gpt-4o-mini">OpenAI / GPT-4o Mini</option>
+                  <option value="deepseek/deepseek-chat">DeepSeek / Chat</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group"><label>System Prompt</label><textarea className="form-input" rows={3} value={form.system_prompt} onChange={set('system_prompt')} placeholder="You are a helpful assistant..."/></div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+              <div className="form-group"><label>Temperature ({form.temperature})</label><input type="range" min="0" max="2" step="0.1" value={form.temperature} onChange={set('temperature')} style={{width:'100%'}}/></div>
+              <div className="form-group"><label>Max Tokens</label><input className="form-input" type="number" value={form.max_tokens} onChange={set('max_tokens')} min={1} max={8192}/></div>
+            </div>
+            <div className="flex gap-3">
+              <button className="btn btn-primary" type="submit">Create Agent</button>
+              <button className="btn btn-secondary" type="button" onClick={()=>setShowCreate(false)}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="card table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Model</th><th>Temperature</th><th>Created</th><th>ID</th></tr></thead>
+          <tbody>
+            {agents.map(a => (
+              <tr key={a.id}>
+                <td style={{fontWeight:600}}>{a.name}</td>
+                <td><span className="mono" style={{fontSize:12}}>{a.model_name || '—'}</span></td>
+                <td>{a.temperature ?? '—'}</td>
+                <td className="text-muted">{a.created_at ? new Date(a.created_at).toLocaleDateString() : '—'}</td>
+                <td><span className="mono text-dim" style={{fontSize:11}}>{a.id?.slice(0,12)}...</span></td>
+              </tr>
+            ))}
+            {agents.length === 0 && <tr><td colSpan={5} className="text-muted" style={{textAlign:'center',padding:40}}>No agents yet. Create one to get started.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Runs Page ───────────────────────────────────────────────────────────────
+function RunsPage({ token }) {
+  const [runs, setRuns] = useState([]);
+
+  useEffect(() => {
+    apiFetch('/v1/runs', {}, token).then(d => setRuns((d.runs || d || []).slice(0, 50))).catch(() => {});
+  }, [token]);
+
+  const statusBadge = (s) => {
+    const map = { completed: 'badge-green', failed: 'badge-red', pending: 'badge-amber', running: 'badge-blue' };
+    return <span className={`badge ${map[s] || 'badge-blue'}`}>{s}</span>;
+  };
+
+  return (
+    <div className="fade-in">
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-muted" style={{fontSize:13}}>{runs.length} run{runs.length!==1?'s':''}</p>
+        <button className="btn btn-secondary btn-sm" onClick={()=>apiFetch('/v1/runs',{},token).then(d=>setRuns((d.runs||d||[]).slice(0,50)))}>{Icons.refresh} Refresh</button>
+      </div>
+      <div className="card table-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>Agent</th><th>Model</th><th>Input</th><th>Tokens</th><th>Cost</th></tr></thead>
+          <tbody>
+            {runs.map(r => (
+              <tr key={r.id}>
+                <td>{statusBadge(r.status)}</td>
+                <td style={{fontWeight:500}}>{r.agent_name || r.agent_id?.slice(0,8) || '—'}</td>
+                <td><span className="mono" style={{fontSize:11}}>{r.model_name || '—'}</span></td>
+                <td style={{maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.input_text?.slice(0,60) || '—'}</td>
+                <td className="mono" style={{fontSize:12}}>{(r.total_input_tokens||0)+(r.total_output_tokens||0)}</td>
+                <td className="mono" style={{fontSize:12}}>${(r.total_cost_usd||0).toFixed(4)}</td>
+              </tr>
+            ))}
+            {runs.length === 0 && <tr><td colSpan={6} className="text-muted" style={{textAlign:'center',padding:40}}>No runs yet. Chat with an agent to create runs.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Billing Page ────────────────────────────────────────────────────────────
+function BillingPage({ token }) {
   const [plans, setPlans] = useState([]);
-  const [usage, setUsage] = useState({});
-  useEffect(()=>{
-    api.get('/v1/billing/plans').then(setPlans).catch(()=>{});
-    api.get('/v1/billing/usage').then(setUsage).catch(()=>{});
-  },[]);
+  const [pricing, setPricing] = useState(null);
+
+  useEffect(() => {
+    apiFetch('/v1/billing/plans', {}, token).then(d => setPlans(d.plans || d || [])).catch(() => {});
+    apiFetch('/v1/billing/pricing', {}, token).then(d => setPricing(d)).catch(() => {});
+  }, [token]);
+
   return (
     <div className="fade-in">
-      <h2 style={{fontSize:24,fontWeight:700,marginBottom:24}}>Billing & Usage</h2>
-      <div className="card" style={{marginBottom:24}}>
-        <h3 style={{fontSize:16,fontWeight:600,marginBottom:16}}>Current Period</h3>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:20}}>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Period</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{usage.period||'—'}</div></div>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Runs</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{usage.total_runs||0}</div></div>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Cost</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4,color:'var(--orange)'}}>${(usage.total_cost_usd||0).toFixed(4)}</div></div>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Budget Left</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4,color:'var(--green)'}}>${(usage.budget_remaining_usd||0).toFixed(2)}</div></div>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Input Tokens</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{(usage.total_input_tokens||0).toLocaleString()}</div></div>
-          <div><div style={{fontSize:11,color:'var(--text2)',textTransform:'uppercase',letterSpacing:'.5px'}}>Output Tokens</div><div className="mono" style={{fontSize:18,fontWeight:700,marginTop:4}}>{(usage.total_output_tokens||0).toLocaleString()}</div></div>
-        </div>
-      </div>
-      <h3 style={{fontSize:16,fontWeight:600,marginBottom:12}}>Available Plans</h3>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16}}>
-        {plans.map(p=>(
-          <div key={p.tier} className="card card-hover">
-            <div style={{fontSize:13,fontWeight:700,textTransform:'uppercase',color:'var(--accent2)',letterSpacing:1,marginBottom:8}}>{p.tier}</div>
-            <div style={{fontSize:22,fontWeight:800}}>{p.monthly_price_eur===0?'Free':`€${p.monthly_price_eur}/mo`}</div>
-            <div style={{marginTop:12,fontSize:13,color:'var(--text2)',lineHeight:1.8}}>
-              <div>Up to {p.max_agents} agents</div>
-              <div>Up to {p.max_users} users</div>
-              <div>{p.max_runs_per_month?.toLocaleString()||100} runs/mo</div>
-              {p.includes_voice&&<div style={{color:'var(--green)'}}>✓ Voice</div>}
-              {p.includes_premium_models&&<div style={{color:'var(--green)'}}>✓ Premium models</div>}
+      <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>Available Plans</h3>
+      <div className="card-grid">
+        {plans.map((p, i) => (
+          <div className="card" key={i} style={{borderColor: i===1 ? 'var(--accent)' : undefined}}>
+            <h4 style={{fontSize:18,fontWeight:700,marginBottom:4}}>{p.name}</h4>
+            <p className="text-muted" style={{fontSize:13,marginBottom:12}}>{p.description || `Tier ${i+1}`}</p>
+            <div style={{fontSize:28,fontWeight:700,fontFamily:'var(--font-mono)',marginBottom:8}}>
+              {p.price_monthly ? `€${p.price_monthly}` : 'Free'}<span className="text-muted" style={{fontSize:13,fontWeight:400}}>/mo</span>
             </div>
+            <ul style={{listStyle:'none',fontSize:13,color:'var(--text-muted)'}}>
+              {(p.features || []).slice(0, 5).map((f, j) => <li key={j} style={{padding:'4px 0'}}>✓ {f}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      {pricing && (
+        <>
+          <h3 style={{fontSize:15,fontWeight:600,marginBottom:12,marginTop:24}}>Pricing Tiers</h3>
+          <div className="card table-wrap">
+            <table>
+              <thead><tr><th>Tier</th><th>Provider</th><th>Model</th><th>Cost/1K Tokens</th></tr></thead>
+              <tbody>
+                {(pricing.tiers || Object.entries(pricing).filter(([k]) => k !== 'meta')).map((t, i) => {
+                  const tier = Array.isArray(t) ? t[1] : t;
+                  const name = Array.isArray(t) ? t[0] : tier.name;
+                  return (
+                    <tr key={i}>
+                      <td><span className="badge badge-blue">{name}</span></td>
+                      <td>{tier.provider || '—'}</td>
+                      <td className="mono" style={{fontSize:12}}>{tier.model || '—'}</td>
+                      <td className="mono">${tier.cost_per_1k || tier.price || '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Guardians Page ──────────────────────────────────────────────────────────
+function GuardiansPage({ token }) {
+  const [guardians, setGuardians] = useState([]);
+
+  useEffect(() => {
+    apiFetch('/v1/platform/guardians/status', {}, token).then(d => setGuardians(d.guardians || [])).catch(() => {});
+  }, [token]);
+
+  const colors = ['var(--green)', 'var(--accent)', 'var(--purple)', 'var(--cyan)', 'var(--amber)', 'var(--red)'];
+
+  return (
+    <div className="fade-in">
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-muted" style={{fontSize:13}}>{guardians.length} guardian{guardians.length!==1?'s':''} active</p>
+        <button className="btn btn-secondary btn-sm" onClick={()=>apiFetch('/v1/platform/guardians/status',{},token).then(d=>setGuardians(d.guardians||[]))}>{Icons.refresh} Refresh</button>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:16}}>
+        {guardians.map((g, i) => (
+          <div className="card" key={i}>
+            <div className="flex items-center gap-3" style={{marginBottom:12}}>
+              <div style={{width:44,height:44,borderRadius:'50%',background:`${colors[i%6]}22`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22}}>
+                {g.emoji || '🛡️'}
+              </div>
+              <div>
+                <div style={{fontWeight:600,fontSize:15}}>{g.name}</div>
+                <div style={{fontSize:12,color:'var(--text-muted)'}}>{g.role || g.focus}</div>
+              </div>
+              <span className={`badge ${g.status==='active'?'badge-green':'badge-amber'}`} style={{marginLeft:'auto'}}>{g.status}</span>
+            </div>
+            {g.personality && <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.5}}>{g.personality.slice(0, 120)}...</p>}
+            {g.last_check && <p className="mono" style={{fontSize:11,color:'var(--text-dim)',marginTop:8}}>Last check: {g.last_check}</p>}
           </div>
         ))}
       </div>
@@ -379,30 +626,127 @@ function BillingPage({}) {
   );
 }
 
-// ─── Main App ─────────────────────────────────────────────────────
+// ─── Admin Page ──────────────────────────────────────────────────────────────
+function AdminPage({ token }) {
+  const [info, setInfo] = useState(null);
+  const [audit, setAudit] = useState([]);
+
+  useEffect(() => {
+    apiFetch('/v1/version', {}, token).then(d => setInfo(d)).catch(() => setInfo({ version: '?', modules: 0 }));
+    apiFetch('/v1/audit/logs', {}, token).then(d => setAudit((d.logs || d || []).slice(0, 20))).catch(() => {});
+  }, [token]);
+
+  return (
+    <div className="fade-in">
+      <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>System Information</h3>
+      {info && (
+        <div className="card-grid">
+          <div className="card stat-card">
+            <div className="stat-value mono">{info.version || '?'}</div>
+            <div className="stat-label">Version</div>
+          </div>
+          <div className="card stat-card">
+            <div className="stat-value text-green">{info.modules_loaded ?? info.modules ?? '?'}</div>
+            <div className="stat-label">Modules Loaded</div>
+          </div>
+          <div className="card stat-card">
+            <div className="stat-value" style={{color:'var(--cyan)'}}>{info.uptime || '—'}</div>
+            <div className="stat-label">Uptime</div>
+          </div>
+        </div>
+      )}
+
+      <h3 style={{fontSize:15,fontWeight:600,marginBottom:12,marginTop:24}}>Audit Log</h3>
+      <div className="card table-wrap">
+        <table>
+          <thead><tr><th>Timestamp</th><th>Action</th><th>Actor</th><th>Detail</th></tr></thead>
+          <tbody>
+            {audit.map((e, i) => (
+              <tr key={i}>
+                <td className="mono" style={{fontSize:11,whiteSpace:'nowrap'}}>{e.timestamp || e.created_at || '—'}</td>
+                <td><span className="badge badge-blue">{e.action || e.event_type || '—'}</span></td>
+                <td>{e.actor || e.user_id || '—'}</td>
+                <td style={{maxWidth:300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}} className="text-muted">{e.detail || e.description || JSON.stringify(e.data||{}).slice(0,80)}</td>
+              </tr>
+            ))}
+            {audit.length === 0 && <tr><td colSpan={4} className="text-muted" style={{textAlign:'center',padding:40}}>No audit logs yet.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ────────────────────────────────────────────────────────────────
 function App() {
-  const [session, setSession] = useState(null);
+  const [token, setToken] = useState(null);
+  const [email, setEmail] = useState('');
   const [page, setPage] = useState('dashboard');
 
-  const onLogin = (s) => setSession(s);
-  const onLogout = () => { api.token = null; api.apiKey = null; setSession(null); };
+  const handleAuth = (t, e) => { setToken(t); setEmail(e); };
+  const logout = () => { setToken(null); setEmail(''); setPage('dashboard'); };
 
-  if (!session) return <LoginPage onLogin={onLogin}/>;
+  if (!token) return <LoginPage onAuth={handleAuth} />;
 
-  const pages = {dashboard: Dashboard, agents: AgentsPage, runs: RunsPage, connectors: ConnectorsPage, billing: BillingPage};
-  const PageComponent = pages[page] || Dashboard;
+  const pages = {
+    dashboard: { label: 'Dashboard', icon: Icons.dashboard, component: Dashboard },
+    chat: { label: 'Chat', icon: Icons.chat, component: ChatPage },
+    agents: { label: 'Agents', icon: Icons.agents, component: AgentsPage },
+    runs: { label: 'Runs', icon: Icons.runs, component: RunsPage },
+    billing: { label: 'Billing', icon: Icons.billing, component: BillingPage },
+    guardians: { label: 'Guardians', icon: Icons.shield, component: GuardiansPage },
+    admin: { label: 'Admin', icon: Icons.settings, component: AdminPage },
+  };
+
+  const PageComponent = pages[page]?.component || Dashboard;
 
   return (
-    <div style={{display:'flex'}}>
-      <Sidebar active={page} setActive={setPage} session={session} onLogout={onLogout}/>
-      <div style={{marginLeft:220,flex:1,padding:32,maxWidth:1100}}>
-        <PageComponent/>
+    <AuthCtx.Provider value={{ token, email }}>
+      <div className="app">
+        <div className="sidebar">
+          <div className="sidebar-brand">
+            <div className="dot"/>
+            <h1>Punky</h1>
+          </div>
+          <div className="sidebar-nav">
+            <div className="nav-section">Main</div>
+            {['dashboard', 'chat', 'agents', 'runs'].map(k => (
+              <div key={k} className={`nav-item ${page===k?'active':''}`} onClick={()=>setPage(k)}>
+                {pages[k].icon} {pages[k].label}
+              </div>
+            ))}
+            <div className="nav-section">Platform</div>
+            {['billing', 'guardians', 'admin'].map(k => (
+              <div key={k} className={`nav-item ${page===k?'active':''}`} onClick={()=>setPage(k)}>
+                {pages[k].icon} {pages[k].label}
+              </div>
+            ))}
+          </div>
+          <div className="sidebar-footer">
+            <div className="flex items-center justify-between">
+              <span style={{fontSize:12}}>{email.split('@')[0]}</span>
+              <span style={{cursor:'pointer',opacity:.6}} onClick={logout} title="Sign out">{Icons.logout}</span>
+            </div>
+          </div>
+        </div>
+        <div className="main">
+          <div className="topbar">
+            <h2>{pages[page]?.label || 'Dashboard'}</h2>
+            <div className="topbar-actions">
+              <span className="badge badge-green">Connected</span>
+              <span className="mono text-dim" style={{fontSize:11}}>API: {API.replace('https://','')}</span>
+            </div>
+          </div>
+          <div className="content">
+            <PageComponent token={token} />
+          </div>
+        </div>
       </div>
-    </div>
+    </AuthCtx.Provider>
   );
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 </script>
 </body>
 </html>
