@@ -289,19 +289,206 @@ h2{font-family:'Syne',sans-serif}
 <!-- ═══ COMPARISON TABLE ═══ -->
 <div class="compare">
   <div class="tbl">
-    <div style="text-align:center;margin-bottom:12px"><h2 style="font-size:18px;font-weight:800">How Punky Compares</h2></div>
-    <table>
-      <tr><th></th><th style="color:var(--accent)">Punky</th><th>Perplexity Comet</th><th>Claude Cowork</th><th>ChatGPT Enterprise</th></tr>
-      <tr><td style="color:var(--text)">Self-hosted option</td><td style="color:var(--green);font-weight:700">✅ Full on-prem</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--amber)">⚠️ Limited</td></tr>
-      <tr><td style="color:var(--text)">Provider agnostic</td><td style="color:var(--green);font-weight:700">✅ Any LLM</td><td style="color:var(--amber)">⚠️</td><td style="color:var(--red)">❌ Anthropic only</td><td style="color:var(--red)">❌ OpenAI only</td></tr>
-      <tr><td style="color:var(--text)">Data sovereignty</td><td style="color:var(--green);font-weight:700">✅ On-prem/EU</td><td style="color:var(--red)">❌ US cloud</td><td style="color:var(--red)">❌ US cloud</td><td style="color:var(--red)">❌ US cloud</td></tr>
-      <tr><td style="color:var(--text)">Free tier</td><td style="color:var(--green);font-weight:700">✅ 100 msg/day</td><td style="color:var(--amber)">⚠️ Limited</td><td style="color:var(--red)">❌ Paid only</td><td style="color:var(--red)">❌ Paid only</td></tr>
-      <tr><td style="color:var(--text)">Agent marketplace</td><td style="color:var(--green);font-weight:700">✅ Built-in NDA</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
-      <tr><td style="color:var(--text)">Cost/user/month</td><td style="color:var(--green);font-weight:700">Free — €80</td><td>~€20</td><td>~€25</td><td>~€40</td></tr>
-      <tr><td style="color:var(--text)">3D adaptive avatar</td><td style="color:var(--green);font-weight:700">✅ Inside Out</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
-      <tr><td style="color:var(--text)">Vertical agent teams</td><td style="color:var(--green);font-weight:700">✅ 10+</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
-      <tr><td style="color:var(--text)">Sign language</td><td style="color:var(--green);font-weight:700">✅ Native</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
-    </table>
+    <div style="text-align:center;margin-bottom:16px">
+      <h2 style="font-size:18px;font-weight:800">How Punky Compares</h2>
+      <p style="font-size:10px;color:var(--muted);margin-top:4px">Prices in approximate EUR · Competitor pricing as of February 2026 · USD converted at ~€0.91</p>
+    </div>
+
+    <!-- PRICING TIERS -->
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:8px;padding-left:4px">💰 Pricing Tiers</div>
+      <table>
+        <tr>
+          <th style="width:17%"></th>
+          <th style="color:var(--accent);width:20.75%">Punky</th>
+          <th style="width:20.75%">Perplexity</th>
+          <th style="width:20.75%">Claude AI</th>
+          <th style="width:20.75%">ChatGPT</th>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Free</td>
+          <td style="color:var(--green);font-weight:700">€0 <span style="font-weight:400;color:var(--muted)">100 msg/day</span></td>
+          <td>€0 <span style="color:var(--muted)">~5 Pro/day</span></td>
+          <td>€0 <span style="color:var(--muted)">~30 msg/day</span></td>
+          <td>€0 <span style="color:var(--muted)">~10 msg/5hr</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Entry paid</td>
+          <td style="color:var(--green);font-weight:700">€5<span style="font-weight:400;color:var(--muted)">/mo Solo</span></td>
+          <td colspan="1">—</td>
+          <td colspan="1">—</td>
+          <td>~€7<span style="color:var(--muted)">/mo Go</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Individual pro</td>
+          <td style="color:var(--green);font-weight:700">€15<span style="font-weight:400;color:var(--muted)">/mo Pro</span></td>
+          <td>~€18<span style="color:var(--muted)">/mo Pro</span></td>
+          <td>~€18<span style="color:var(--muted)">/mo Pro</span></td>
+          <td>~€18<span style="color:var(--muted)">/mo Plus</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Power user</td>
+          <td style="color:var(--green);font-weight:700">€15<span style="font-weight:400;color:var(--muted)">/mo (same)</span></td>
+          <td>~€180<span style="color:var(--muted)">/mo Max</span></td>
+          <td>~€90–180<span style="color:var(--muted)">/mo Max</span></td>
+          <td>~€180<span style="color:var(--muted)">/mo Pro</span></td>
+        </tr>
+        <tr style="border-top:1px solid var(--border)">
+          <td style="color:var(--text)">Team / Business</td>
+          <td style="color:var(--green);font-weight:700">€40<span style="font-weight:400;color:var(--muted)">/user SaaS</span></td>
+          <td>~€36<span style="color:var(--muted)">/seat Ent Pro</span></td>
+          <td>~€23–27<span style="color:var(--muted)">/seat Team</span></td>
+          <td>~€23–27<span style="color:var(--muted)">/seat Business</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Enterprise</td>
+          <td style="color:var(--green);font-weight:700">€80<span style="font-weight:400;color:var(--muted)">/user On-Prem</span></td>
+          <td>~€295<span style="color:var(--muted)">/seat Ent Max</span></td>
+          <td style="color:var(--muted)">Custom</td>
+          <td style="color:var(--muted)">Custom (~€55+/seat)</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Marketplace</td>
+          <td style="color:var(--green);font-weight:700">✅ Pay per job</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- FEATURE COMPARISON: WHAT YOU GET -->
+    <div style="margin-bottom:16px">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:8px;padding-left:4px">⚡ What You Get at Each Tier</div>
+      <table>
+        <tr>
+          <th style="width:17%"></th>
+          <th style="color:var(--accent);width:20.75%">Punky</th>
+          <th style="width:20.75%">Perplexity</th>
+          <th style="width:20.75%">Claude AI</th>
+          <th style="width:20.75%">ChatGPT</th>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Agentic tasks</td>
+          <td style="color:var(--green);font-weight:700">✅ All tiers</td>
+          <td style="color:var(--amber)">Max+ only <span style="color:var(--muted)">(€180+)</span></td>
+          <td style="color:var(--amber)">Pro+ Cowork <span style="color:var(--muted)">(€18+)</span></td>
+          <td style="color:var(--amber)">Plus+ <span style="color:var(--muted)">(€18+)</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Deep research</td>
+          <td style="color:var(--green);font-weight:700">✅ All tiers</td>
+          <td style="color:var(--amber)">Pro+ <span style="color:var(--muted)">(€18+)</span></td>
+          <td style="color:var(--amber)">Pro+ <span style="color:var(--muted)">(€18+)</span></td>
+          <td style="color:var(--amber)">Plus+ <span style="color:var(--muted)">(€18+)</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">SSO / RBAC</td>
+          <td style="color:var(--green);font-weight:700">✅ SaaS + On-Prem <span style="font-weight:400;color:var(--muted)">(€40+)</span></td>
+          <td>Enterprise <span style="color:var(--muted)">(€36+)</span></td>
+          <td>Team+ <span style="color:var(--muted)">(€23+)</span></td>
+          <td>Business+ <span style="color:var(--muted)">(€23+)</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Data never used for training</td>
+          <td style="color:var(--green);font-weight:700">✅ All tiers</td>
+          <td style="color:var(--amber)">Enterprise only <span style="color:var(--muted)">(€36+)</span></td>
+          <td style="color:var(--amber)">Team+ <span style="color:var(--muted)">(€23+)</span></td>
+          <td style="color:var(--amber)">Business+ <span style="color:var(--muted)">(€23+)</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Audit logs</td>
+          <td style="color:var(--green);font-weight:700">✅ All tiers</td>
+          <td>Ent Max only <span style="color:var(--muted)">(€295+)</span></td>
+          <td>Enterprise <span style="color:var(--muted)">(Custom)</span></td>
+          <td>Enterprise <span style="color:var(--muted)">(Custom)</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Custom data retention</td>
+          <td style="color:var(--green);font-weight:700">✅ All tiers</td>
+          <td>Ent Max only <span style="color:var(--muted)">(€295+)</span></td>
+          <td>Enterprise <span style="color:var(--muted)">(Custom)</span></td>
+          <td>Enterprise <span style="color:var(--muted)">(Custom)</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- STRUCTURAL DIFFERENTIATORS -->
+    <div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:8px;padding-left:4px">🔒 Architecture &amp; Sovereignty</div>
+      <table>
+        <tr>
+          <th style="width:17%"></th>
+          <th style="color:var(--accent);width:20.75%">Punky</th>
+          <th style="width:20.75%">Perplexity</th>
+          <th style="width:20.75%">Claude AI</th>
+          <th style="width:20.75%">ChatGPT</th>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Self-hosted option</td>
+          <td style="color:var(--green);font-weight:700">✅ Full on-prem</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--amber)">⚠️ Azure only</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Provider agnostic</td>
+          <td style="color:var(--green);font-weight:700">✅ Any LLM</td>
+          <td style="color:var(--amber)">⚠️ Multi-model</td>
+          <td style="color:var(--red)">❌ Anthropic only</td>
+          <td style="color:var(--red)">❌ OpenAI only</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Data sovereignty</td>
+          <td style="color:var(--green);font-weight:700">✅ On-prem / EU</td>
+          <td style="color:var(--red)">❌ US cloud</td>
+          <td style="color:var(--red)">❌ US cloud</td>
+          <td style="color:var(--amber)">⚠️ US / Azure regions</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Air-gapped deployment</td>
+          <td style="color:var(--green);font-weight:700">✅ On-Prem tier</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Agent marketplace</td>
+          <td style="color:var(--green);font-weight:700">✅ NDA by default</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--amber)">⚠️ GPT Store</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Adaptive avatar</td>
+          <td style="color:var(--green);font-weight:700">✅ Inside Out</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Vertical agent teams</td>
+          <td style="color:var(--green);font-weight:700">✅ 10+ industries</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text)">Sign language</td>
+          <td style="color:var(--green);font-weight:700">✅ Native</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+          <td style="color:var(--red)">❌</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <p style="font-size:10px;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--green)">Punky's structural advantage:</strong> self-hosted architecture, provider-agnostic routing, and privacy-sovereign design are <em>architectural</em> decisions competitors cannot replicate with feature updates.
+        <br>Enterprise features that cost €200+/mo elsewhere are included in Punky's €15/mo Pro tier or free tier by default.
+      </p>
+    </div>
   </div>
 </div>
 
