@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Punky — Strategy & Commercialisation (EXECUTIVE)</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#ec4899;--accent2:#a855f7;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6}
+
+/* ═══ SHARED GLOBAL NAV ═══ */
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);letter-spacing:-0.3px}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--accent);background:#ec489912;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.gnav-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.gnav-badge{padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.lock{background:linear-gradient(90deg,#ec489908,#ec489904);border-bottom:1px solid #ec489915;padding:5px;text-align:center;font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.5px}
+
+.container{max-width:1200px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:32px 20px 24px}
+.hero h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:12px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 14px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;font-weight:500;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.tab:hover{color:var(--text)}
+.section{display:none}.section.active{display:block}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.card h2{color:var(--accent);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.card h3{color:var(--cyan);font-size:12px;font-weight:700;margin:14px 0 6px}
+.card p{font-size:12px;color:#a1a1aa;line-height:1.7}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card-sm{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-sm h4{font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+td{padding:6px 8px;border-bottom:1px solid #ffffff06}
+
+/* Risk Matrix */
+.risk-grid{display:grid;grid-template-columns:auto repeat(5,1fr);grid-template-rows:auto repeat(5,40px);gap:2px;margin:12px 0}
+.risk-header{font-size:9px;color:var(--muted);font-weight:600;text-align:center;display:flex;align-items:center;justify-content:center}
+.risk-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
+.risk-g{background:#10b98130}.risk-y{background:#f59e0b30}.risk-o{background:#f9731640}.risk-r{background:#ef444440}
+
+/* Stakeholder Map */
+.stake-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,auto);gap:2px;margin:12px 0}
+.stake-q{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px}
+.stake-q h4{font-size:10px;font-weight:700;margin-bottom:6px}
+.stake-item{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:10px;color:var(--muted)}
+.stake-dot{width:6px;height:6px;border-radius:50%}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:14px}
+.stat{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat .label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.stat .val{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;margin-top:3px}
+.stat .sub{font-size:9px;color:var(--muted);margin-top:2px}
+
+/* KPI */
+.kpi-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.kpi{flex:1;min-width:100px;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.kpi .k-val{font-size:18px;font-weight:800;font-family:'JetBrains Mono'}.kpi .k-label{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* Timeline */
+.tl{position:relative;padding-left:20px;margin:12px 0}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:12px}
+.tl-item::before{content:'';position:absolute;left:-18px;top:5px;width:8px;height:8px;border-radius:50%;border:2px solid var(--accent)}
+.tl-item.done::before{background:var(--green);border-color:var(--green)}
+.tl-item.active::before{background:var(--blue);border-color:var(--blue)}
+.tl-item .tl-date{font-size:9px;color:var(--muted);font-weight:600}
+.tl-item .tl-title{font-size:11px;font-weight:600;color:var(--text)}
+.tl-item .tl-desc{font-size:10px;color:var(--muted)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+.footer{color:var(--muted);font-size:10px;text-align:center;padding:20px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.stake-grid{grid-template-columns:1fr}.gnav-links{overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ GLOBAL NAV ═══════ -->
+<nav class="gnav">
+  <div class="gnav-inner">
+    <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+    <div class="gnav-links">
+      <a href="index.html" class="gnav-link">Home</a>
+      <a href="technical.html" class="gnav-link">Technical</a>
+      <a href="solutions.html" class="gnav-link">Solutions</a>
+    <a href="marketplace.html" class="gnav-link" style="color:#10b981">🏪 Marketplace</a>
+      <a href="hub.html" class="gnav-link" style="color:#ef4444">⬡ Command Centre</a>
+      <a href="strategy.html" class="gnav-link active">Strategy</a>
+      <a href="investors.html" class="gnav-link" style="color:#a855f7">Investors</a>
+      <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+    </div>
+    <div class="gnav-right">
+      <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div class="gnav-dot" id="nav-dot"></div><span id="nav-status" style="color:var(--green);font-weight:600">Online</span></div>
+      <span class="gnav-badge" style="color:var(--red);border-color:#ef444433;background:#ef444408">EXECUTIVE ONLY</span>
+    </div>
+  </div>
+</nav>
+<div class="lock">🔒 EXECUTIVE STRATEGY — NEVER FOR EXTERNAL AUDIENCE — TOP SECRET — AUTO-UPDATING</div>
+
+<div class="container">
+  <div class="hero">
+    <h1>Strategy & Commercialisation</h1>
+    <p>Internal executive strategy — risk management, stakeholder mapping, business case, marketing, sales, HR, finance</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('exec')">Executive Summary</button>
+    <button class="tab" onclick="showTab('risk')">Risk Management</button>
+    <button class="tab" onclick="showTab('stake')">Stakeholders</button>
+    <button class="tab" onclick="showTab('mkt')">Marketing Strategy</button>
+    <button class="tab" onclick="showTab('sales')">Sales Strategy</button>
+    <button class="tab" onclick="showTab('hr')">HR & Team</button>
+    <button class="tab" onclick="showTab('fin')">Finance</button>
+    <button class="tab" onclick="showTab('timeline')">Timeline</button>
+    <button class="tab" onclick="showTab('avatars')">🎭 AI Advisors</button>
+  </div>
+
+  <!-- ═══════ EXECUTIVE SUMMARY ═══════ -->
+  <div id="exec" class="section active">
+    <div class="stats">
+      <div class="stat"><div class="label">Stage</div><div class="val" style="color:var(--amber);font-size:14px">Pre-Seed</div><div class="sub">Solo founder</div></div>
+      <div class="stat"><div class="label">Burn Rate</div><div class="val" style="color:var(--green)">€30</div><div class="sub">/month (infra only)</div></div>
+      <div class="stat"><div class="label">Product</div><div class="val" style="color:var(--accent);font-size:12px">Operational</div><div class="sub" id="e-routes">149 routes, 962 tests</div></div>
+      <div class="stat"><div class="label">Seed Target</div><div class="val" style="color:var(--accent2)">€0.5-2M</div><div class="sub">When GTM ready</div></div>
+      <div class="stat"><div class="label">TAM</div><div class="val" style="color:var(--cyan)">€150B+</div><div class="sub">Enterprise AI (2028)</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Business Case</h2>
+      <p><strong style="color:var(--text)">Problem:</strong> Enterprise AI is locked into single providers (OpenAI, Anthropic, Google). This creates vendor lock-in, data sovereignty risks, and unpredictable costs. 78% of enterprises now use 3+ LLM providers but lack unified orchestration.</p>
+      <p style="margin-top:8px"><strong style="color:var(--text)">Solution:</strong> Punky — a self-hosted, provider-agnostic autonomous agent platform. Data stays on customer infrastructure. Smart Router sends 70-90% of requests through free tiers. 20 Guardian agents provide autonomous governance. 10+ vertical agent teams (ESG, ERP, HR, PM, Research, OSINT, HSE, Education) deliver industry-specific value.</p>
+      <p style="margin-top:8px"><strong style="color:var(--text)">Moat:</strong> Structural differentiators that cannot be copied by feature: self-hosted architecture, provider agnosticism, cost-optimised routing, culturally adaptive Inside Out interface. Competitors would need to rebuild from scratch — their business models depend on lock-in.</p>
+      <h3>Key Value Propositions</h3>
+      <table>
+        <tr><th>Proposition</th><th>For Customer</th><th>Proof Point</th></tr>
+        <tr><td>Data sovereignty</td><td>GDPR compliance, zero third-party data transfer</td><td>Self-hosted architecture, PostgreSQL RLS</td></tr>
+        <tr><td>70-90% cost reduction</td><td>€3-5/user/mo vs €20-30 at competitors</td><td>Smart Router free-tier routing</td></tr>
+        <tr><td>Provider choice</td><td>No vendor lock-in, best model per task</td><td>5+ providers, extensible adapters</td></tr>
+        <tr><td>Vertical depth</td><td>Pre-built agent teams for their industry</td><td>ESG, ERP, HR, PM, Research agents</td></tr>
+        <tr><td>Autonomous governance</td><td>Platform manages itself 24/7</td><td>20 Guardian agents across 6 tiers</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Current Strategic Position</h2>
+      <div class="card-grid">
+        <div class="card-sm"><h4 style="color:var(--green)">Strengths</h4><p style="font-size:10px">Working product (149 routes, 962 tests). Unique positioning (self-hosted + provider-agnostic). Extremely low burn rate (€30/mo). HEC Paris MBA network. Solo founder means no cap table complexity.</p></div>
+        <div class="card-sm"><h4 style="color:var(--red)">Weaknesses</h4><p style="font-size:10px">Solo developer — bandwidth limited. No revenue yet. No external validation (beta users). UI needs polish for "wow" factor. Verticals are specified but not built.</p></div>
+        <div class="card-sm"><h4 style="color:var(--cyan)">Opportunities</h4><p style="font-size:10px">EU AI Act driving self-hosted demand. French public sector digitalisation (€12B+ programme). Education Nationale 5.6M employees. Station F incubator. HEC alumni network.</p></div>
+        <div class="card-sm"><h4 style="color:var(--amber)">Threats</h4><p style="font-size:10px">Big Tech feature parity (Comet, Cowork evolving fast). Open-source agent frameworks (LangChain, CrewAI) gaining traction. Regulatory uncertainty on AI governance. Enterprise sales cycles are long.</p></div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#120808;border-color:#ef444422">
+      <h2 style="color:var(--red)">⚠️ Current Strategic Directive</h2>
+      <p><strong style="color:var(--red)">GTM PAUSED</strong> — Personal reasons prevent incubator/investor activity for several months. Strategy: maximise product depth now so that upon entering incubator, only fine-tuning is needed. This reduces incubator time and increases probability of securing wider markets, investors, and customers.</p>
+      <p style="margin-top:6px"><strong style="color:var(--text)">Priority:</strong> Inside Out avatar + voice + sign language → vertical agent teams → polished console → friend beta testing → SDK/CLI → Docker compose community edition.</p>
+    </div>
+  </div>
+
+  <!-- ═══════ RISK MANAGEMENT ═══════ -->
+  <div id="risk" class="section">
+    <div class="card">
+      <h2>Risk Register</h2>
+      <table>
+        <tr><th>ID</th><th>Risk</th><th>P</th><th>I</th><th>Score</th><th>Mitigation</th><th>Owner</th></tr>
+        <tr><td>R01</td><td style="color:var(--text)">Solo founder capacity — cannot build everything</td><td style="color:var(--red)">High</td><td style="color:var(--red)">High</td><td style="color:var(--red);font-weight:800">25</td><td>5 parallel Claude lanes, modular architecture, prioritise ruthlessly</td><td>Simon</td></tr>
+        <tr><td>R02</td><td style="color:var(--text)">Big Tech ships competing features</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber);font-weight:800">12</td><td>Structural moat (self-hosted + agnostic). Features copyable; architecture not</td><td>Product</td></tr>
+        <tr><td>R03</td><td style="color:var(--text)">Enterprise sales cycle too slow</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber);font-weight:800">12</td><td>Doctolib playbook: 1yr free → paid. Start with known orgs (Alcatel, HEC)</td><td>Sales</td></tr>
+        <tr><td>R04</td><td style="color:var(--text)">GDPR/AI Act compliance gaps</td><td style="color:var(--amber)">Med</td><td style="color:var(--red)">High</td><td style="color:var(--red);font-weight:800">20</td><td>Privacy-by-design. All recognition off by default. DPIA before launch. CNIL guidance.</td><td>Legal</td></tr>
+        <tr><td>R05</td><td style="color:var(--text)">Infrastructure SPOF (single server)</td><td style="color:var(--green)">Low</td><td style="color:var(--amber)">Med</td><td style="color:var(--green);font-weight:800">6</td><td>€30/mo sufficient for MVP. Scale to multi-server when revenue justifies it</td><td>DevOps</td></tr>
+        <tr><td>R06</td><td style="color:var(--text)">IP / code leak before launch</td><td style="color:var(--green)">Low</td><td style="color:var(--red)">High</td><td style="color:var(--amber);font-weight:800">10</td><td>All repos private. Lane 5 security guardian. No public docs. All pages locked.</td><td>L5</td></tr>
+        <tr><td>R07</td><td style="color:var(--text)">Station F application rejected</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber);font-weight:800">12</td><td>Apply to multiple: Station F, AGORANOV, Wilco, Techstars Paris.</td><td>Simon</td></tr>
+        <tr><td>R08</td><td style="color:var(--text)">Free-tier LLM providers reduce/remove free tiers</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber)">Med</td><td style="color:var(--amber);font-weight:800">12</td><td>Ollama local fallback. Multiple providers. Cost model adjusts dynamically.</td><td>Product</td></tr>
+        <tr><td>R09</td><td style="color:var(--text)">Beta testers find critical UX issues</td><td style="color:var(--red)">High</td><td style="color:var(--green)">Low</td><td style="color:var(--amber);font-weight:800">10</td><td>Friend testing before public. Flywheel captures feedback. Iterative improvement.</td><td>Product</td></tr>
+        <tr><td>R10</td><td style="color:var(--text)">Burnout / personal capacity constraints</td><td style="color:var(--amber)">Med</td><td style="color:var(--red)">High</td><td style="color:var(--red);font-weight:800">20</td><td>AI-assisted development (5 parallel lanes). Sustainable pace. Defer GTM.</td><td>Simon</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Risk Heat Map</h2>
+      <div class="risk-grid">
+        <div class="risk-header"></div>
+        <div class="risk-header">Rare</div><div class="risk-header">Unlikely</div><div class="risk-header">Possible</div><div class="risk-header">Likely</div><div class="risk-header">Almost Certain</div>
+        <div class="risk-header" style="writing-mode:vertical-lr;transform:rotate(180deg);font-size:8px">Catastrophic</div>
+        <div class="risk-cell risk-y"></div><div class="risk-cell risk-o"></div><div class="risk-cell risk-r"></div><div class="risk-cell risk-r">R04</div><div class="risk-cell risk-r"></div>
+        <div class="risk-header" style="writing-mode:vertical-lr;transform:rotate(180deg);font-size:8px">Major</div>
+        <div class="risk-cell risk-y"></div><div class="risk-cell risk-y">R06</div><div class="risk-cell risk-o">R02,R03</div><div class="risk-cell risk-r">R01,R10</div><div class="risk-cell risk-r"></div>
+        <div class="risk-header" style="writing-mode:vertical-lr;transform:rotate(180deg);font-size:8px">Moderate</div>
+        <div class="risk-cell risk-g"></div><div class="risk-cell risk-y">R05</div><div class="risk-cell risk-y">R07,R08</div><div class="risk-cell risk-o"></div><div class="risk-cell risk-r"></div>
+        <div class="risk-header" style="writing-mode:vertical-lr;transform:rotate(180deg);font-size:8px">Minor</div>
+        <div class="risk-cell risk-g"></div><div class="risk-cell risk-g"></div><div class="risk-cell risk-y"></div><div class="risk-cell risk-y">R09</div><div class="risk-cell risk-o"></div>
+        <div class="risk-header" style="writing-mode:vertical-lr;transform:rotate(180deg);font-size:8px">Negligible</div>
+        <div class="risk-cell risk-g"></div><div class="risk-cell risk-g"></div><div class="risk-cell risk-g"></div><div class="risk-cell risk-y"></div><div class="risk-cell risk-y"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ STAKEHOLDERS ═══════ -->
+  <div id="stake" class="section">
+    <div class="card">
+      <h2>Stakeholder Map (Power × Interest)</h2>
+      <div class="stake-grid">
+        <div class="stake-q" style="border-color:#ef444433">
+          <h4 style="color:var(--red)">HIGH POWER / HIGH INTEREST — Manage Closely</h4>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--accent)"></div>Simon Priggins (Founder, sole decision maker)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--amber)"></div>Seed Investors (future — €0.5-2M target)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--green)"></div>Station F (incubator — gate to ecosystem)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--blue)"></div>Éducation Nationale / Mairie de Paris (scale customer)</div>
+        </div>
+        <div class="stake-q" style="border-color:#f59e0b33">
+          <h4 style="color:var(--amber)">HIGH POWER / LOW INTEREST — Keep Satisfied</h4>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--red)"></div>CNIL (French data protection authority)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--amber)"></div>EU AI Act regulators</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--muted)"></div>Hetzner (infrastructure provider)</div>
+        </div>
+        <div class="stake-q" style="border-color:#3b82f633">
+          <h4 style="color:var(--blue)">LOW POWER / HIGH INTEREST — Keep Informed</h4>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--cyan)"></div>Alcatel Submarine Networks (employer → first customer)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--accent2)"></div>HEC Paris (MBA alumni network)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--green)"></div>Friend beta testers</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--blue)"></div>Open-source / developer community (future)</div>
+        </div>
+        <div class="stake-q" style="border-color:#52525b33">
+          <h4 style="color:var(--muted)">LOW POWER / LOW INTEREST — Monitor</h4>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--muted)"></div>Competitor platforms (Perplexity, Anthropic, OpenAI)</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--muted)"></div>General media / tech press</div>
+          <div class="stake-item"><div class="stake-dot" style="background:var(--muted)"></div>Other incubators (AGORANOV, Wilco, Techstars)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Customer Acquisition Pipeline (Doctolib Playbook)</h2>
+      <table>
+        <tr><th>#</th><th>Target</th><th>Relationship</th><th>Offer</th><th>Size</th><th>Status</th><th>Timeline</th></tr>
+        <tr><td>1</td><td style="color:var(--text)">Alcatel Submarine Networks</td><td>Current employer</td><td>1yr free on-prem → negotiated paid</td><td>~2,000 users</td><td><span class="badge" style="color:var(--amber);border-color:#f59e0b33">Post-resignation</span></td><td>Q3 2026</td></tr>
+        <tr><td>2</td><td style="color:var(--text)">HEC Paris</td><td>MBA alma mater</td><td>1yr free on-prem → paid license</td><td>~5,000 users</td><td><span class="badge" style="color:var(--amber);border-color:#f59e0b33">After product polish</span></td><td>Q3 2026</td></tr>
+        <tr><td>3</td><td style="color:var(--text)">Station F</td><td>Incubator application</td><td>1yr free on-prem → paid license</td><td>~1,000 startups</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">GTM paused</span></td><td>Q4 2026</td></tr>
+        <tr><td>4</td><td style="color:var(--text)">Éducation Nationale (Paris)</td><td>Public sector pitch</td><td>1yr free → paid for all fonctionnaires</td><td>100K+ users</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Research phase</span></td><td>2027</td></tr>
+        <tr><td>5</td><td style="color:var(--text)">Mairie de Paris / Préfecture</td><td>Public sector</td><td>1yr free → municipal subscription</td><td>50K+ users</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Research phase</span></td><td>2027</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════ MARKETING STRATEGY ═══════ -->
+  <div id="mkt" class="section">
+    <div class="card">
+      <h2>Marketing Strategy</h2>
+      <h3>Positioning Statement</h3>
+      <p style="font-size:13px;color:var(--text);font-weight:600;font-style:italic;padding:10px;background:var(--card2);border-radius:6px;border-left:3px solid var(--accent)">"For enterprises that refuse to send their data to Big Tech, Punky is the self-hosted AI platform that runs on your infrastructure, routes to any LLM provider, and costs 10x less than locked-in alternatives."</p>
+      
+      <h3>Target Segments (Priority Order)</h3>
+      <table>
+        <tr><th>Segment</th><th>Pain Point</th><th>Channel</th><th>Message</th></tr>
+        <tr><td>French Public Sector</td><td>GDPR + sovereignty mandates + budget constraints</td><td>Direct outreach via HEC/Station F network</td><td>"Your AI, your infrastructure, your budget"</td></tr>
+        <tr><td>European Enterprise (regulated)</td><td>NIS2/DORA compliance + multi-provider fatigue</td><td>Industry events, LinkedIn, case studies</td><td>"Compliant by architecture, not by promise"</td></tr>
+        <tr><td>SMBs / Startups</td><td>AI costs eating into margin</td><td>Community edition, dev communities</td><td>"10x cheaper because we don't lock you in"</td></tr>
+      </table>
+
+      <h3>Marketing Channels (Pre-Launch → Launch)</h3>
+      <div class="card-grid">
+        <div class="card-sm"><h4>Pre-Launch (Current)</h4><p style="font-size:10px;color:var(--muted)">Zero external marketing. All pages locked down. Focus on product depth. Friend testing only. Build demo-ready product.</p></div>
+        <div class="card-sm"><h4>Launch Phase</h4><p style="font-size:10px;color:var(--muted)">Station F demo day. HEC alumni events. LinkedIn thought leadership. Technical blog (architecture, not code). One killer demo video.</p></div>
+      </div>
+
+      <h3>Competitive Differentiation Matrix</h3>
+      <table>
+        <tr><th></th><th>Punky</th><th>Perplexity Comet</th><th>Claude Cowork</th><th>ChatGPT Enterprise</th></tr>
+        <tr><td>Self-hosted</td><td style="color:var(--green)">✅ Full</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Provider agnostic</td><td style="color:var(--green)">✅ Any LLM</td><td style="color:var(--amber)">⚠️ Limited</td><td style="color:var(--red)">❌ Anthropic</td><td style="color:var(--red)">❌ OpenAI</td></tr>
+        <tr><td>Data sovereignty</td><td style="color:var(--green)">✅ On-prem</td><td style="color:var(--red)">❌ Cloud</td><td style="color:var(--red)">❌ Cloud</td><td style="color:var(--amber)">⚠️ Limited</td></tr>
+        <tr><td>Cost/user/month</td><td style="color:var(--green)">~€3-5</td><td>~€20</td><td>~€20-30</td><td>~€25-50</td></tr>
+        <tr><td>Vertical agents</td><td style="color:var(--green)">✅ 10+</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Guardian governance</td><td style="color:var(--green)">✅ 20 agents</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Adaptive avatar</td><td style="color:var(--green)">✅ Inside Out</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════ SALES STRATEGY ═══════ -->
+  <div id="sales" class="section">
+    <div class="card">
+      <h2>Sales Strategy</h2>
+      <h3>Pricing Model</h3>
+      <table>
+        <tr><th>Tier</th><th>Price</th><th>Target</th><th>Features</th><th>Rev/100 Users/yr</th></tr>
+        <tr><td>Solo</td><td>Free / €5/mo</td><td>Developers, students</td><td>Full platform, Docker compose, community support</td><td>€6K</td></tr>
+        <tr><td>Team</td><td>€15/user/mo</td><td>SMBs (2-20 users)</td><td>Multi-tenant, RBAC, priority support, verticals</td><td>€18K</td></tr>
+        <tr><td>Enterprise SaaS</td><td>€40/user/mo</td><td>Companies</td><td>Managed hosting, SLA 99.9%, SSO, dedicated support</td><td>€48K</td></tr>
+        <tr><td>Enterprise On-Prem</td><td>€80/user/mo</td><td>Regulated/gov't</td><td>Air-gapped, full sovereignty, on-site support option</td><td>€96K</td></tr>
+      </table>
+
+      <h3>Sales Cycle (Doctolib Model)</h3>
+      <div class="tl">
+        <div class="tl-item done"><div class="tl-date">Phase 0</div><div class="tl-title">Product Development</div><div class="tl-desc">Build demo-ready product with Inside Out, voice, verticals. → Current phase</div></div>
+        <div class="tl-item"><div class="tl-date">Phase 1</div><div class="tl-title">Warm Outreach (Known Orgs)</div><div class="tl-desc">Alcatel (post-resignation), HEC Paris. 1yr free on-prem, pre-agreed paid pricing.</div></div>
+        <div class="tl-item"><div class="tl-date">Phase 2</div><div class="tl-title">Incubator + Network Effects</div><div class="tl-desc">Station F demo day. HEC alumni events. First case studies from Phase 1 customers.</div></div>
+        <div class="tl-item"><div class="tl-date">Phase 3</div><div class="tl-title">Public Sector Expansion</div><div class="tl-desc">Éducation Nationale, Mairie de Paris. 1yr free for all fonctionnaires → paid conversion.</div></div>
+        <div class="tl-item"><div class="tl-date">Phase 4</div><div class="tl-title">Commercial Scaling</div><div class="tl-desc">Enterprise sales team. Channel partners. European expansion. Target: €500K+ ARR.</div></div>
+      </div>
+
+      <h3>Key Sales Metrics (Targets)</h3>
+      <div class="kpi-row">
+        <div class="kpi"><div class="k-val" style="color:var(--green)">3</div><div class="k-label">Phase 1 Customers</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--blue)">10</div><div class="k-label">Phase 2 Deployments</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--accent)">50+</div><div class="k-label">Phase 3 Organisations</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--amber)">€500K+</div><div class="k-label">Phase 4 ARR Target</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ HR & TEAM ═══════ -->
+  <div id="hr" class="section">
+    <div class="card">
+      <h2>Team & HR Strategy</h2>
+      <h3>Current Team</h3>
+      <table>
+        <tr><th>Role</th><th>Person</th><th>Status</th><th>Capacity</th></tr>
+        <tr><td>Founder / CEO / CTO / Developer</td><td>Simon Priggins</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Active</span></td><td>Part-time (while at Alcatel)</td></tr>
+        <tr><td>AI Development Agents</td><td>5× Claude Instances (Lanes 1-5)</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Active</span></td><td>On-demand parallel execution</td></tr>
+      </table>
+
+      <h3>Hiring Plan (Post-Seed)</h3>
+      <table>
+        <tr><th>Priority</th><th>Role</th><th>When</th><th>Budget</th><th>Key Requirement</th></tr>
+        <tr><td>1</td><td>Senior Full-Stack Engineer</td><td>Seed + 1 month</td><td>€60-80K/yr</td><td>Python + React + DevOps. Must be comfortable with DDD.</td></tr>
+        <tr><td>2</td><td>Frontend / UX Engineer</td><td>Seed + 2 months</td><td>€50-70K/yr</td><td>React, animation, accessibility. Inside Out avatar polish.</td></tr>
+        <tr><td>3</td><td>Business Development / Sales</td><td>Seed + 3 months</td><td>€50-70K/yr + commission</td><td>French public sector experience. Bilingual FR/EN.</td></tr>
+        <tr><td>4</td><td>Junior Engineer</td><td>Seed + 4 months</td><td>€40-50K/yr</td><td>Python, testing. Can own vertical agent teams.</td></tr>
+      </table>
+      <p style="margin-top:8px"><strong style="color:var(--text)">Total Year 1 team cost:</strong> €200-270K (4 hires @ Paris market rates). This is 40-55% of a €500K seed round.</p>
+
+      <h3>Founder Background</h3>
+      <div class="card-sm">
+        <h4>Simon Priggins</h4>
+        <p style="font-size:10px;color:var(--muted)">HEC Paris MBA. 15+ years submarine telecommunications engineering at Alcatel Submarine Networks. Deep expertise in large-scale infrastructure, project management, enterprise systems, and cross-cultural teams. Based in Paris, France. British/French.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ FINANCE ═══════ -->
+  <div id="fin" class="section">
+    <div class="card">
+      <h2>Financial Overview</h2>
+      <h3>Current Financials</h3>
+      <div class="kpi-row">
+        <div class="kpi"><div class="k-val" style="color:var(--green)">€30</div><div class="k-label">Monthly Burn</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--red)">€0</div><div class="k-label">Monthly Revenue</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--cyan)">€360</div><div class="k-label">Annual Run Rate Cost</div></div>
+        <div class="kpi"><div class="k-val" style="color:var(--accent)">∞</div><div class="k-label">Months Runway</div></div>
+      </div>
+      <p style="margin-top:8px;font-size:11px;color:var(--muted)">Runway is effectively infinite at current burn rate because infrastructure costs (€30/mo) are covered by personal funds. No external funding consumed.</p>
+
+      <h3>Infrastructure Cost Breakdown</h3>
+      <table>
+        <tr><th>Item</th><th>Monthly</th><th>Annual</th><th>Notes</th></tr>
+        <tr><td>Hetzner CPX42 (Production)</td><td>€19.49</td><td>€233.88</td><td>8 vCPU, 16GB, 320GB + 120GB vol</td></tr>
+        <tr><td>Hetzner CAX11 (Monitoring)</td><td>€5.29</td><td>€63.48</td><td>2 vCPU ARM, 4GB, Grafana stack</td></tr>
+        <tr><td>Hetzner CX23 (CI)</td><td>€5.39</td><td>€64.68</td><td>2 vCPU, 4GB, GitHub Actions runner</td></tr>
+        <tr><td>Domain (jspriggins.com)</td><td>~€1.50</td><td>~€18</td><td>Gandi registration</td></tr>
+        <tr><td style="font-weight:700;color:var(--text)">TOTAL</td><td style="font-weight:700;color:var(--accent)">~€31.67</td><td style="font-weight:700;color:var(--accent)">~€380.04</td><td></td></tr>
+      </table>
+
+      <h3>Seed Round Scenario (€500K — Conservative)</h3>
+      <table>
+        <tr><th>Category</th><th>Year 1</th><th>%</th><th>Details</th></tr>
+        <tr><td>Engineering (4 hires)</td><td>€240K</td><td>48%</td><td>2 senior + 1 mid + 1 junior</td></tr>
+        <tr><td>GTM / Sales</td><td>€80K</td><td>16%</td><td>Marketing, events, demo equipment</td></tr>
+        <tr><td>Legal / Compliance</td><td>€40K</td><td>8%</td><td>Company setup, GDPR/DPIA, contracts</td></tr>
+        <tr><td>Infrastructure Scale</td><td>€30K</td><td>6%</td><td>Multi-server, CDN, backup sites</td></tr>
+        <tr><td>Operations / Misc</td><td>€60K</td><td>12%</td><td>Office (Station F), travel, tools</td></tr>
+        <tr><td>Reserve</td><td>€50K</td><td>10%</td><td>Buffer for unexpected costs</td></tr>
+        <tr><td style="font-weight:700;color:var(--text)">TOTAL</td><td style="font-weight:700;color:var(--accent)">€500K</td><td style="font-weight:700">100%</td><td>12-14 months runway with team</td></tr>
+      </table>
+
+      <h3>Revenue Projections (Conservative)</h3>
+      <table>
+        <tr><th>Quarter</th><th>Customers</th><th>Avg Users</th><th>Avg Rev/User/Mo</th><th>MRR</th><th>ARR</th></tr>
+        <tr><td>Q1 (Launch)</td><td>3 (free)</td><td>200</td><td>€0</td><td>€0</td><td>€0</td></tr>
+        <tr><td>Q2</td><td>3 → paid</td><td>200</td><td>€30</td><td>€6K</td><td>€72K</td></tr>
+        <tr><td>Q3</td><td>8</td><td>500</td><td>€35</td><td>€17.5K</td><td>€210K</td></tr>
+        <tr><td>Q4</td><td>15</td><td>1,200</td><td>€35</td><td>€42K</td><td>€504K</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">Year 2</td><td>50+</td><td>5,000+</td><td>€40</td><td>€200K+</td><td style="color:var(--green);font-weight:800">€2.4M+</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════ TIMELINE ═══════ -->
+  <div id="timeline" class="section">
+    <div class="card">
+      <h2>Master Timeline</h2>
+      <div class="tl">
+        <div class="tl-item done"><div class="tl-date">Jan 2026</div><div class="tl-title">Platform Foundation</div><div class="tl-desc">PostgreSQL, Valkey, Docker, Coolify. DDD modular monolith architecture established. Smart Router operational.</div></div>
+        <div class="tl-item done"><div class="tl-date">Feb 2026 (week 1-2)</div><div class="tl-title">Core Agent Engine</div><div class="tl-desc">149 routes, 962 tests, 28 modules. Auth, agents, runs, knowledge, memory, MCP, webhooks, billing, flywheel. All operational.</div></div>
+        <div class="tl-item active"><div class="tl-date">Feb 2026 (now)</div><div class="tl-title">Strategic Pivot — Build Phase</div><div class="tl-desc">GTM paused. All Phase 4-5 features unfrozen. 5 parallel lanes active. Inside Out avatar, voice, verticals prioritised.</div></div>
+        <div class="tl-item"><div class="tl-date">Mar-Apr 2026</div><div class="tl-title">Inside Out + Voice + Verticals</div><div class="tl-desc">Avatar dashboard with 6 expressions, lip-sync. Voice pipeline (<3s). Sign language. ESG/ERP/HR agent teams. Console polish.</div></div>
+        <div class="tl-item"><div class="tl-date">May 2026</div><div class="tl-title">Friend Beta Testing</div><div class="tl-desc">Selected friends test the platform. Feedback via flywheel. UX iteration. Bug fixes. Performance tuning.</div></div>
+        <div class="tl-item"><div class="tl-date">Jun 2026</div><div class="tl-title">SDK + CLI + Community Edition</div><div class="tl-desc">punky-sdk on PyPI. punky-cli. Docker compose one-command deploy. Documentation site.</div></div>
+        <div class="tl-item"><div class="tl-date">Q3 2026</div><div class="tl-title">Resign Alcatel + First Customers</div><div class="tl-desc">Resign from Alcatel. Approach Alcatel + HEC with 1yr free offer. Apply to Station F.</div></div>
+        <div class="tl-item"><div class="tl-date">Q4 2026</div><div class="tl-title">Station F + Seed Fundraise</div><div class="tl-desc">Enter Station F incubator. Product is fine-tuning only. Seed round: €0.5-2M. First paying customers.</div></div>
+        <div class="tl-item"><div class="tl-date">2027</div><div class="tl-title">Scale</div><div class="tl-desc">Éducation Nationale / Mairie de Paris. European expansion. Series A preparation. 50+ enterprise deployments. €500K+ ARR.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Key Milestones & Gates</h2>
+      <table>
+        <tr><th>Gate</th><th>Criteria</th><th>Target Date</th><th>Status</th></tr>
+        <tr><td style="color:var(--text)">G1: Product Demo-Ready</td><td>Inside Out avatar working, voice pipeline, 3+ verticals, polished console</td><td>Apr 2026</td><td><span class="badge" style="color:var(--blue);border-color:#3b82f633">Building</span></td></tr>
+        <tr><td style="color:var(--text)">G2: Friend Beta</td><td>10+ friends have tested, NPS > 7, critical bugs resolved</td><td>May 2026</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Planned</span></td></tr>
+        <tr><td style="color:var(--text)">G3: SDK/CLI/Community</td><td>pip install punky-sdk works, docker compose up works</td><td>Jun 2026</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Planned</span></td></tr>
+        <tr><td style="color:var(--text)">G4: First Customer</td><td>Alcatel or HEC deploys on-prem, provides feedback</td><td>Q3 2026</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Planned</span></td></tr>
+        <tr><td style="color:var(--text)">G5: Incubator Entry</td><td>Station F accepts application, office space secured</td><td>Q4 2026</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Planned</span></td></tr>
+        <tr><td style="color:var(--text)">G6: Seed Close</td><td>€0.5-2M raised, cap table clean, legal entity set</td><td>Q4 2026</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Planned</span></td></tr>
+        <tr><td style="color:var(--text)">G7: €500K ARR</td><td>50+ enterprise customers, sustainable unit economics</td><td>2027</td><td><span class="badge" style="color:var(--muted);border-color:#52525b33">Target</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ AI ADVISORS TAB ═══ -->
+  <div id="avatars" class="section">
+    <div class="card">
+      <h2>🎭 3D AI Advisor Avatars — Platform-Wide</h2>
+      <p style="margin-bottom:12px">Every avatar on the Punky platform is 3D (Three.js CPU-rendered, WebGL), with video, audio, chat, sign language, multi-region, and multi-language capabilities by default. GPU rendering will be enabled post-revenue for higher fidelity.</p>
+
+      <!-- Strategy Advisor -->
+      <div style="background:var(--card2);border:1px solid #ec489930;border-radius:10px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ec489930,#a855f720);display:flex;align-items:center;justify-content:center;font-size:24px">🏛️</div>
+          <div>
+            <h3 style="color:#ec4899;margin:0;font-size:14px">Strategy Advisor</h3>
+            <p style="color:var(--muted);font-size:10px;margin:0">Corporate strategy, commercialisation, investor preparation, business planning</p>
+          </div>
+          <span style="margin-left:auto;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;color:#f59e0b;border:1px solid #f59e0b33">PLANNED — L3</span>
+        </div>
+        <table>
+          <tr><td style="color:var(--text);width:140px">Audience</td><td>Founder, senior executives, founding team (INTERNAL ONLY)</td></tr>
+          <tr><td style="color:var(--text)">Location</td><td>Strategy & Commercialisation page, Command Centre, admin interfaces</td></tr>
+          <tr><td style="color:var(--text)">Capabilities</td><td>Real-time strategic Q&A, SWOT analysis, risk register review, financial model updates, investor prep coaching, stakeholder briefings, competitive analysis, market updates</td></tr>
+          <tr><td style="color:var(--text)">Modalities</td><td>🎥 Video (3D face) · 🎤 Audio (voice) · 💬 Chat (text) · 🤟 Sign Language · 🌍 50+ Languages</td></tr>
+          <tr><td style="color:var(--text)">Data Sources</td><td>Live platform APIs, canonical knowledge base, roadmap state, financial metrics, market intelligence feeds, guardian agent reports</td></tr>
+          <tr><td style="color:var(--text)">Personality</td><td>Calm, authoritative, data-driven. Challenges assumptions constructively. References HEC MBA frameworks. Adapts to CEO/CTO/investor contexts.</td></tr>
+          <tr><td style="color:var(--text)">Rendering</td><td>Three.js CPU (5K poly, 30fps) now → WebGPU (50K poly, 60fps) post-revenue</td></tr>
+        </table>
+      </div>
+
+      <!-- Roadmap Advisor -->
+      <div style="background:var(--card2);border:1px solid #06b6d430;border-radius:10px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#06b6d430,#3b82f620);display:flex;align-items:center;justify-content:center;font-size:24px">📋</div>
+          <div>
+            <h3 style="color:#06b6d4;margin:0;font-size:14px">Roadmap / Ops Advisor</h3>
+            <p style="color:var(--muted);font-size:10px;margin:0">24/7 interactive roadmap, sprint status, blocking alerts, deploy coordination</p>
+          </div>
+          <span style="margin-left:auto;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;color:#f59e0b;border:1px solid #f59e0b33">PLANNED — L3</span>
+        </div>
+        <table>
+          <tr><td style="color:var(--text);width:140px">Audience</td><td>Founder, development team, Claude AI instances (INTERNAL ONLY)</td></tr>
+          <tr><td style="color:var(--text)">Location</td><td>Ops Dashboard, Admin interfaces, Command Centre</td></tr>
+          <tr><td style="color:var(--text)">Capabilities</td><td>Sprint status queries, blocking issue alerts, depth gap identification, deploy queue status, guardian activity narration, flywheel report summaries, lane conflict detection, ETA predictions</td></tr>
+          <tr><td style="color:var(--text)">Modalities</td><td>🎥 Video · 🎤 Audio · 💬 Chat · 🤟 Sign Language · 🌍 50+ Languages</td></tr>
+          <tr><td style="color:var(--text)">Data Sources</td><td>Roadmap tracker API, deploy coordination system, guardian agent feeds, flywheel activity log, GitHub commit history, Coolify deploy status</td></tr>
+          <tr><td style="color:var(--text)">Personality</td><td>Efficient, precise, proactive. Warns about blockers before they bite. Uses Gantt-like mental models. Speaks in deliverables and percentages.</td></tr>
+        </table>
+      </div>
+
+      <!-- Sales Representative -->
+      <div style="background:var(--card2);border:1px solid #10b98130;border-radius:10px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#10b98130,#06b6d420);display:flex;align-items:center;justify-content:center;font-size:24px">🤝</div>
+          <div>
+            <h3 style="color:#10b981;margin:0;font-size:14px">Public Sales Representative</h3>
+            <p style="color:var(--muted);font-size:10px;margin:0">24/7 live demo, ethical soft-sell, customer qualification, public-facing</p>
+          </div>
+          <span style="margin-left:auto;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;color:#f59e0b;border:1px solid #f59e0b33">PLANNED — L3</span>
+        </div>
+        <table>
+          <tr><td style="color:var(--text);width:140px">Audience</td><td>General public, potential customers, investors visiting site (PUBLIC)</td></tr>
+          <tr><td style="color:var(--text)">Location</td><td>Landing page, customer solutions page, all public-facing pages</td></tr>
+          <tr><td style="color:var(--text)">Ethics Policy</td><td>Honest, transparent, soft-sell ONLY. Never manipulates, cons, hard-sells, or is dishonest. Reputation and trust come first. Gently suggests account creation when appropriate.</td></tr>
+          <tr><td style="color:var(--text)">Security</td><td>Never divulges: internal architecture details, pricing strategy internals, investor information, infrastructure specifics, competitive analysis, roadmap details beyond public features</td></tr>
+          <tr><td style="color:var(--text)">Modalities</td><td>🎥 Video · 🎤 Audio · 💬 Chat · 🤟 Sign Language · 🌍 50+ Languages · Culturally adaptive</td></tr>
+        </table>
+      </div>
+
+      <!-- Support Agent -->
+      <div style="background:var(--card2);border:1px solid #3b82f630;border-radius:10px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3b82f630,#a855f720);display:flex;align-items:center;justify-content:center;font-size:24px">💬</div>
+          <div>
+            <h3 style="color:#3b82f6;margin:0;font-size:14px">Support Agent</h3>
+            <p style="color:var(--muted);font-size:10px;margin:0">User help, feature navigation, troubleshooting for logged-in users</p>
+          </div>
+          <span style="margin-left:auto;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;color:#f59e0b;border:1px solid #f59e0b33">PLANNED — L3</span>
+        </div>
+      </div>
+
+      <!-- Guardian Narrator -->
+      <div style="background:var(--card2);border:1px solid #f59e0b30;border-radius:10px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f59e0b30,#ef444420);display:flex;align-items:center;justify-content:center;font-size:24px">🛡️</div>
+          <div>
+            <h3 style="color:#f59e0b;margin:0;font-size:14px">Guardian Narrator</h3>
+            <p style="color:var(--muted);font-size:10px;margin:0">Explains guardian actions, platform health events in natural language</p>
+          </div>
+          <span style="margin-left:auto;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;color:#f59e0b;border:1px solid #f59e0b33">PLANNED — L2</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3D Technical Spec -->
+    <div class="card">
+      <h2>3D Rendering Specification</h2>
+      <table>
+        <tr><th>Attribute</th><th style="color:#a855f7">CPU Phase (Current)</th><th style="color:#06b6d4">GPU Phase (Post-Revenue)</th></tr>
+        <tr><td style="color:var(--text)">Renderer</td><td>Three.js WebGL (software fallback)</td><td>WebGPU + Three.js</td></tr>
+        <tr><td style="color:var(--text)">Model Complexity</td><td>~5,000 polygons (low-poly)</td><td>~50,000 polygons (detailed)</td></tr>
+        <tr><td style="color:var(--text)">Frame Rate</td><td>30 fps target</td><td>60 fps target</td></tr>
+        <tr><td style="color:var(--text)">Lip-Sync</td><td>Viseme mapping from TTS phonemes</td><td>Neural audio-visual mapping</td></tr>
+        <tr><td style="color:var(--text)">Expressions</td><td>6 morph targets (joy/concern/focus/calm/alert/thoughtful)</td><td>20+ blendshapes with micro-expressions</td></tr>
+        <tr><td style="color:var(--text)">Sign Language</td><td>MediaPipe WASM (browser-local, no upload)</td><td>GPU-accelerated pose estimation</td></tr>
+        <tr><td style="color:var(--text)">Format</td><td>GLTF/GLB compressed</td><td>GLTF/GLB with PBR materials</td></tr>
+        <tr><td style="color:var(--text)">Backgrounds</td><td>CSS gradient + particle system</td><td>Real-time 3D environment</td></tr>
+        <tr><td style="color:var(--text)">Cultural Adaptation</td><td>Gesture library per region</td><td>Neural gesture generation</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:10px;color:var(--muted)"><strong style="color:var(--text)">Default for ALL avatars:</strong> 🎥 Video (3D rendered) · 🎤 Audio (STT/TTS) · 💬 Chat · 🤟 Sign Language (MediaPipe) · 🌍 Multi-language (50+) · 🎎 Multi-region (culturally adaptive). No exceptions — every avatar ships with full modality support.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Auto-updating from live APIs · Last refresh: <span id="last-ts">—</span><br>
+  <a href="index.html" style="color:var(--muted)">Home</a> · <a href="hub.html" style="color:#ef444480">Command Centre</a> · <a href="investors.html" style="color:#a855f780">Investors</a> · <a href="solutions.html" style="color:var(--muted)">Customers</a> · <a href="technical.html" style="color:var(--muted)">Technical</a>
+  <br><span style="color:var(--red);font-weight:700">🔒 EXECUTIVE STRATEGY — NEVER FOR EXTERNAL AUDIENCE — TOP SECRET</span>
+</div>
+
+<!-- ═══ AGENT AVATAR WIDGET ═══ -->
+<div style="position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+  <div id="agent-bubble" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:280px;box-shadow:0 12px 48px rgba(0,0,0,.5)">
+    <h4 style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px">🏛️ Strategy Hub</h4>
+    <p style="font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:6px">Full executive strategy at your fingertips. Need to prep for <a href="investors.html" style="color:#a855f7">investors</a>? Check <a href="solutions.html" style="color:#3b82f6">customer solutions</a>? Launch the <a href="https://console.jspriggins.com" style="color:#06b6d4" target="_blank">live console</a>?</p>
+    <p style="font-size:9px;color:var(--muted);font-style:italic">All data auto-updates from live APIs every 60 seconds.</p>
+  </div>
+  <button onclick="document.getElementById('agent-bubble').style.display=document.getElementById('agent-bubble').style.display==='none'?'block':'none'" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;font-size:20px" title="Punky Assistant">🤖</button>
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+async function refresh(){
+  try{
+    const [api,router]=await Promise.all([
+      fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),
+      fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),
+    ]);
+    const ok=api.status==='ok'&&router.status==='healthy';
+    document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+    document.getElementById('nav-status').textContent=ok?'Online':'Issues';
+    document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+    document.getElementById('last-ts').textContent=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+  }catch(e){}
+}
+refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>

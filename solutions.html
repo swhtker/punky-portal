@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Punky — Solutions & Pricing</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#a855f7;--accent2:#ec4899;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6}
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text)}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--accent);background:#a855f712;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.gnav-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gnav-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;transition:all .15s;font-family:inherit;cursor:pointer;border:none}
+.gnav-btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px #a855f730}
+.lock{background:#3b82f608;border-bottom:1px solid #3b82f615;padding:5px;text-align:center;font-size:10px;color:var(--blue);font-weight:700;letter-spacing:1.5px}
+.container{max-width:1100px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:36px 20px 24px}
+.hero h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 14px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;font-weight:500;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+.tab:hover{color:var(--text)}
+.section{display:none}.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.card h2{color:var(--cyan);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.card h3{color:var(--blue);font-size:12px;font-weight:700;margin:14px 0 6px}
+.card p{font-size:12px;color:#a1a1aa;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+td{padding:6px 8px;border-bottom:1px solid #ffffff06}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;transition:all .2s}
+.price-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.price-card.featured{border-color:var(--accent);box-shadow:0 4px 24px #a855f715}
+.price-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px}
+.price-val{font-size:32px;font-weight:900;font-family:'JetBrains Mono',monospace;margin:8px 0 4px}
+.price-period{font-size:10px;color:var(--muted)}
+.price-features{text-align:left;margin:12px 0;font-size:11px;color:var(--muted)}
+.price-features div{padding:3px 0;border-bottom:1px solid #ffffff04}
+.price-btn{display:block;padding:10px;border-radius:8px;text-decoration:none;font-weight:700;font-size:12px;margin-top:12px;transition:all .15s;text-align:center}
+.vert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:12px 0}
+.vert{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px;transition:border-color .2s}
+.vert:hover{border-color:var(--cyan)}
+.vert-icon{font-size:24px;margin-bottom:6px}
+.vert-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.vert-desc{font-size:10px;color:var(--muted)}
+.kpi-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.kpi{flex:1;min-width:120px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.kpi .v{font-size:22px;font-weight:800;font-family:'JetBrains Mono'}
+.kpi .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+/* Agent Widget */
+.agent-widget{position:fixed;bottom:20px;right:20px;z-index:300}
+.agent-bubble{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:280px;box-shadow:0 12px 48px rgba(0,0,0,.5);margin-bottom:8px;animation:fadeUp .3s ease}
+.agent-bubble.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.agent-bubble h4{font-family:'Syne';font-size:13px;font-weight:700;margin-bottom:4px}
+.agent-bubble p{font-size:10px;color:var(--muted);line-height:1.5}
+.agent-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;transition:all .2s;float:right}
+.agent-btn:hover{transform:scale(1.08)}
+.agent-face{font-size:20px}
+.footer{color:var(--muted);font-size:10px;text-align:center;padding:20px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.price-grid{grid-template-columns:1fr}.gnav-links{display:none}}
+</style>
+</head>
+<body>
+<nav class="gnav"><div class="gnav-inner">
+  <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+  <div class="gnav-links">
+    <a href="index.html" class="gnav-link">Home</a>
+    <a href="technical.html" class="gnav-link">Technical</a>
+    <a href="solutions.html" class="gnav-link active">Solutions</a>
+    <a href="hub.html" class="gnav-link" style="color:#ef4444">⬡ Command Centre</a>
+    <a href="strategy.html" class="gnav-link" style="color:#ec4899">Strategy</a>
+    <a href="investors.html" class="gnav-link" style="color:#a855f7">Investors</a>
+    <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+  </div>
+  <div class="gnav-right">
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div class="gnav-dot" id="nav-dot" style="background:var(--green)"></div><span id="nav-status" style="color:var(--green);font-weight:600">Online</span></div>
+    <a href="https://console.jspriggins.com" class="gnav-btn gnav-btn-p" target="_blank">Get Started</a>
+  </div>
+</div></nav>
+<div class="lock">CONFIDENTIAL — CUSTOMER SALES PORTAL — AUTO-UPDATING FROM LIVE PLATFORM</div>
+
+<div class="container">
+  <div class="hero"><h1>Solutions & Pricing</h1><p>Enterprise AI on your terms — explore features, verticals, and pricing</p></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview')">Quick Overview</button>
+    <button class="tab" onclick="showTab('features')">Features</button>
+    <button class="tab" onclick="showTab('verticals')">Industry Solutions</button>
+    <button class="tab" onclick="showTab('pricing')">Pricing</button>
+    <button class="tab" onclick="showTab('demo')">Live Demo Data</button>
+  </div>
+
+  <div id="overview" class="section active">
+    <div class="card"><h2>5-Minute Overview</h2>
+      <p><strong style="color:var(--text)">What is Punky?</strong> A self-hosted autonomous agent platform that runs on your infrastructure, routes to any LLM provider, and costs 10× less than locked-in alternatives. Think of it as your private AI operations centre.</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" style="color:var(--accent)">149+</div><div class="l">API Endpoints</div></div>
+        <div class="kpi"><div class="v" style="color:var(--green)">5+</div><div class="l">LLM Providers</div></div>
+        <div class="kpi"><div class="v" style="color:var(--cyan)">20</div><div class="l">Guardian Agents</div></div>
+        <div class="kpi"><div class="v" style="color:var(--amber)">10+</div><div class="l">Industry Verticals</div></div>
+        <div class="kpi"><div class="v" style="color:var(--accent2)">€3-5</div><div class="l">/User/Month</div></div>
+      </div>
+      <h3>6 Key Advantages</h3>
+      <table>
+        <tr><td style="color:var(--text);font-weight:700">🏠 Self-Hosted</td><td>Deploy on your servers. Air-gapped mode available. Data never leaves your network.</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">🔀 Any Provider</td><td>Route to Groq, Anthropic, OpenAI, Mistral, Ollama. No vendor lock-in.</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">💰 10× Cheaper</td><td>Smart Router sends 70-90% of queries through free tiers. Pay only for complex tasks.</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">🛡️ 20 Guardians</td><td>Self-healing platform. Autonomous security, compliance, and code repair 24/7.</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">🎭 Inside Out</td><td>Adaptive avatar with voice, sign language, cultural sensitivity, and emotion awareness.</td></tr>
+        <tr><td style="color:var(--text);font-weight:700">🏢 10+ Verticals</td><td>ESG, ERP, HR, PM, Research, OSINT, HSE, Education, Health, Journalism agent teams.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="features" class="section">
+    <div class="card"><h2>Core Platform</h2>
+      <table>
+        <tr><th>Feature</th><th>Description</th><th>Status</th></tr>
+        <tr><td style="color:var(--text)">Agent Framework</td><td>Create, configure, template agents with autonomy levels</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Run Orchestration</td><td>Multi-step task execution with SSE streaming and approvals</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Knowledge / RAG</td><td>Hybrid vector + keyword search, document ingestion</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Encrypted Memory</td><td>Episodic, semantic, procedural memory with Fernet encryption</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Smart Router</td><td>Intelligent LLM routing across 5+ providers</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Application Factory</td><td>Autonomous preparation engine — Punky works while you sleep</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">MCP Protocol</td><td>Full Model Context Protocol support (Claude Desktop, Cursor, VS Code)</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Inside Out Avatar</td><td>2D avatar, 6 expressions, lip-sync, emotion console</td><td><span class="badge" style="color:var(--amber);border-color:#f59e0b33">Building</span></td></tr>
+        <tr><td style="color:var(--text)">Voice Pipeline</td><td>Browser mic → STT → Smart Router → TTS (<3s latency)</td><td><span class="badge" style="color:var(--amber);border-color:#f59e0b33">Building</span></td></tr>
+        <tr><td style="color:var(--text)">Sign Language</td><td>MediaPipe WASM recognition, browser-local processing</td><td><span class="badge" style="color:var(--amber);border-color:#f59e0b33">Building</span></td></tr>
+      </table>
+    </div>
+    <div class="card"><h2>Enterprise Security</h2>
+      <table>
+        <tr><td style="color:var(--text)">Tenant Isolation</td><td>PostgreSQL RLS, fail-closed. Cross-tenant access impossible.</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">Audit Trail</td><td>SHA-256 hash-chain tamper-evident logging</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">GDPR Tooling</td><td>Data access, erasure, portability, consent management</td><td><span class="badge" style="color:var(--green);border-color:#10b98133">Live</span></td></tr>
+        <tr><td style="color:var(--text)">EU AI Act Ready</td><td>Human oversight, approval workflows, transparency reports</td><td><span class="badge" style="color:var(--blue);border-color:#3b82f633">Compliance</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="verticals" class="section">
+    <div class="card"><h2>Industry Agent Teams</h2>
+      <p>Pre-built specialist agent teams deployed in minutes, not months. Each vertical includes domain-specific knowledge, tools, and workflows.</p>
+      <div class="vert-grid">
+        <div class="vert"><div class="vert-icon">🌿</div><div class="vert-name">ESG & Sustainability</div><div class="vert-desc">CSRD/GRI/ISSB copilot, gap detector, emissions calculator, report generator</div></div>
+        <div class="vert"><div class="vert-icon">🏭</div><div class="vert-name">ERP</div><div class="vert-desc">Enterprise resource planning agent team — procurement, inventory, operations</div></div>
+        <div class="vert"><div class="vert-icon">👥</div><div class="vert-name">HR & People</div><div class="vert-desc">Recruitment, onboarding, performance, compliance, employee self-service</div></div>
+        <div class="vert"><div class="vert-icon">📋</div><div class="vert-name">Project Management</div><div class="vert-desc">Planning, tracking, resource allocation, risk management, reporting</div></div>
+        <div class="vert"><div class="vert-icon">🔍</div><div class="vert-name">Research & OSINT</div><div class="vert-desc">Open-source intelligence, market research, competitive analysis, due diligence</div></div>
+        <div class="vert"><div class="vert-icon">📰</div><div class="vert-name">Journalism & Media</div><div class="vert-desc">Fact-checking, source verification, story research, content analysis</div></div>
+        <div class="vert"><div class="vert-icon">⚠️</div><div class="vert-name">HSE / Safety</div><div class="vert-desc">Health, safety, environment monitoring, incident reporting, compliance tracking</div></div>
+        <div class="vert"><div class="vert-icon">🎓</div><div class="vert-name">Education</div><div class="vert-desc">Teaching assistant, curriculum planning, student support, administrative automation</div></div>
+        <div class="vert"><div class="vert-icon">🏥</div><div class="vert-name">Health & Wellness</div><div class="vert-desc">Health information, wellness tracking, appointment management (non-diagnostic)</div></div>
+        <div class="vert"><div class="vert-icon">🏛️</div><div class="vert-name">Civic Engagement</div><div class="vert-desc">Public service information, civic reporting, community engagement tools</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pricing" class="section">
+    <div class="card"><h2>Four Ways to Use Punky</h2><p style="font-size:11px;color:var(--muted);margin-bottom:12px">From free personal accounts to enterprise on-premises and a freelance agent marketplace — there's a Punky for everyone.</p></div>
+    <div class="price-grid">
+      <div class="price-card"><div class="price-name" style="color:var(--cyan)">Consumer SaaS</div><div class="price-val" style="color:var(--cyan)">Free</div><div class="price-period">to €15/user/month</div><div class="price-features"><div>✓ Free tier: 100 msg/day</div><div>✓ Solo: €5/mo (more messages)</div><div>✓ Pro: €15/mo (unlimited)</div><div>✓ Choose your LLM providers</div><div>✓ 3D avatar + voice + sign lang</div><div>✓ Agent marketplace access</div><div>✓ No ads, no data selling</div></div><a href="https://console.jspriggins.com" class="price-btn" style="background:var(--card2);color:var(--cyan);border:1px solid #06b6d433" target="_blank">Get Started Free</a></div>
+      <div class="price-card featured"><div class="price-name" style="color:var(--accent)">Enterprise SaaS</div><div class="price-val" style="color:var(--accent)">€40</div><div class="price-period">/user/month</div><div class="price-features"><div>✓ Managed EU hosting</div><div>✓ 99.9% SLA</div><div>✓ SSO / SAML / RBAC</div><div>✓ Multi-tenant isolation</div><div>✓ Vertical agent teams</div><div>✓ Dedicated support</div><div>✓ Smart Router (5+ providers)</div></div><a href="https://console.jspriggins.com" class="price-btn" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff" target="_blank">Contact Sales</a></div>
+      <div class="price-card"><div class="price-name" style="color:var(--red)">Enterprise On-Prem</div><div class="price-val" style="color:var(--red)">€80</div><div class="price-period">/user/month</div><div class="price-features"><div>✓ Full on-premises deploy</div><div>✓ Air-gapped option</div><div>✓ Complete data sovereignty</div><div>✓ Bring your own LLM</div><div>✓ Custom SLA + on-site support</div><div>✓ GDPR/NIS2/DORA ready</div><div>✓ Unlimited users per licence</div></div><a href="https://console.jspriggins.com" class="price-btn" style="background:var(--card2);color:var(--red);border:1px solid #ef444433" target="_blank">Contact Sales</a></div>
+      <div class="price-card"><div class="price-name" style="color:var(--green)">🏪 Agent Marketplace</div><div class="price-val" style="color:var(--green)">Pay per job</div><div class="price-period">open to everyone</div><div class="price-features"><div>✓ Commission specialist agents</div><div>✓ NDA + contracts by default</div><div>✓ Full data ownership</div><div>✓ Agents learn anonymously</div><div>✓ Third-party agents welcome</div><div>✓ Ratings + reviews</div><div>✓ 12 agent categories</div></div><a href="marketplace.html" class="price-btn" style="background:var(--card2);color:var(--green);border:1px solid #10b98133">Browse Marketplace</a></div>
+    </div>
+  </div>
+
+  <div id="demo" class="section">
+    <div class="card"><h2>Live Platform Status</h2><p>Auto-updating every 60 seconds from production APIs.</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" id="d-api" style="color:var(--green)">—</div><div class="l">API</div></div>
+        <div class="kpi"><div class="v" id="d-router" style="color:var(--green)">—</div><div class="l">Smart Router</div></div>
+        <div class="kpi"><div class="v" id="d-uptime" style="color:var(--cyan)">—</div><div class="l">Router Uptime</div></div>
+        <div class="kpi"><div class="v" id="d-console" style="color:var(--accent)">—</div><div class="l">Console</div></div>
+      </div>
+      <p style="margin-top:8px;font-size:10px;color:var(--muted)">Last refresh: <span id="d-ts">—</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Agent Widget -->
+<div class="agent-widget">
+  <div class="agent-bubble" id="agent-bubble">
+    <h4>💬 Questions about Punky?</h4>
+    <p>I'll be available soon with voice, video, and chat to help you explore our solutions. For now, check the <a href="https://console.jspriggins.com" style="color:var(--accent)" target="_blank">live console</a> or the <a href="technical.html" style="color:var(--accent)">technical docs</a>.</p>
+    <p style="font-size:9px;color:var(--muted);margin-top:6px;font-style:italic">We believe in honest, transparent communication. No pressure, no manipulation — just helpful information.</p>
+  </div>
+  <button class="agent-btn" onclick="document.getElementById('agent-bubble').classList.toggle('open')"><span class="agent-face">🤖</span></button>
+</div>
+
+<div class="footer">Auto-updating · <span id="f-ts">—</span> · <span style="color:var(--blue)">CONFIDENTIAL</span> · <a href="hub.html" style="color:var(--muted)">Command Centre</a></div>
+
+<script>
+function showTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active')}
+async function refresh(){try{
+  const [api,router]=await Promise.all([fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'}))]);
+  const ok=api.status==='ok'&&router.status==='healthy';
+  document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+  document.getElementById('nav-status').textContent=ok?'Online':'Issues';document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('d-api').textContent=api.status==='ok'?'✓ Healthy':'✗';document.getElementById('d-api').style.color=api.status==='ok'?'var(--green)':'var(--red)';
+  document.getElementById('d-router').textContent=router.status==='healthy'?'✓ Healthy':'✗';document.getElementById('d-router').style.color=router.status==='healthy'?'var(--green)':'var(--red)';
+  if(router.uptime_seconds){document.getElementById('d-uptime').textContent=Math.floor(router.uptime_seconds/3600)+'h'}
+  document.getElementById('d-console').textContent='✓ Live';
+  const ts=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+  document.getElementById('d-ts').textContent=ts;document.getElementById('f-ts').textContent=ts;
+}catch(e){}}
+refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>

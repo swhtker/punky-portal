@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Punky — Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#a855f7;--accent2:#ec4899;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6;min-height:100vh}
+
+/* ═══ SHARED GLOBAL NAV ═══ */
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);letter-spacing:-0.3px}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--red);background:#ef444412;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.gnav-status{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600}
+.gnav-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gnav-badge{padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+
+.lock{background:linear-gradient(90deg,#ef444408,#ef444404);border-bottom:1px solid #ef444415;padding:5px;text-align:center;font-size:10px;color:#ef4444;font-weight:700;letter-spacing:1.5px}
+
+.hub{max-width:1200px;margin:0 auto;padding:32px 20px}
+.hub-hero{text-align:center;padding:36px 20px 24px}
+.hub-hero h1{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1.5px;margin-bottom:6px}
+.hub-hero p{color:var(--muted);font-size:13px;max-width:500px;margin:0 auto}
+
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:20px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;transition:border-color .2s}
+.stat-card:hover{border-color:var(--accent)}
+.stat-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.stat-value{font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;margin-top:4px}
+.stat-sub{color:var(--muted);font-size:9px;margin-top:2px}
+
+.section-header{display:flex;align-items:center;gap:8px;margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.section-header h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);white-space:nowrap}
+.section-header .line{flex:1;height:1px;background:var(--border)}
+
+.page-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.page-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-decoration:none;color:inherit;transition:all .2s;position:relative;overflow:hidden}
+.page-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 32px #a855f710}
+.page-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,var(--accent));opacity:0;transition:opacity .2s}
+.page-card:hover::before{opacity:1}
+.page-icon{font-size:24px;margin-bottom:8px;display:block}
+.page-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:3px}
+.page-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.page-tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;margin-top:8px;border:1px solid}
+.page-arrow{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;transition:all .2s}
+.page-card:hover .page-arrow{color:var(--accent);transform:translateY(-50%) translateX(4px)}
+
+/* ═══ AGENT WIDGET ═══ */
+.agent-widget{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.agent-bubble{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:280px;box-shadow:0 12px 48px rgba(0,0,0,.5);animation:fadeUp .3s ease}
+.agent-bubble.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.agent-bubble h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px}
+.agent-bubble p{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.agent-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;transition:all .2s;position:relative}
+.agent-btn:hover{transform:scale(1.08)}
+.agent-btn::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid #a855f730;animation:agentPulse 3s infinite}
+@keyframes agentPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0}}
+
+.footer{text-align:center;padding:24px;color:var(--muted);font-size:10px;border-top:1px solid var(--border);margin-top:32px}
+@media(max-width:768px){.stats-row{grid-template-columns:repeat(3,1fr)}.page-grid{grid-template-columns:1fr}.gnav-links{overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<!-- ═══ GLOBAL NAV ═══ -->
+<nav class="gnav"><div class="gnav-inner">
+  <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+  <div class="gnav-links">
+    <a href="index.html" class="gnav-link">Home</a>
+    <a href="technical.html" class="gnav-link">Technical</a>
+    <a href="solutions.html" class="gnav-link">Solutions</a>
+    <a href="marketplace.html" class="gnav-link" style="color:#10b981">🏪 Marketplace</a>
+    <a href="hub.html" class="gnav-link active">⬡ Command Centre</a>
+    <a href="strategy.html" class="gnav-link" style="color:#ec4899">Strategy</a>
+    <a href="investors.html" class="gnav-link" style="color:#a855f7">Investors</a>
+    <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+  </div>
+  <div class="gnav-right">
+    <div class="gnav-status"><div class="gnav-dot" id="nav-dot" style="background:var(--green)"></div><span id="nav-status" style="color:var(--green)">Online</span></div>
+    <span class="gnav-badge" style="color:var(--red);border-color:#ef444433;background:#ef444408">🔒 LOCKED</span>
+  </div>
+</div></nav>
+
+<div class="lock">CONFIDENTIAL — INTERNAL COMMAND CENTRE — NOT FOR PUBLIC DISTRIBUTION — AUTO-UPDATING</div>
+
+<div class="hub">
+  <div class="hub-hero">
+    <h1>Command Centre</h1>
+    <p>One-click access to every Punky resource. All pages auto-update from production APIs.</p>
+  </div>
+
+  <!-- ═══ LIVE STATS ═══ -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">API</div><div class="stat-value" id="s-api" style="color:var(--green)">✓</div><div class="stat-sub">api.jspriggins.com</div></div>
+    <div class="stat-card"><div class="stat-label">Routes</div><div class="stat-value" style="color:var(--accent)">149</div><div class="stat-sub">28 modules</div></div>
+    <div class="stat-card"><div class="stat-label">Tests</div><div class="stat-value" style="color:var(--green)">962</div><div class="stat-sub">100% passing</div></div>
+    <div class="stat-card"><div class="stat-label">Depth</div><div class="stat-value" style="color:var(--amber)">2.2</div><div class="stat-sub">avg (target 4+)</div></div>
+    <div class="stat-card"><div class="stat-label">Uptime</div><div class="stat-value" style="color:var(--cyan)" id="s-uptime">—</div><div class="stat-sub">router</div></div>
+    <div class="stat-card"><div class="stat-label">Cost</div><div class="stat-value" style="color:var(--blue)">€30</div><div class="stat-sub">/month</div></div>
+  </div>
+
+  <!-- ═══ PUBLIC PAGES ═══ -->
+  <div class="section-header"><h2>🌐 Public Pages (Locked Down)</h2><div class="line"></div></div>
+  <div class="page-grid">
+    <a href="index.html" class="page-card" style="--card-accent:var(--accent)">
+      <span class="page-icon">🏠</span>
+      <div class="page-title">Homepage / Landing</div>
+      <div class="page-desc">Public homepage with platform overview, features, comparison, CTA. Live agent avatar widget. Login / signup links.</div>
+      <span class="page-tag" style="color:var(--accent);border-color:#a855f733">PUBLIC (LOCKED)</span>
+      <span class="page-arrow">→</span>
+    </a>
+    <a href="technical.html" class="page-card" style="--card-accent:var(--amber)">
+      <span class="page-icon">🔧</span>
+      <div class="page-title">Technical Overview</div>
+      <div class="page-desc">Architecture, API, deployment, security. Public-safe for technical evaluators — no IP exposed.</div>
+      <span class="page-tag" style="color:var(--amber);border-color:#f59e0b33">PUBLIC-SAFE (LOCKED)</span>
+      <span class="page-arrow">→</span>
+    </a>
+    <a href="solutions.html" class="page-card" style="--card-accent:var(--blue)">
+      <span class="page-icon">🤝</span>
+      <div class="page-title">Customer Solutions</div>
+      <div class="page-desc">Features, pricing, verticals, live demo data. Sales presentations and customer self-service.</div>
+      <span class="page-tag" style="color:var(--blue);border-color:#3b82f633">CONFIDENTIAL</span>
+      <span class="page-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- ═══ INTERNAL PAGES ═══ -->
+  <div class="section-header"><h2>🔒 Internal (Founder Only)</h2><div class="line"></div></div>
+  <div class="page-grid">
+    <a href="punky-ops-dashboard.jsx" class="page-card" style="--card-accent:#06b6d4">
+      <span class="page-icon">📋</span>
+      <div class="page-title">Ops / Dev Dashboard</div>
+      <div class="page-desc">Filterable roadmap, deploy coordination, blocking alerts, guardian activity, flywheel integration, safe lane assignments. The operational brain.</div>
+      <span class="page-tag" style="color:#06b6d4;border-color:#06b6d433">OPERATIONAL — INTERNAL</span>
+      <span class="page-arrow">→</span>
+    </a>
+    <a href="strategy.html" class="page-card" style="--card-accent:#ec4899">
+      <span class="page-icon">🏛️</span>
+      <div class="page-title">Strategy & Commercialisation</div>
+      <div class="page-desc">Business case, risk management, stakeholder mapping, marketing/sales/HR/finance strategy. Executive audience only.</div>
+      <span class="page-tag" style="color:#ec4899;border-color:#ec489933">EXECUTIVE — NEVER PUBLIC</span>
+      <span class="page-arrow">→</span>
+    </a>
+    <a href="investors.html" class="page-card" style="--card-accent:var(--accent)">
+      <span class="page-icon">📊</span>
+      <div class="page-title">Investor & Marketing</div>
+      <div class="page-desc">5-minute pitch, full investor deck, live stats, market analysis, team overview. Ready in under 5 min prep.</div>
+      <span class="page-tag" style="color:var(--accent);border-color:#a855f733">CONFIDENTIAL</span>
+      <span class="page-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- ═══ PLATFORM TOOLS ═══ -->
+  <div class="section-header"><h2>⚙️ Platform</h2><div class="line"></div></div>
+  <div class="page-grid">
+    <a href="https://console.jspriggins.com" target="_blank" class="page-card" style="--card-accent:var(--green)">
+      <span class="page-icon">🖥️</span>
+      <div class="page-title">Punky Console</div>
+      <div class="page-desc">Live web console — agent management, runs, knowledge, conversations, settings.</div>
+      <span class="page-tag" style="color:var(--green);border-color:#10b98133">LIVE ↗</span>
+      <span class="page-arrow">↗</span>
+    </a>
+    <a href="https://api.jspriggins.com/health" target="_blank" class="page-card" style="--card-accent:var(--cyan)">
+      <span class="page-icon">🔌</span>
+      <div class="page-title">API Health</div>
+      <div class="page-desc">Direct JSON health endpoint for monitoring and integration verification.</div>
+      <span class="page-tag" style="color:var(--cyan);border-color:#06b6d433">LIVE ↗</span>
+      <span class="page-arrow">↗</span>
+    </a>
+    <a href="https://router.jspriggins.com/health" target="_blank" class="page-card" style="--card-accent:var(--cyan)">
+      <span class="page-icon">🔀</span>
+      <div class="page-title">Smart Router</div>
+      <div class="page-desc">LLM routing gateway health and provider connectivity status.</div>
+      <span class="page-tag" style="color:var(--cyan);border-color:#06b6d433">LIVE ↗</span>
+      <span class="page-arrow">↗</span>
+    </a>
+  </div>
+
+  <!-- ═══ INFRASTRUCTURE ═══ -->
+  <div class="section-header"><h2>🏗️ Infrastructure</h2><div class="line"></div></div>
+  <div class="page-grid">
+    <a href="https://coolify.jspriggins.com" target="_blank" class="page-card" style="--card-accent:#6366f1">
+      <span class="page-icon">☁️</span><div class="page-title">Coolify</div>
+      <div class="page-desc">Container deployment and management for all services.</div>
+      <span class="page-tag" style="color:#6366f1;border-color:#6366f133">ADMIN ↗</span><span class="page-arrow">↗</span>
+    </a>
+    <a href="https://github.com/swhtker?tab=repositories" target="_blank" class="page-card" style="--card-accent:#8b5cf6">
+      <span class="page-icon">🐙</span><div class="page-title">GitHub</div>
+      <div class="page-desc">12 private repositories. Main: punky, punky-console, punky-smart-router.</div>
+      <span class="page-tag" style="color:#8b5cf6;border-color:#8b5cf633">12 REPOS (PRIVATE) ↗</span><span class="page-arrow">↗</span>
+    </a>
+    <a href="https://console.hetzner.com/projects/12888146/dashboard" target="_blank" class="page-card" style="--card-accent:var(--red)">
+      <span class="page-icon">🖧</span><div class="page-title">Hetzner Cloud</div>
+      <div class="page-desc">3 servers, 4 firewalls. Production + monitoring + CI. €30/mo.</div>
+      <span class="page-tag" style="color:var(--red);border-color:#ef444433">INFRA ↗</span><span class="page-arrow">↗</span>
+    </a>
+    <a href="https://dashboard.uptimerobot.com/monitors" target="_blank" class="page-card" style="--card-accent:var(--green)">
+      <span class="page-icon">📡</span><div class="page-title">UptimeRobot</div>
+      <div class="page-desc">External uptime monitoring for all public endpoints.</div>
+      <span class="page-tag" style="color:var(--green);border-color:#10b98133">MONITORING ↗</span><span class="page-arrow">↗</span>
+    </a>
+    <a href="https://admin.gandi.net/domain/f255cacc-92e1-11eb-8ecc-00163e9db362/jspriggins.com/overview" target="_blank" class="page-card" style="--card-accent:var(--amber)">
+      <span class="page-icon">🌐</span><div class="page-title">Gandi DNS</div>
+      <div class="page-desc">Domain, DNS records, SSL certificates for jspriggins.com.</div>
+      <span class="page-tag" style="color:var(--amber);border-color:#f59e0b33">DNS ↗</span><span class="page-arrow">↗</span>
+    </a>
+  </div>
+</div>
+
+<!-- ═══ AGENT WIDGET ═══ -->
+<div class="agent-widget">
+  <div class="agent-bubble" id="agent-bubble">
+    <h4>⬡ Command Centre</h4>
+    <p>Quick access to everything. Need the <a href="strategy.html" style="color:var(--accent)">full strategy</a>? Ready to <a href="investors.html" style="color:var(--accent)">pitch investors</a>? Check <a href="solutions.html" style="color:var(--accent)">customer solutions</a>?</p>
+    <p style="font-size:9px;color:var(--muted);font-style:italic">All pages auto-update from live production APIs every 60 seconds.</p>
+  </div>
+  <button class="agent-btn" onclick="document.getElementById('agent-bubble').classList.toggle('open')" title="Punky Assistant">
+    <span style="font-size:20px">🤖</span>
+  </button>
+</div>
+
+<div class="footer">
+  Auto-updating from live APIs · Last refresh: <span id="last-ts">—</span><br>
+  <a href="index.html" style="color:var(--muted)">Home</a> · <a href="strategy.html" style="color:#ec489980">Strategy</a> · <a href="investors.html" style="color:#a855f780">Investors</a> · <a href="solutions.html" style="color:var(--muted)">Customers</a> · <a href="technical.html" style="color:var(--muted)">Technical</a>
+  <br><span style="color:var(--red);font-weight:700;font-size:9px">🔒 STRICTLY CONFIDENTIAL — INTERNAL COMMAND CENTRE</span>
+</div>
+
+<script>
+async function refresh(){try{
+  const [api,router]=await Promise.all([
+    fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),
+    fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'}))
+  ]);
+  const ok=api.status==='ok'&&router.status==='healthy';
+  document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+  document.getElementById('nav-status').textContent=ok?'Online':'Issues';
+  document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('s-api').textContent=api.status==='ok'?'✓':'✗';
+  document.getElementById('s-api').style.color=api.status==='ok'?'var(--green)':'var(--red)';
+  if(router.uptime_seconds){document.getElementById('s-uptime').textContent=Math.floor(router.uptime_seconds/3600)+'h'}
+  document.getElementById('last-ts').textContent=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+}catch(e){}}
+refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>

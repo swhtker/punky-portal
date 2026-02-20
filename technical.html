@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Punky — Technical Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#a855f7;--accent2:#ec4899;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6}
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text)}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--cyan);background:#06b6d412;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.gnav-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gnav-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;transition:all .15s;font-family:inherit;cursor:pointer;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px #a855f730}
+.lock{background:#10b98108;border-bottom:1px solid #10b98115;padding:5px;text-align:center;font-size:10px;color:var(--green);font-weight:700;letter-spacing:1.5px}
+.container{max-width:960px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:32px 20px 24px}
+.hero h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:12px}
+.hero .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-right:4px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.card h2{color:var(--cyan);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.card h3{color:var(--accent);font-size:12px;font-weight:700;margin:14px 0 6px}
+.card p{font-size:12px;color:#a1a1aa;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+td{padding:6px 8px;border-bottom:1px solid #ffffff06}
+code{background:#ffffff08;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan)}
+pre{background:#08080e;padding:14px;border-radius:8px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);border:1px solid var(--border);margin:8px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+.stat{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat .l{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.stat .v{font-size:22px;font-weight:800;font-family:'JetBrains Mono';margin-top:3px}
+.note{background:#f59e0b08;border:1px solid #f59e0b15;border-radius:8px;padding:10px;font-size:11px;color:var(--amber);margin:8px 0}
+/* Agent Widget */
+.agent-widget{position:fixed;bottom:20px;right:20px;z-index:300}
+.agent-bubble{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:280px;box-shadow:0 12px 48px rgba(0,0,0,.5);margin-bottom:8px;animation:fadeUp .3s ease}
+.agent-bubble.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.agent-bubble h4{font-family:'Syne';font-size:13px;font-weight:700;margin-bottom:4px}
+.agent-bubble p{font-size:10px;color:var(--muted);line-height:1.5}
+.agent-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;transition:all .2s;float:right}
+.agent-btn:hover{transform:scale(1.08)}
+.footer{color:var(--muted);font-size:10px;text-align:center;padding:20px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.gnav-links{display:none}}
+</style>
+</head>
+<body>
+<nav class="gnav"><div class="gnav-inner">
+  <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+  <div class="gnav-links">
+    <a href="index.html" class="gnav-link">Home</a>
+    <a href="technical.html" class="gnav-link active">Technical</a>
+    <a href="solutions.html" class="gnav-link">Solutions</a>
+    <a href="marketplace.html" class="gnav-link" style="color:#10b981">🏪 Marketplace</a>
+    <a href="hub.html" class="gnav-link" style="color:#ef4444">⬡ Command Centre</a>
+    <a href="strategy.html" class="gnav-link" style="color:#ec4899">Strategy</a>
+    <a href="investors.html" class="gnav-link" style="color:#a855f7">Investors</a>
+    <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+  </div>
+  <div class="gnav-right">
+    <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div class="gnav-dot" id="nav-dot" style="background:var(--green)"></div><span id="nav-status" style="color:var(--green);font-weight:600">Online</span></div>
+    <a href="https://console.jspriggins.com" class="gnav-btn" target="_blank">Get Started</a>
+  </div>
+</div></nav>
+<div class="lock">Technical Documentation — Public-safe overview (no proprietary details) — Auto-updating</div>
+
+<div class="container">
+  <div class="hero"><h1>Technical Overview</h1><p>Architecture, capabilities, and integration guide for technical evaluators</p><div style="margin-top:8px"><span class="dot"></span><span style="color:var(--green);font-size:11px;font-weight:600" id="health">Checking API...</span></div></div>
+
+  <div class="stats">
+    <div class="stat"><div class="l">Endpoints</div><div class="v" style="color:var(--accent)">149+</div></div>
+    <div class="stat"><div class="l">Tests</div><div class="v" style="color:var(--green)">962</div></div>
+    <div class="stat"><div class="l">Modules</div><div class="v" style="color:var(--cyan)">28</div></div>
+    <div class="stat"><div class="l">Architecture</div><div class="v" style="font-size:11px;color:var(--amber)">DDD Hex</div></div>
+  </div>
+
+  <div class="card"><h2>Architecture</h2>
+    <p>Domain-Driven Design modular monolith with hexagonal (ports & adapters) layering. Each bounded context owns its persistence and communicates through defined interfaces and domain events.</p>
+    <pre>
+┌──────────────────────────────────────────┐
+│           HTTP / WebSocket API           │  ← Adapters (inbound)
+├──────────────────────────────────────────┤
+│          Application Use Cases           │  ← Orchestration
+├──────────────────────────────────────────┤
+│            Ports (Interfaces)            │  ← Contracts
+├──────────────────────────────────────────┤
+│            Domain (Pure Logic)           │  ← No I/O, no frameworks
+├──────────────────────────────────────────┤
+│   PostgreSQL │ Valkey │ Qdrant │ LLMs   │  ← Adapters (outbound)
+└──────────────────────────────────────────┘</pre>
+    <h3>Bounded Contexts</h3>
+    <table>
+      <tr><th>Module</th><th>Scope</th><th>API Prefix</th></tr>
+      <tr><td>Auth & Security</td><td>JWT RS256, API keys, RBAC, Fernet encryption</td><td><code>/v1/auth/*</code></td></tr>
+      <tr><td>Agents & Tools</td><td>Agent CRUD, templates, autonomy levels, tool registry</td><td><code>/v1/agents/*</code></td></tr>
+      <tr><td>Runs & Orchestration</td><td>Task execution, SSE streaming, multi-step workflows</td><td><code>/v1/runs/*</code></td></tr>
+      <tr><td>Knowledge</td><td>Hybrid RAG (vector + keyword), document ingestion</td><td><code>/v1/knowledge/*</code></td></tr>
+      <tr><td>Memory</td><td>Encrypted episodic, semantic, procedural memory</td><td><code>/v1/memories/*</code></td></tr>
+      <tr><td>Conversations</td><td>Thread management, context persistence</td><td><code>/v1/conversations/*</code></td></tr>
+      <tr><td>Billing & Plans</td><td>Usage metering, plan enforcement, subscriptions</td><td><code>/v1/billing/*</code></td></tr>
+      <tr><td>Connectors</td><td>Git, web fetch, browser automation framework</td><td><code>/v1/connectors/*</code></td></tr>
+      <tr><td>Webhooks</td><td>Event subscriptions with retry delivery</td><td><code>/v1/webhooks/*</code></td></tr>
+      <tr><td>MCP Protocol</td><td>Model Context Protocol (tools, resources, prompts)</td><td><code>/v1/mcp/*</code></td></tr>
+      <tr><td>Observability</td><td>Health, metrics, audit logging</td><td><code>/v1/health/*</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card"><h2>LLM Routing (Smart Router)</h2>
+    <p>Intelligent, cost-aware routing across multiple LLM providers. Selects the optimal model per request based on task complexity, cost, and availability.</p>
+    <table>
+      <tr><th>Provider</th><th>Models</th><th>Use Case</th></tr>
+      <tr><td>Groq</td><td>LLaMA, Mixtral</td><td>High-speed, free tier queries</td></tr>
+      <tr><td>Anthropic</td><td>Claude family</td><td>Complex reasoning, long context</td></tr>
+      <tr><td>OpenAI</td><td>GPT family</td><td>General purpose, function calling</td></tr>
+      <tr><td>Ollama (local)</td><td>Any open-weight model</td><td>Air-gapped, privacy-sensitive</td></tr>
+      <tr><td>Mistral</td><td>Mistral family</td><td>European hosting, multilingual</td></tr>
+    </table>
+    <div class="note">Provider list is extensible. New providers added via adapter modules without modifying core routing logic.</div>
+  </div>
+
+  <div class="card"><h2>Security Architecture</h2>
+    <table>
+      <tr><th>Layer</th><th>Implementation</th></tr>
+      <tr><td>Authentication</td><td>JWT RS256 tokens + scoped API keys</td></tr>
+      <tr><td>Authorisation</td><td>RBAC with 6 roles, 21 permissions</td></tr>
+      <tr><td>Encryption at rest</td><td>Fernet symmetric encryption for secrets and sensitive data</td></tr>
+      <tr><td>Tenant isolation</td><td>PostgreSQL Row-Level Security (fail-closed)</td></tr>
+      <tr><td>Audit logging</td><td>SHA-256 hash-chain tamper-evident audit trail</td></tr>
+      <tr><td>GDPR tooling</td><td>Data access, erasure, portability, consent management</td></tr>
+    </table>
+  </div>
+
+  <div class="card"><h2>Deployment</h2>
+    <pre># Minimum: 4 vCPU, 8GB RAM, 40GB disk
+docker compose up -d</pre>
+    <table>
+      <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+      <tr><td>CPU</td><td>4 vCPU</td><td>8 vCPU</td></tr>
+      <tr><td>RAM</td><td>8 GB</td><td>16 GB</td></tr>
+      <tr><td>Storage</td><td>40 GB SSD</td><td>120 GB SSD</td></tr>
+      <tr><td>OS</td><td>Ubuntu 22.04+</td><td>Ubuntu 24.04</td></tr>
+    </table>
+  </div>
+
+  <div class="card"><h2>API Overview</h2>
+    <p>All functionality exposed via versioned REST APIs at <code>/v1/*</code>. JSON request/response. JWT or API key authentication.</p>
+    <pre>
+# Create an agent
+POST /v1/agents
+{ "name": "Research Assistant", "model": "auto", "tools": ["web_search"] }
+
+# Start a run
+POST /v1/runs
+{ "agent_id": "agent_abc123", "task": "Research EU AI Act amendments" }
+
+# Stream results (SSE)
+GET /v1/runs/{run_id}/stream
+Accept: text/event-stream</pre>
+    <h3>Integration Points</h3>
+    <table>
+      <tr><th>Integration</th><th>Protocol</th><th>Direction</th></tr>
+      <tr><td>REST API</td><td>HTTP/JSON</td><td>Inbound</td></tr>
+      <tr><td>WebSocket</td><td>WS/JSON</td><td>Bidirectional</td></tr>
+      <tr><td>SSE Streaming</td><td>text/event-stream</td><td>Outbound</td></tr>
+      <tr><td>MCP Protocol</td><td>JSON-RPC</td><td>Both</td></tr>
+      <tr><td>Webhooks</td><td>HTTP POST</td><td>Outbound</td></tr>
+    </table>
+  </div>
+
+  <div class="card"><h2>Data Architecture</h2>
+    <table>
+      <tr><th>Store</th><th>Technology</th><th>Purpose</th></tr>
+      <tr><td>Primary OLTP</td><td>PostgreSQL 16</td><td>All domain data, RLS isolation</td></tr>
+      <tr><td>Cache / State</td><td>Valkey 7.2</td><td>Session state, rate limits, pub/sub</td></tr>
+      <tr><td>Vector Search</td><td>Qdrant</td><td>RAG embeddings, semantic search</td></tr>
+    </table>
+    <div class="note">All data stores run within your infrastructure. No data leaves your network unless you configure external LLM providers.</div>
+  </div>
+
+  <div class="card"><h2>Compliance</h2>
+    <table>
+      <tr><td>GDPR</td><td>Data access, erasure, portability, consent management, DPO tooling</td></tr>
+      <tr><td>EU AI Act</td><td>Human oversight (approval workflows), audit trails, transparency</td></tr>
+      <tr><td>NIS2</td><td>Self-hosted deployment, incident logging, security monitoring</td></tr>
+      <tr><td>DORA</td><td>Operational resilience, audit trails, third-party risk management</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Agent Widget -->
+<div class="agent-widget">
+  <div class="agent-bubble" id="agent-bubble">
+    <h4>🔧 Technical questions?</h4>
+    <p>I'll soon be available with live technical support. For now, explore the <a href="https://api.jspriggins.com/health" style="color:var(--cyan)" target="_blank">live API</a> or check our <a href="solutions.html" style="color:var(--cyan)">solutions page</a>.</p>
+  </div>
+  <button class="agent-btn" onclick="document.getElementById('agent-bubble').classList.toggle('open')"><span style="font-size:20px">🤖</span></button>
+</div>
+
+<div class="footer"><span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite"></span> Auto-updating · <span id="ts">—</span> · <a href="index.html" style="color:var(--muted)">Home</a> · <a href="solutions.html" style="color:var(--muted)">Solutions</a> · <a href="hub.html" style="color:#ef444480">Command Centre 🔒</a></div>
+
+<script>
+async function refresh(){try{
+  const [api,router]=await Promise.all([fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'}))]);
+  const ok=api.status==='ok'&&router.status==='healthy';
+  document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+  document.getElementById('nav-status').textContent=ok?'Online':'Issues';document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('health').textContent=ok?'All Systems Operational':'Service Issues';document.getElementById('health').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('ts').textContent=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+}catch(e){}}
+refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>

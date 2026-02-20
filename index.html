@@ -4,749 +4,350 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Punky — Autonomous Agent Platform</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Punky — Your AI. Your Infrastructure. Your Rules.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg-deep:#0a0e17;--bg-surface:#111827;--bg-card:#1a2233;--bg-hover:#243044;
-  --border:#2a3a52;--border-active:#3b82f6;
-  --text:#e2e8f0;--text-muted:#94a3b8;--text-dim:#64748b;
-  --accent:#3b82f6;--accent-glow:rgba(59,130,246,.15);
-  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a855f7;--cyan:#06b6d4;
-  --font-body:'DM Sans',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',monospace;
-  --radius:10px;--radius-sm:6px;
-}
-html,body,#root{height:100%;background:var(--bg-deep);color:var(--text);font-family:var(--font-body)}
-a{color:var(--accent);text-decoration:none}
-input,select,textarea{font-family:inherit;font-size:inherit}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#a855f7;--accent2:#ec4899;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6}
 
-/* Layout */
-.app{display:flex;height:100vh}
-.sidebar{width:240px;background:var(--bg-surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-brand{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.sidebar-brand h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
-.sidebar-brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.sidebar-nav{flex:1;padding:12px;display:flex;flex-direction:column;gap:2px}
-.nav-item{padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--text-muted);transition:all .15s}
-.nav-item:hover{background:var(--bg-hover);color:var(--text)}
-.nav-item.active{background:var(--accent-glow);color:var(--accent);font-weight:600}
-.nav-item svg{width:18px;height:18px;opacity:.7}
-.nav-section{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);padding:16px 14px 6px;font-weight:600}
-.sidebar-footer{padding:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)}
+/* ═══ NAV ═══ */
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text)}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--accent);background:#a855f712;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.gnav-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gnav-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:all .15s}
+.gnav-btn-o{border:1px solid var(--border);background:transparent;color:var(--text)}
+.gnav-btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px #a855f730}
 
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
-.topbar h2{font-size:16px;font-weight:600}
-.topbar-actions{display:flex;align-items:center;gap:12px}
-.content{flex:1;overflow-y:auto;padding:24px}
+/* ═══ HERO ═══ */
+.hero{text-align:center;padding:56px 20px 32px;max-width:900px;margin:0 auto}
+.hero-badge{display:inline-block;padding:4px 14px;border-radius:99px;font-size:10px;font-weight:700;color:var(--green);border:1px solid #10b98133;background:#10b98108;margin-bottom:16px}
+.hero h1{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:12px}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);font-size:15px;max-width:600px;margin:0 auto 20px;line-height:1.7}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-cta a{padding:10px 24px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;font-family:inherit;transition:all .15s}
+.cta-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 20px #a855f730}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px #a855f740}
+.cta-secondary{border:1px solid var(--border);color:var(--text);background:var(--card)}
+.cta-market{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;box-shadow:0 4px 20px #10b98130}
 
-/* Cards */
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px}
-.stat-card{text-align:center}
-.stat-value{font-size:32px;font-weight:700;font-family:var(--font-mono);line-height:1.2}
-.stat-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+/* ═══ STATS TICKER ═══ */
+.ticker{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:16px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 0 32px}
+.tick{text-align:center}
+.tick .v{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.tick .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 
-/* Buttons */
-.btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
-.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{filter:brightness(1.15)}
-.btn-secondary{background:var(--bg-hover);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{border-color:var(--accent)}
-.btn-danger{background:var(--red);color:#fff}
-.btn-sm{padding:5px 10px;font-size:12px}
-.btn:disabled{opacity:.5;cursor:not-allowed}
+/* ═══ FOUR OFFERS ═══ */
+.offers{max-width:1200px;margin:0 auto;padding:0 20px 32px}
+.offers-title{text-align:center;margin-bottom:20px}
+.offers-title h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px}
+.offers-title p{color:var(--muted);font-size:12px;margin-top:4px}
+.offer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.offer{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:all .2s}
+.offer:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 40px #a855f710}
+.offer::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--offer-color,var(--accent))}
+.offer-icon{font-size:28px;margin-bottom:8px;display:block}
+.offer-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.offer h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px}
+.offer .price{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;margin:8px 0}
+.offer .desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.offer ul{list-style:none;padding:0}
+.offer li{font-size:10px;color:#a1a1aa;padding:3px 0;display:flex;align-items:start;gap:4px}
+.offer li::before{content:'✓';color:var(--offer-color,var(--green));font-weight:700;flex-shrink:0}
 
-/* Forms */
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text-muted);margin-bottom:6px}
-.form-input{width:100%;padding:10px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;outline:none;transition:border-color .15s}
-.form-input:focus{border-color:var(--accent)}
-.form-input::placeholder{color:var(--text-dim)}
-select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+/* ═══ MARKETPLACE SECTION ═══ */
+.marketplace{max-width:1200px;margin:0 auto;padding:0 20px 32px}
+.mkt-card{background:linear-gradient(135deg,#10b98108,#06b6d408);border:1px solid #10b98125;border-radius:14px;padding:24px;position:relative;overflow:hidden}
+.mkt-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan))}
+.mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.mkt-feature{background:#0a0a1280;border:1px solid #10b98115;border-radius:8px;padding:12px}
+.mkt-feature h4{font-size:12px;font-weight:700;margin-bottom:4px}
+.mkt-feature p{font-size:10px;color:var(--muted);line-height:1.5}
 
-/* Table */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 14px;color:var(--text-muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
-td{padding:10px 14px;border-bottom:1px solid var(--border)}
-tr:hover td{background:var(--bg-hover)}
+/* ═══ COMPARISON ═══ */
+.compare{max-width:1200px;margin:0 auto;padding:0 20px 32px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;color:var(--muted);font-weight:600;padding:8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+td{padding:8px;border-bottom:1px solid #ffffff06}
+.tbl{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;overflow-x:auto}
 
-/* Badges */
-.badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
-.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
-.badge-amber{background:rgba(245,158,11,.15);color:var(--amber)}
-.badge-blue{background:rgba(59,130,246,.15);color:var(--accent)}
-.badge-purple{background:rgba(168,85,247,.15);color:var(--purple)}
+/* ═══ FEATURES ═══ */
+.features{max-width:1200px;margin:0 auto;padding:0 20px 32px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.feat:hover{border-color:var(--accent)}
+.feat-icon{font-size:20px;margin-bottom:6px}
+.feat h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px}
+.feat p{font-size:10px;color:var(--muted);line-height:1.5}
 
-/* Login */
-.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg-deep)}
-.login-card{width:420px;padding:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)}
-.login-card h1{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
-.login-card .subtitle{color:var(--text-muted);margin-bottom:28px;font-size:14px}
-.tab-row{display:flex;gap:4px;margin-bottom:24px;background:var(--bg-surface);border-radius:var(--radius-sm);padding:3px}
-.tab-btn{flex:1;padding:8px;text-align:center;border:none;background:transparent;color:var(--text-muted);border-radius:4px;cursor:pointer;font-size:13px;font-weight:500}
-.tab-btn.active{background:var(--bg-card);color:var(--text)}
+/* ═══ AGENT WIDGET ═══ */
+.agent-widget{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.agent-bubble{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:300px;box-shadow:0 12px 48px rgba(0,0,0,.5);animation:fadeUp .3s ease}
+.agent-bubble.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.agent-bubble h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px}
+.agent-bubble p{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.agent-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;transition:all .2s;position:relative}
+.agent-btn:hover{transform:scale(1.08);box-shadow:0 8px 32px #a855f750}
+.agent-btn::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid #a855f730;animation:agentPulse 3s infinite}
+@keyframes agentPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0}}
 
-/* Chat */
-.chat-container{display:flex;flex-direction:column;height:calc(100vh - 56px)}
-.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
-.chat-msg{max-width:80%;padding:12px 16px;border-radius:var(--radius);font-size:14px;line-height:1.6}
-.chat-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
-.chat-msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
-.chat-msg .meta{font-size:11px;color:var(--text-dim);margin-top:6px}
-.chat-input-bar{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:12px}
-.chat-input-bar input{flex:1}
-.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text-muted);animation:pulse 1.2s infinite}
-.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
-@keyframes pulse{0%,80%,100%{opacity:.3}40%{opacity:1}}
-
-/* Guardian cards */
-.guardian-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s}
-.guardian-card:hover{border-color:var(--accent)}
-.guardian-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.guardian-info{flex:1}
-.guardian-name{font-weight:600;font-size:14px}
-.guardian-role{font-size:12px;color:var(--text-muted)}
-
-/* Responsive */
-@media(max-width:768px){.sidebar{display:none}.content{padding:16px}}
-
-/* Animation */
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.fade-in{animation:fadeIn .3s ease}
-.mono{font-family:var(--font-mono)}
-.text-muted{color:var(--text-muted)}
-.text-green{color:var(--green)}
-.text-red{color:var(--red)}
-.text-amber{color:var(--amber)}
-.mt-4{margin-top:16px}
-.mb-4{margin-bottom:16px}
-.flex{display:flex}.gap-3{gap:12px}.items-center{align-items:center}.justify-between{justify-content:space-between}
-.w-full{width:100%}
+.footer{color:var(--muted);font-size:10px;text-align:center;padding:24px 20px;border-top:1px solid var(--border);margin-top:20px}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--text)}
+h2{font-family:'Syne',sans-serif}
+@media(max-width:900px){.offer-grid{grid-template-columns:1fr 1fr}.feat-grid{grid-template-columns:1fr}.mkt-grid{grid-template-columns:1fr}.hero h1{font-size:32px}}
+@media(max-width:600px){.offer-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState, useEffect, useCallback, useRef, createContext, useContext } = React;
 
-// ─── Config ──────────────────────────────────────────────────────────────────
-const API = window.location.hostname === 'localhost'
-  ? 'http://localhost:8081'
-  : 'https://api.jspriggins.com';
+<!-- ═══ GLOBAL NAV ═══ -->
+<nav class="gnav"><div class="gnav-inner">
+  <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+  <div class="gnav-links">
+    <a href="index.html" class="gnav-link active">Home</a>
+    <a href="technical.html" class="gnav-link">Technical</a>
+    <a href="solutions.html" class="gnav-link">Solutions</a>
+    <a href="marketplace.html" class="gnav-link" style="color:var(--green)">🏪 Marketplace</a>
+    <a href="hub.html" class="gnav-link" style="color:var(--red)">⬡ Command Centre</a>
+    <a href="strategy.html" class="gnav-link" style="color:var(--accent2)">Strategy</a>
+    <a href="investors.html" class="gnav-link" style="color:var(--accent)">Investors</a>
+    <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+  </div>
+  <div class="gnav-right">
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px"><div class="gnav-dot" id="nav-dot" style="background:var(--green)"></div><span id="nav-status" style="color:var(--green);font-weight:600">Online</span></div>
+    <a href="https://console.jspriggins.com" class="gnav-btn gnav-btn-o" target="_blank">Sign In</a>
+    <a href="solutions.html" class="gnav-btn gnav-btn-p">Get Started Free</a>
+  </div>
+</div></nav>
 
-// ─── Auth Context ────────────────────────────────────────────────────────────
-const AuthCtx = createContext(null);
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-badge" id="status-badge">● Platform Online · <span id="route-count">149</span>+ API Endpoints · <span id="uptime-display">—</span> Uptime</div>
+  <h1><span>Your AI. Your Infrastructure.</span><br>Your Rules.</h1>
+  <p>The self-hosted, provider-agnostic autonomous agent platform. Run anywhere. Route to any LLM. 10× cheaper than locked-in alternatives. Four ways to use Punky — from free consumer accounts to on-premises enterprise and a freelance agent marketplace.</p>
+  <div class="hero-cta">
+    <a href="solutions.html" class="cta-primary">Explore Solutions</a>
+    <a href="technical.html" class="cta-secondary">Technical Docs</a>
+    <a href="marketplace.html" class="cta-market">🏪 Agent Marketplace</a>
+  </div>
+</div>
 
-function useAuth() {
-  return useContext(AuthCtx);
-}
+<!-- ═══ LIVE STATS TICKER ═══ -->
+<div class="ticker">
+  <div class="tick"><div class="v" style="color:var(--green)" id="t-routes">149+</div><div class="l">API Endpoints</div></div>
+  <div class="tick"><div class="v" style="color:var(--green)">962</div><div class="l">Tests (100%)</div></div>
+  <div class="tick"><div class="v" style="color:var(--cyan)">28</div><div class="l">Modules</div></div>
+  <div class="tick"><div class="v" style="color:var(--accent)">5+</div><div class="l">LLM Providers</div></div>
+  <div class="tick"><div class="v" style="color:var(--amber)">20</div><div class="l">Guardian Agents</div></div>
+  <div class="tick"><div class="v" style="color:var(--accent2)">10+</div><div class="l">Industry Verticals</div></div>
+  <div class="tick"><div class="v" style="color:var(--green)">4</div><div class="l">Product Offers</div></div>
+</div>
 
-async function apiFetch(path, opts = {}, token) {
-  const headers = { 'Content-Type': 'application/json', ...opts.headers };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${API}${path}`, { ...opts, headers });
-  if (res.status === 401) throw new Error('UNAUTHORIZED');
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
-  return data;
-}
+<!-- ═══ FOUR VALUE PROPOSITIONS ═══ -->
+<div class="offers">
+  <div class="offers-title">
+    <h2>Four Ways to Use Punky</h2>
+    <p>From free personal accounts to enterprise on-premises and a freelance agent marketplace — there's a Punky for everyone</p>
+  </div>
+  <div class="offer-grid">
 
-// ─── Icons (minimal inline SVGs) ─────────────────────────────────────────────
-const Icons = {
-  dashboard: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
-  chat: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,
-  agents: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>,
-  runs: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5,3 19,12 5,21"/></svg>,
-  billing: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
-  shield: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
-  settings: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
-  logout: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
-  plus: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  refresh: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>,
-};
+    <!-- OFFER 1: On-Premises -->
+    <div class="offer" style="--offer-color:#ef4444">
+      <span class="offer-icon">🏢</span>
+      <span class="offer-label" style="color:#ef4444;background:#ef444412;border:1px solid #ef444430">Enterprise On-Premises</span>
+      <h3>Self-Hosted</h3>
+      <div class="price" style="color:#ef4444">€80<span style="font-size:11px;color:var(--muted)">/user/mo</span></div>
+      <p class="desc">Full platform on your infrastructure. Complete data sovereignty. Zero third-party dependencies. Your hardware, your rules, your data — forever.</p>
+      <ul>
+        <li>Deploy on any Linux server (Docker)</li>
+        <li>All data stays on-prem — no cloud calls</li>
+        <li>Air-gapped deployment option</li>
+        <li>Bring your own LLM (Ollama, vLLM)</li>
+        <li>Dedicated support + SLA</li>
+        <li>GDPR, NIS2, DORA compliant by default</li>
+        <li>SSO/OIDC + custom auth integration</li>
+        <li>Unlimited users per licence</li>
+      </ul>
+    </div>
 
-// ─── Login / Bootstrap Page ──────────────────────────────────────────────────
-function LoginPage({ onAuth }) {
-  const [mode, setMode] = useState('login');
-  const [form, setForm] = useState({ email: '', password: '', name: '', tenant: '', slug: '' });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+    <!-- OFFER 2: SaaS Enterprise -->
+    <div class="offer" style="--offer-color:#a855f7">
+      <span class="offer-icon">☁️</span>
+      <span class="offer-label" style="color:#a855f7;background:#a855f712;border:1px solid #a855f730">Enterprise SaaS</span>
+      <h3>Managed Cloud</h3>
+      <div class="price" style="color:#a855f7">€40<span style="font-size:11px;color:var(--muted)">/user/mo</span></div>
+      <p class="desc">Enterprise features, managed by us. European hosting (Hetzner Germany). All the power of Punky without the ops overhead.</p>
+      <ul>
+        <li>Fully managed — we handle everything</li>
+        <li>EU-hosted (Germany) data residency</li>
+        <li>Smart Router with 5+ LLM providers</li>
+        <li>Multi-tenant isolation (PostgreSQL RLS)</li>
+        <li>SLA 99.9% uptime guarantee</li>
+        <li>SSO/OIDC, RBAC, audit logging</li>
+        <li>10+ vertical agent teams</li>
+        <li>Priority support + onboarding</li>
+      </ul>
+    </div>
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true); setError('');
-    try {
-      if (mode === 'login') {
-        const data = await apiFetch('/v1/auth/login', {
-          method: 'POST',
-          body: JSON.stringify({ email: form.email, password: form.password }),
-        });
-        onAuth(data.access_token, form.email);
-      } else {
-        const slug = form.slug || form.tenant.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        const data = await apiFetch('/v1/bootstrap', {
-          method: 'POST',
-          body: JSON.stringify({
-            tenant_name: form.tenant, tenant_slug: slug,
-            owner_email: form.email, owner_name: form.name, owner_password: form.password,
-          }),
-        });
-        onAuth(data.access_token, form.email);
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
-  };
+    <!-- OFFER 3: SaaS Consumer -->
+    <div class="offer" style="--offer-color:#06b6d4">
+      <span class="offer-icon">👤</span>
+      <span class="offer-label" style="color:#06b6d4;background:#06b6d412;border:1px solid #06b6d430">Consumer SaaS</span>
+      <h3>Personal AI</h3>
+      <div class="price" style="color:#06b6d4">Free<span style="font-size:11px;color:var(--muted)"> — €15/mo</span></div>
+      <p class="desc">Your personal AI assistant. Free tier included. No lock-in, no data harvesting. Route through any provider. Upgrade when you need more.</p>
+      <ul>
+        <li>Free tier — 100 messages/day (Groq free)</li>
+        <li>Paid: €5/mo (Solo) or €15/mo (Pro)</li>
+        <li>Choose your LLM provider(s)</li>
+        <li>Persistent encrypted memory</li>
+        <li>3D avatar with voice, chat, sign language</li>
+        <li>Knowledge base + document upload</li>
+        <li>Agent marketplace access</li>
+        <li>No ads, no data selling, ever</li>
+      </ul>
+    </div>
 
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+    <!-- OFFER 4: Agent Marketplace -->
+    <div class="offer" style="--offer-color:#10b981">
+      <span class="offer-icon">🏪</span>
+      <span class="offer-label" style="color:#10b981;background:#10b98112;border:1px solid #10b98130">Agent Marketplace</span>
+      <h3>Freelance Agents</h3>
+      <div class="price" style="color:#10b981">Pay per job</div>
+      <p class="desc">Commission specialist AI agents for specific tasks — like Fiverr, but for AI. Built-in NDAs, contracts, data sovereignty. Agents get better with every job.</p>
+      <ul>
+        <li>Browse specialist agents by skill/sector</li>
+        <li>NDA + contract signed before work starts</li>
+        <li>Full data ownership — you own all output</li>
+        <li>Data deletion/export on completion</li>
+        <li>Third-party marketplace integration</li>
+        <li>Agents learn anonymously from each job</li>
+        <li>Open to consumers + enterprises + anyone</li>
+        <li>Ratings, reviews, and agent portfolios</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-  return (
-    <div className="login-wrap">
-      <div className="login-card fade-in">
-        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
-          <div style={{width:12,height:12,borderRadius:'50%',background:'var(--green)',boxShadow:'0 0 10px var(--green)'}}/>
-          <h1>Punky</h1>
-        </div>
-        <p className="subtitle">Self-hosted autonomous agent platform</p>
-        <div className="tab-row">
-          <button className={`tab-btn ${mode==='login'?'active':''}`} onClick={()=>setMode('login')}>Sign In</button>
-          <button className={`tab-btn ${mode==='bootstrap'?'active':''}`} onClick={()=>setMode('bootstrap')}>Create Account</button>
-        </div>
-        <form onSubmit={handleSubmit}>
-          {mode === 'bootstrap' && <>
-            <div className="form-group">
-              <label>Organisation Name</label>
-              <input className="form-input" placeholder="Acme Corp" value={form.tenant} onChange={set('tenant')} required/>
-            </div>
-            <div className="form-group">
-              <label>Your Name</label>
-              <input className="form-input" placeholder="Jane Smith" value={form.name} onChange={set('name')} required/>
-            </div>
-          </>}
-          <div className="form-group">
-            <label>Email</label>
-            <input className="form-input" type="email" placeholder="you@company.com" value={form.email} onChange={set('email')} required/>
-          </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input className="form-input" type="password" placeholder="••••••••" value={form.password} onChange={set('password')} required minLength={8}/>
-          </div>
-          {error && <p style={{color:'var(--red)',fontSize:13,marginBottom:12}}>{error}</p>}
-          <button className="btn btn-primary w-full" style={{width:'100%',padding:'12px',fontSize:14}} disabled={loading}>
-            {loading ? 'Working...' : mode === 'login' ? 'Sign In' : 'Create Organisation'}
-          </button>
-        </form>
-        <p style={{marginTop:20,fontSize:12,color:'var(--text-dim)',textAlign:'center'}}>
-          Provider-agnostic AI · Your data, your infrastructure
-        </p>
+<!-- ═══ MARKETPLACE DEEP DIVE ═══ -->
+<div class="marketplace">
+  <div class="mkt-card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <span style="font-size:24px">🏪</span>
+      <div>
+        <h2 style="font-size:20px;font-weight:800;letter-spacing:-0.5px">Agent Marketplace</h2>
+        <p style="font-size:11px;color:var(--muted)">Like Amazon Marketplace, but for freelance AI agents. Commission specialist work with built-in legal protection.</p>
       </div>
     </div>
-  );
-}
-
-// ─── Dashboard ───────────────────────────────────────────────────────────────
-function Dashboard({ token }) {
-  const [stats, setStats] = useState(null);
-  const [guardians, setGuardians] = useState([]);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const [agents, runs, plans, gs] = await Promise.all([
-          apiFetch('/v1/agents', {}, token),
-          apiFetch('/v1/runs', {}, token),
-          apiFetch('/v1/billing/plans', {}, token),
-          apiFetch('/v1/platform/guardians/status', {}, token),
-        ]);
-        setStats({
-          agents: (agents.agents || agents || []).length,
-          runs: (runs.runs || runs || []).length,
-          plans: (plans.plans || plans || []).length,
-          completed: (runs.runs || runs || []).filter(r => r.status === 'completed').length,
-        });
-        setGuardians((gs.guardians || []).slice(0, 6));
-      } catch (e) { console.error(e); }
-    };
-    load();
-  }, [token]);
-
-  if (!stats) return <div className="text-muted" style={{padding:40}}>Loading dashboard...</div>;
-
-  return (
-    <div className="fade-in">
-      <div className="card-grid">
-        <div className="card stat-card">
-          <div className="stat-value text-green">{stats.agents}</div>
-          <div className="stat-label">Active Agents</div>
-        </div>
-        <div className="card stat-card">
-          <div className="stat-value" style={{color:'var(--cyan)'}}>{stats.runs}</div>
-          <div className="stat-label">Total Runs</div>
-        </div>
-        <div className="card stat-card">
-          <div className="stat-value text-amber">{stats.completed}</div>
-          <div className="stat-label">Completed</div>
-        </div>
-        <div className="card stat-card">
-          <div className="stat-value" style={{color:'var(--purple)'}}>{guardians.length}</div>
-          <div className="stat-label">Guardians Active</div>
-        </div>
+    <div class="mkt-grid">
+      <div class="mkt-feature">
+        <h4 style="color:var(--green)">📝 NDA & Contracts by Default</h4>
+        <p>Every job starts with an automated NDA and contract agreement. Confidentiality, scope, deliverables, and data handling are agreed before any work begins. No exceptions.</p>
       </div>
-
-      <h3 style={{fontSize:15,fontWeight:600,marginBottom:12}}>Guardian Agents</h3>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:12}}>
-        {guardians.map((g, i) => (
-          <div className="guardian-card" key={i}>
-            <div className="guardian-avatar" style={{background: g.status === 'active' ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'}}>
-              {g.emoji || '🛡️'}
-            </div>
-            <div className="guardian-info">
-              <div className="guardian-name">{g.name}</div>
-              <div className="guardian-role">{g.role || g.focus || 'Guardian'}</div>
-            </div>
-            <span className={`badge ${g.status==='active'?'badge-green':'badge-amber'}`}>{g.status}</span>
-          </div>
-        ))}
+      <div class="mkt-feature">
+        <h4 style="color:var(--cyan)">🔒 Data Sovereignty</h4>
+        <p>You own all output. Agents do not retain your data unless you explicitly authorise it. Full data export and deletion functionality included. Your project, your intellectual property.</p>
+      </div>
+      <div class="mkt-feature">
+        <h4 style="color:var(--accent)">🧠 Anonymous Learning</h4>
+        <p>Agents learn and improve from each commissioned job — but all learning is fully anonymised. No customer data, project details, or personally identifiable information is ever referenced in future work.</p>
+      </div>
+      <div class="mkt-feature">
+        <h4 style="color:var(--amber)">🌐 Third-Party Integration</h4>
+        <p>Marketplace supports third-party agent providers. External developers and companies can list their specialist agents. Quality rated, reviewed, and governed by the Punky constitution.</p>
       </div>
     </div>
-  );
-}
+  </div>
+</div>
 
-// ─── Chat Page ───────────────────────────────────────────────────────────────
-function ChatPage({ token }) {
-  const [agents, setAgents] = useState([]);
-  const [agentId, setAgentId] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const msgsRef = useRef(null);
+<!-- ═══ CORE FEATURES ═══ -->
+<div class="features">
+  <div style="text-align:center;margin-bottom:16px"><h2 style="font-size:22px;font-weight:800;letter-spacing:-0.5px">Platform Capabilities</h2></div>
+  <div class="feat-grid">
+    <div class="feat"><div class="feat-icon">🔀</div><h4>Any LLM Provider</h4><p>Groq, Anthropic, OpenAI, Ollama, Mistral — route 70-90% through free tiers. Smart Router optimises cost and quality automatically.</p></div>
+    <div class="feat"><div class="feat-icon">🏠</div><h4>Self-Hosted or Cloud</h4><p>Docker compose on any server, or use our managed EU cloud. Air-gapped deployments supported. Your data never leaves your control.</p></div>
+    <div class="feat"><div class="feat-icon">🎭</div><h4>3D Avatar Interface</h4><p>Inside Out culturally adaptive avatar with video, audio, chat, and sign language. Multi-lingual (50+ languages). CPU-rendered, no GPU required.</p></div>
+    <div class="feat"><div class="feat-icon">🛡️</div><h4>20 Guardian Agents</h4><p>Autonomous agents that monitor, protect, heal, and explain your platform 24/7. Self-healing infrastructure with human oversight.</p></div>
+    <div class="feat"><div class="feat-icon">🏭</div><h4>10+ Vertical Agent Teams</h4><p>ESG, ERP, HR, PM, Research, OSINT, Journalism, HSE, Education, Health, Civic. Pre-built specialist teams for every industry.</p></div>
+    <div class="feat"><div class="feat-icon">💰</div><h4>10× Cheaper</h4><p>€3-5/user/month vs €20-40+ for locked-in alternatives. Smart routing to free tiers means most requests cost nothing.</p></div>
+  </div>
+</div>
 
-  useEffect(() => {
-    apiFetch('/v1/agents', {}, token).then(d => {
-      const list = d.agents || d || [];
-      setAgents(list);
-      if (list.length > 0) setAgentId(list[0].id);
-    }).catch(() => {});
-  }, [token]);
+<!-- ═══ COMPARISON TABLE ═══ -->
+<div class="compare">
+  <div class="tbl">
+    <div style="text-align:center;margin-bottom:12px"><h2 style="font-size:18px;font-weight:800">How Punky Compares</h2></div>
+    <table>
+      <tr><th></th><th style="color:var(--accent)">Punky</th><th>Perplexity Comet</th><th>Claude Cowork</th><th>ChatGPT Enterprise</th></tr>
+      <tr><td style="color:var(--text)">Self-hosted option</td><td style="color:var(--green);font-weight:700">✅ Full on-prem</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--amber)">⚠️ Limited</td></tr>
+      <tr><td style="color:var(--text)">Provider agnostic</td><td style="color:var(--green);font-weight:700">✅ Any LLM</td><td style="color:var(--amber)">⚠️</td><td style="color:var(--red)">❌ Anthropic only</td><td style="color:var(--red)">❌ OpenAI only</td></tr>
+      <tr><td style="color:var(--text)">Data sovereignty</td><td style="color:var(--green);font-weight:700">✅ On-prem/EU</td><td style="color:var(--red)">❌ US cloud</td><td style="color:var(--red)">❌ US cloud</td><td style="color:var(--red)">❌ US cloud</td></tr>
+      <tr><td style="color:var(--text)">Free tier</td><td style="color:var(--green);font-weight:700">✅ 100 msg/day</td><td style="color:var(--amber)">⚠️ Limited</td><td style="color:var(--red)">❌ Paid only</td><td style="color:var(--red)">❌ Paid only</td></tr>
+      <tr><td style="color:var(--text)">Agent marketplace</td><td style="color:var(--green);font-weight:700">✅ Built-in NDA</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+      <tr><td style="color:var(--text)">Cost/user/month</td><td style="color:var(--green);font-weight:700">Free — €80</td><td>~€20</td><td>~€25</td><td>~€40</td></tr>
+      <tr><td style="color:var(--text)">3D adaptive avatar</td><td style="color:var(--green);font-weight:700">✅ Inside Out</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+      <tr><td style="color:var(--text)">Vertical agent teams</td><td style="color:var(--green);font-weight:700">✅ 10+</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+      <tr><td style="color:var(--text)">Sign language</td><td style="color:var(--green);font-weight:700">✅ Native</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+    </table>
+  </div>
+</div>
 
-  useEffect(() => {
-    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
-  }, [messages]);
+<!-- ═══ AGENT AVATAR WIDGET ═══ -->
+<div class="agent-widget">
+  <div class="agent-bubble" id="agent-bubble">
+    <h4>👋 Hi! I'm Punky</h4>
+    <p>I'll be your 24/7 AI guide — with video, voice, chat, and sign language — once my 3D avatar is ready. For now, explore our <a href="solutions.html" style="color:var(--accent)">four solutions</a> or browse the <a href="marketplace.html" style="color:var(--green)">Agent Marketplace</a>.</p>
+    <p style="font-size:9px;color:var(--muted);font-style:italic;border-top:1px solid var(--border);padding-top:6px;margin-top:6px">Punky uses honest, transparent communication. We never manipulate, pressure, or mislead. Your trust matters more than any sale.</p>
+  </div>
+  <button class="agent-btn" onclick="toggleAgent()" title="Talk to Punky">
+    <span style="font-size:22px">🤖</span>
+  </button>
+</div>
 
-  const send = async () => {
-    if (!input.trim() || !agentId || loading) return;
-    const userMsg = input.trim();
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setLoading(true);
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  <div style="margin-bottom:8px">
+    <a href="index.html"><strong style="color:var(--text)">Home</strong></a> ·
+    <a href="solutions.html">Solutions</a> ·
+    <a href="marketplace.html" style="color:var(--green)">🏪 Marketplace</a> ·
+    <a href="technical.html">Technical</a> ·
+    <a href="hub.html" style="color:#ef444480">Command Centre 🔒</a> ·
+    <a href="strategy.html" style="color:#ec489980">Strategy 🔒</a> ·
+    <a href="investors.html" style="color:#a855f780">Investors 🔒</a>
+  </div>
+  Auto-updating · <span id="f-ts">—</span>
+</div>
 
-    try {
-      const run = await apiFetch('/v1/runs', {
-        method: 'POST',
-        body: JSON.stringify({ agent_id: agentId, input_text: userMsg }),
-      }, token);
-
-      // Poll for completion
-      let result = run;
-      for (let i = 0; i < 30 && result.status !== 'completed' && result.status !== 'failed'; i++) {
-        await new Promise(r => setTimeout(r, 1000));
-        result = await apiFetch(`/v1/runs/${run.id}`, {}, token);
-      }
-
-      const aiText = result.output_text || result.error || 'No response received.';
-      const meta = `${result.model_name || ''} · ${result.total_input_tokens||0}+${result.total_output_tokens||0} tokens · $${(result.total_cost_usd||0).toFixed(4)}`;
-      setMessages(prev => [...prev, { role: 'ai', text: aiText, meta }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: 'ai', text: `Error: ${err.message}` }]);
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="chat-container">
-      <div style={{padding:'12px 24px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:12}}>
-        <span className="text-muted" style={{fontSize:13}}>Agent:</span>
-        <select className="form-input" style={{width:280,padding:'6px 10px'}} value={agentId} onChange={e=>setAgentId(e.target.value)}>
-          {agents.map(a => <option key={a.id} value={a.id}>{a.name} ({a.model_name || 'default'})</option>)}
-        </select>
-      </div>
-      <div className="chat-messages" ref={msgsRef}>
-        {messages.length === 0 && (
-          <div style={{textAlign:'center',color:'var(--text-dim)',marginTop:80}}>
-            <p style={{fontSize:40,marginBottom:12}}>💬</p>
-            <p>Select an agent and start chatting</p>
-            <p style={{fontSize:12,marginTop:4}}>Messages are processed by your self-hosted LLM router</p>
-          </div>
-        )}
-        {messages.map((m, i) => (
-          <div key={i} className={`chat-msg ${m.role}`}>
-            <div style={{whiteSpace:'pre-wrap'}}>{m.text}</div>
-            {m.meta && <div className="meta">{m.meta}</div>}
-          </div>
-        ))}
-        {loading && (
-          <div className="chat-msg ai">
-            <span className="typing-dot"/> <span className="typing-dot"/> <span className="typing-dot"/>
-          </div>
-        )}
-      </div>
-      <div className="chat-input-bar">
-        <input className="form-input" placeholder="Type a message..." value={input}
-          onChange={e=>setInput(e.target.value)}
-          onKeyDown={e=>e.key==='Enter'&&send()}
-          disabled={loading || !agentId}/>
-        <button className="btn btn-primary" onClick={send} disabled={loading || !agentId}>Send</button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Agents Page ─────────────────────────────────────────────────────────────
-function AgentsPage({ token }) {
-  const [agents, setAgents] = useState([]);
-  const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ name: '', model_name: 'groq/llama-3.3-70b-versatile', system_prompt: '', temperature: 0.7, max_tokens: 1024 });
-
-  const load = useCallback(() => {
-    apiFetch('/v1/agents', {}, token).then(d => setAgents(d.agents || d || [])).catch(() => {});
-  }, [token]);
-
-  useEffect(() => { load(); }, [load]);
-
-  const create = async (e) => {
-    e.preventDefault();
-    await apiFetch('/v1/agents', { method: 'POST', body: JSON.stringify(form) }, token);
-    setShowCreate(false);
-    setForm({ name: '', model_name: 'groq/llama-3.3-70b-versatile', system_prompt: '', temperature: 0.7, max_tokens: 1024 });
-    load();
-  };
-
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value });
-
-  return (
-    <div className="fade-in">
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-muted" style={{fontSize:13}}>{agents.length} agent{agents.length!==1?'s':''}</p>
-        <div className="flex gap-3">
-          <button className="btn btn-secondary btn-sm" onClick={load}>{Icons.refresh} Refresh</button>
-          <button className="btn btn-primary btn-sm" onClick={()=>setShowCreate(!showCreate)}>{Icons.plus} New Agent</button>
-        </div>
-      </div>
-
-      {showCreate && (
-        <div className="card mb-4 fade-in">
-          <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>Create Agent</h3>
-          <form onSubmit={create}>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
-              <div className="form-group"><label>Name</label><input className="form-input" value={form.name} onChange={set('name')} placeholder="Research Assistant" required/></div>
-              <div className="form-group"><label>Model</label>
-                <select className="form-input" value={form.model_name} onChange={set('model_name')}>
-                  <option value="groq/llama-3.3-70b-versatile">Groq / LLaMA 3.3 70B</option>
-                  <option value="groq/llama-3.1-8b-instant">Groq / LLaMA 3.1 8B</option>
-                  <option value="anthropic/claude-sonnet-4-20250514">Anthropic / Claude Sonnet</option>
-                  <option value="openai/gpt-4o">OpenAI / GPT-4o</option>
-                  <option value="openai/gpt-4o-mini">OpenAI / GPT-4o Mini</option>
-                  <option value="deepseek/deepseek-chat">DeepSeek / Chat</option>
-                </select>
-              </div>
-            </div>
-            <div className="form-group"><label>System Prompt</label><textarea className="form-input" rows={3} value={form.system_prompt} onChange={set('system_prompt')} placeholder="You are a helpful assistant..."/></div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
-              <div className="form-group"><label>Temperature ({form.temperature})</label><input type="range" min="0" max="2" step="0.1" value={form.temperature} onChange={set('temperature')} style={{width:'100%'}}/></div>
-              <div className="form-group"><label>Max Tokens</label><input className="form-input" type="number" value={form.max_tokens} onChange={set('max_tokens')} min={1} max={8192}/></div>
-            </div>
-            <div className="flex gap-3">
-              <button className="btn btn-primary" type="submit">Create Agent</button>
-              <button className="btn btn-secondary" type="button" onClick={()=>setShowCreate(false)}>Cancel</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="card table-wrap">
-        <table>
-          <thead><tr><th>Name</th><th>Model</th><th>Temperature</th><th>Created</th><th>ID</th></tr></thead>
-          <tbody>
-            {agents.map(a => (
-              <tr key={a.id}>
-                <td style={{fontWeight:600}}>{a.name}</td>
-                <td><span className="mono" style={{fontSize:12}}>{a.model_name || '—'}</span></td>
-                <td>{a.temperature ?? '—'}</td>
-                <td className="text-muted">{a.created_at ? new Date(a.created_at).toLocaleDateString() : '—'}</td>
-                <td><span className="mono text-dim" style={{fontSize:11}}>{a.id?.slice(0,12)}...</span></td>
-              </tr>
-            ))}
-            {agents.length === 0 && <tr><td colSpan={5} className="text-muted" style={{textAlign:'center',padding:40}}>No agents yet. Create one to get started.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-// ─── Runs Page ───────────────────────────────────────────────────────────────
-function RunsPage({ token }) {
-  const [runs, setRuns] = useState([]);
-
-  useEffect(() => {
-    apiFetch('/v1/runs', {}, token).then(d => setRuns((d.runs || d || []).slice(0, 50))).catch(() => {});
-  }, [token]);
-
-  const statusBadge = (s) => {
-    const map = { completed: 'badge-green', failed: 'badge-red', pending: 'badge-amber', running: 'badge-blue' };
-    return <span className={`badge ${map[s] || 'badge-blue'}`}>{s}</span>;
-  };
-
-  return (
-    <div className="fade-in">
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-muted" style={{fontSize:13}}>{runs.length} run{runs.length!==1?'s':''}</p>
-        <button className="btn btn-secondary btn-sm" onClick={()=>apiFetch('/v1/runs',{},token).then(d=>setRuns((d.runs||d||[]).slice(0,50)))}>{Icons.refresh} Refresh</button>
-      </div>
-      <div className="card table-wrap">
-        <table>
-          <thead><tr><th>Status</th><th>Agent</th><th>Model</th><th>Input</th><th>Tokens</th><th>Cost</th></tr></thead>
-          <tbody>
-            {runs.map(r => (
-              <tr key={r.id}>
-                <td>{statusBadge(r.status)}</td>
-                <td style={{fontWeight:500}}>{r.agent_name || r.agent_id?.slice(0,8) || '—'}</td>
-                <td><span className="mono" style={{fontSize:11}}>{r.model_name || '—'}</span></td>
-                <td style={{maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.input_text?.slice(0,60) || '—'}</td>
-                <td className="mono" style={{fontSize:12}}>{(r.total_input_tokens||0)+(r.total_output_tokens||0)}</td>
-                <td className="mono" style={{fontSize:12}}>${(r.total_cost_usd||0).toFixed(4)}</td>
-              </tr>
-            ))}
-            {runs.length === 0 && <tr><td colSpan={6} className="text-muted" style={{textAlign:'center',padding:40}}>No runs yet. Chat with an agent to create runs.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-// ─── Billing Page ────────────────────────────────────────────────────────────
-function BillingPage({ token }) {
-  const [plans, setPlans] = useState([]);
-  const [pricing, setPricing] = useState(null);
-
-  useEffect(() => {
-    apiFetch('/v1/billing/plans', {}, token).then(d => setPlans(d.plans || d || [])).catch(() => {});
-    apiFetch('/v1/billing/pricing', {}, token).then(d => setPricing(d)).catch(() => {});
-  }, [token]);
-
-  return (
-    <div className="fade-in">
-      <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>Available Plans</h3>
-      <div className="card-grid">
-        {plans.map((p, i) => (
-          <div className="card" key={i} style={{borderColor: i===1 ? 'var(--accent)' : undefined}}>
-            <h4 style={{fontSize:18,fontWeight:700,marginBottom:4}}>{p.name}</h4>
-            <p className="text-muted" style={{fontSize:13,marginBottom:12}}>{p.description || `Tier ${i+1}`}</p>
-            <div style={{fontSize:28,fontWeight:700,fontFamily:'var(--font-mono)',marginBottom:8}}>
-              {p.price_monthly ? `€${p.price_monthly}` : 'Free'}<span className="text-muted" style={{fontSize:13,fontWeight:400}}>/mo</span>
-            </div>
-            <ul style={{listStyle:'none',fontSize:13,color:'var(--text-muted)'}}>
-              {(p.features || []).slice(0, 5).map((f, j) => <li key={j} style={{padding:'4px 0'}}>✓ {f}</li>)}
-            </ul>
-          </div>
-        ))}
-      </div>
-      {pricing && (
-        <>
-          <h3 style={{fontSize:15,fontWeight:600,marginBottom:12,marginTop:24}}>Pricing Tiers</h3>
-          <div className="card table-wrap">
-            <table>
-              <thead><tr><th>Tier</th><th>Provider</th><th>Model</th><th>Cost/1K Tokens</th></tr></thead>
-              <tbody>
-                {(pricing.tiers || Object.entries(pricing).filter(([k]) => k !== 'meta')).map((t, i) => {
-                  const tier = Array.isArray(t) ? t[1] : t;
-                  const name = Array.isArray(t) ? t[0] : tier.name;
-                  return (
-                    <tr key={i}>
-                      <td><span className="badge badge-blue">{name}</span></td>
-                      <td>{tier.provider || '—'}</td>
-                      <td className="mono" style={{fontSize:12}}>{tier.model || '—'}</td>
-                      <td className="mono">${tier.cost_per_1k || tier.price || '—'}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-// ─── Guardians Page ──────────────────────────────────────────────────────────
-function GuardiansPage({ token }) {
-  const [guardians, setGuardians] = useState([]);
-
-  useEffect(() => {
-    apiFetch('/v1/platform/guardians/status', {}, token).then(d => setGuardians(d.guardians || [])).catch(() => {});
-  }, [token]);
-
-  const colors = ['var(--green)', 'var(--accent)', 'var(--purple)', 'var(--cyan)', 'var(--amber)', 'var(--red)'];
-
-  return (
-    <div className="fade-in">
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-muted" style={{fontSize:13}}>{guardians.length} guardian{guardians.length!==1?'s':''} active</p>
-        <button className="btn btn-secondary btn-sm" onClick={()=>apiFetch('/v1/platform/guardians/status',{},token).then(d=>setGuardians(d.guardians||[]))}>{Icons.refresh} Refresh</button>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:16}}>
-        {guardians.map((g, i) => (
-          <div className="card" key={i}>
-            <div className="flex items-center gap-3" style={{marginBottom:12}}>
-              <div style={{width:44,height:44,borderRadius:'50%',background:`${colors[i%6]}22`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22}}>
-                {g.emoji || '🛡️'}
-              </div>
-              <div>
-                <div style={{fontWeight:600,fontSize:15}}>{g.name}</div>
-                <div style={{fontSize:12,color:'var(--text-muted)'}}>{g.role || g.focus}</div>
-              </div>
-              <span className={`badge ${g.status==='active'?'badge-green':'badge-amber'}`} style={{marginLeft:'auto'}}>{g.status}</span>
-            </div>
-            {g.personality && <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.5}}>{g.personality.slice(0, 120)}...</p>}
-            {g.last_check && <p className="mono" style={{fontSize:11,color:'var(--text-dim)',marginTop:8}}>Last check: {g.last_check}</p>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── Admin Page ──────────────────────────────────────────────────────────────
-function AdminPage({ token }) {
-  const [info, setInfo] = useState(null);
-  const [audit, setAudit] = useState([]);
-
-  useEffect(() => {
-    apiFetch('/v1/version', {}, token).then(d => setInfo(d)).catch(() => setInfo({ version: '?', modules: 0 }));
-    apiFetch('/v1/audit/logs', {}, token).then(d => setAudit((d.logs || d || []).slice(0, 20))).catch(() => {});
-  }, [token]);
-
-  return (
-    <div className="fade-in">
-      <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>System Information</h3>
-      {info && (
-        <div className="card-grid">
-          <div className="card stat-card">
-            <div className="stat-value mono">{info.version || '?'}</div>
-            <div className="stat-label">Version</div>
-          </div>
-          <div className="card stat-card">
-            <div className="stat-value text-green">{info.modules_loaded ?? info.modules ?? '?'}</div>
-            <div className="stat-label">Modules Loaded</div>
-          </div>
-          <div className="card stat-card">
-            <div className="stat-value" style={{color:'var(--cyan)'}}>{info.uptime || '—'}</div>
-            <div className="stat-label">Uptime</div>
-          </div>
-        </div>
-      )}
-
-      <h3 style={{fontSize:15,fontWeight:600,marginBottom:12,marginTop:24}}>Audit Log</h3>
-      <div className="card table-wrap">
-        <table>
-          <thead><tr><th>Timestamp</th><th>Action</th><th>Actor</th><th>Detail</th></tr></thead>
-          <tbody>
-            {audit.map((e, i) => (
-              <tr key={i}>
-                <td className="mono" style={{fontSize:11,whiteSpace:'nowrap'}}>{e.timestamp || e.created_at || '—'}</td>
-                <td><span className="badge badge-blue">{e.action || e.event_type || '—'}</span></td>
-                <td>{e.actor || e.user_id || '—'}</td>
-                <td style={{maxWidth:300,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}} className="text-muted">{e.detail || e.description || JSON.stringify(e.data||{}).slice(0,80)}</td>
-              </tr>
-            ))}
-            {audit.length === 0 && <tr><td colSpan={4} className="text-muted" style={{textAlign:'center',padding:40}}>No audit logs yet.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-// ─── Main App ────────────────────────────────────────────────────────────────
-function App() {
-  const [token, setToken] = useState(null);
-  const [email, setEmail] = useState('');
-  const [page, setPage] = useState('dashboard');
-
-  const handleAuth = (t, e) => { setToken(t); setEmail(e); };
-  const logout = () => { setToken(null); setEmail(''); setPage('dashboard'); };
-
-  if (!token) return <LoginPage onAuth={handleAuth} />;
-
-  const pages = {
-    dashboard: { label: 'Dashboard', icon: Icons.dashboard, component: Dashboard },
-    chat: { label: 'Chat', icon: Icons.chat, component: ChatPage },
-    agents: { label: 'Agents', icon: Icons.agents, component: AgentsPage },
-    runs: { label: 'Runs', icon: Icons.runs, component: RunsPage },
-    billing: { label: 'Billing', icon: Icons.billing, component: BillingPage },
-    guardians: { label: 'Guardians', icon: Icons.shield, component: GuardiansPage },
-    admin: { label: 'Admin', icon: Icons.settings, component: AdminPage },
-  };
-
-  const PageComponent = pages[page]?.component || Dashboard;
-
-  return (
-    <AuthCtx.Provider value={{ token, email }}>
-      <div className="app">
-        <div className="sidebar">
-          <div className="sidebar-brand">
-            <div className="dot"/>
-            <h1>Punky</h1>
-          </div>
-          <div className="sidebar-nav">
-            <div className="nav-section">Main</div>
-            {['dashboard', 'chat', 'agents', 'runs'].map(k => (
-              <div key={k} className={`nav-item ${page===k?'active':''}`} onClick={()=>setPage(k)}>
-                {pages[k].icon} {pages[k].label}
-              </div>
-            ))}
-            <div className="nav-section">Platform</div>
-            {['billing', 'guardians', 'admin'].map(k => (
-              <div key={k} className={`nav-item ${page===k?'active':''}`} onClick={()=>setPage(k)}>
-                {pages[k].icon} {pages[k].label}
-              </div>
-            ))}
-          </div>
-          <div className="sidebar-footer">
-            <div className="flex items-center justify-between">
-              <span style={{fontSize:12}}>{email.split('@')[0]}</span>
-              <span style={{cursor:'pointer',opacity:.6}} onClick={logout} title="Sign out">{Icons.logout}</span>
-            </div>
-          </div>
-        </div>
-        <div className="main">
-          <div className="topbar">
-            <h2>{pages[page]?.label || 'Dashboard'}</h2>
-            <div className="topbar-actions">
-              <span className="badge badge-green">Connected</span>
-              <span className="mono text-dim" style={{fontSize:11}}>API: {API.replace('https://','')}</span>
-            </div>
-          </div>
-          <div className="content">
-            <PageComponent token={token} />
-          </div>
-        </div>
-      </div>
-    </AuthCtx.Provider>
-  );
-}
-
-ReactDOM.render(<App />, document.getElementById('root'));
+<script>
+let agentOpen=false;
+function toggleAgent(){agentOpen=!agentOpen;document.getElementById('agent-bubble').classList.toggle('open',agentOpen)}
+async function refresh(){try{
+  const [api,router]=await Promise.all([
+    fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),
+    fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'}))
+  ]);
+  const ok=api.status==='ok'&&router.status==='healthy';
+  document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+  document.getElementById('nav-status').textContent=ok?'Online':'Issues';
+  document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+  if(router.uptime_seconds){document.getElementById('uptime-display').textContent=Math.floor(router.uptime_seconds/3600)+'h'}
+  document.getElementById('f-ts').textContent=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+}catch(e){}}
+refresh();setInterval(refresh,60000);
+setTimeout(()=>{if(!agentOpen){agentOpen=true;document.getElementById('agent-bubble').classList.add('open')}},8000);
 </script>
 </body>
 </html>

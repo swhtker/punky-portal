@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Punky — Investor & Marketing</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#050508;--card:#0a0a12;--card2:#0d0d18;--border:#16162a;--accent:#a855f7;--accent2:#ec4899;--text:#e2e8f0;--muted:#64648a;--green:#10b981;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4;--nav:#08080e}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,sans-serif;line-height:1.6}
+
+/* ═══ SHARED GLOBAL NAV ═══ */
+.gnav{background:var(--nav);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.gnav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;height:48px;gap:6px}
+.gnav-brand{display:flex;align-items:center;gap:8px;margin-right:20px;text-decoration:none}
+.gnav-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;box-shadow:0 2px 12px #a855f740}
+.gnav-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);letter-spacing:-0.3px}
+.gnav-links{display:flex;gap:2px;flex:1;overflow-x:auto}
+.gnav-link{padding:7px 12px;border-radius:6px;font-size:11px;color:var(--muted);text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.gnav-link:hover{color:var(--text);background:#ffffff08}
+.gnav-link.active{color:var(--accent);background:#a855f712;font-weight:700}
+.gnav-link.ext{color:var(--cyan)}
+.gnav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.gnav-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gnav-badge{padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+.gnav-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;transition:all .15s;font-family:inherit;border:none;cursor:pointer}
+.gnav-btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px #a855f730}
+
+.lock{background:#a855f708;border-bottom:1px solid #a855f715;padding:5px;text-align:center;font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.5px}
+.container{max-width:1100px;margin:0 auto;padding:24px 20px}
+.hero{text-align:center;padding:36px 20px 24px}
+.hero h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:12px}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 14px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;font-weight:500;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.tab:hover{color:var(--text)}
+.section{display:none}.section.active{display:block}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.card h2{color:var(--accent);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.card h3{color:var(--cyan);font-size:12px;font-weight:700;margin:14px 0 6px}
+.card p{font-size:12px;color:#a1a1aa;line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+td{padding:6px 8px;border-bottom:1px solid #ffffff06}
+.kpi-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.kpi{flex:1;min-width:120px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.kpi .v{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.kpi .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card-sm{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.card-sm h4{font-size:11px;font-weight:700;margin-bottom:4px}
+
+/* ═══ AGENT AVATAR WIDGET ═══ */
+.agent-widget{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.agent-bubble{display:none;background:var(--card);border:1px solid var(--border);border-radius:16px;border-bottom-right-radius:4px;padding:16px;width:280px;box-shadow:0 12px 48px rgba(0,0,0,.5);animation:fadeUp .3s ease}
+.agent-bubble.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.agent-bubble h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px}
+.agent-bubble p{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.agent-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px #a855f740;transition:all .2s;position:relative}
+.agent-btn:hover{transform:scale(1.08);box-shadow:0 8px 32px #a855f750}
+.agent-btn::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid #a855f730;animation:agentPulse 3s infinite}
+@keyframes agentPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0}}
+.agent-face{font-size:20px}
+
+.footer{color:var(--muted);font-size:10px;text-align:center;padding:20px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.gnav-links{overflow-x:auto}}
+</style>
+</head>
+<body>
+
+<!-- ═══ GLOBAL NAV ═══ -->
+<nav class="gnav"><div class="gnav-inner">
+  <a href="index.html" class="gnav-brand"><div class="gnav-logo">P</div><span class="gnav-title">Punky</span></a>
+  <div class="gnav-links">
+    <a href="index.html" class="gnav-link">Home</a>
+    <a href="technical.html" class="gnav-link">Technical</a>
+    <a href="solutions.html" class="gnav-link">Solutions</a>
+    <a href="marketplace.html" class="gnav-link" style="color:#10b981">🏪 Marketplace</a>
+    <a href="hub.html" class="gnav-link" style="color:#ef4444">⬡ Command Centre</a>
+    <a href="strategy.html" class="gnav-link" style="color:#ec4899">Strategy</a>
+    <a href="investors.html" class="gnav-link active">Investors</a>
+    <a href="https://console.jspriggins.com" class="gnav-link ext" target="_blank">Console ↗</a>
+  </div>
+  <div class="gnav-right">
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px"><div class="gnav-dot" id="nav-dot" style="background:var(--green)"></div><span id="nav-status" style="color:var(--green);font-weight:600">Online</span></div>
+    <span class="gnav-badge" style="color:var(--red);border-color:#ef444433;background:#ef444408">🔒 CONFIDENTIAL</span>
+  </div>
+</div></nav>
+<div class="lock">🔒 CONFIDENTIAL — INVESTOR & MARKETING RESOURCES — NOT FOR PUBLIC DISTRIBUTION — AUTO-UPDATING</div>
+
+<div class="container">
+  <div class="hero"><h1>Investor & Marketing</h1><p>Everything for a 5-minute pitch or full investor presentation — always current, zero prep required</p></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('pitch')">5-Min Pitch</button>
+    <button class="tab" onclick="showTab('deck')">Full Deck</button>
+    <button class="tab" onclick="showTab('market')">Market Analysis</button>
+    <button class="tab" onclick="showTab('live')">Live Stats</button>
+    <button class="tab" onclick="showTab('team')">Team & Ask</button>
+  </div>
+
+  <!-- ═══ 5-MIN PITCH ═══ -->
+  <div id="pitch" class="section active">
+    <div class="card"><h2>The 5-Minute Pitch</h2>
+      <h3>Problem (30 seconds)</h3>
+      <p>Enterprise AI is locked into single providers. This creates vendor lock-in, data sovereignty risks, and unpredictable costs. 78% of enterprises now use 3+ LLM providers but lack unified orchestration.</p>
+      <h3>Solution (60 seconds)</h3>
+      <p>Punky — a self-hosted, provider-agnostic autonomous agent platform. Deploy on any server. Route to any LLM provider. Smart Router sends 70-90% of requests through free tiers. 20 Guardian agents manage the platform autonomously. Inside Out culturally adaptive interface with voice, chat, and sign language.</p>
+      <h3>Why Us (30 seconds)</h3>
+      <p>Structural moat: self-hosted + provider-agnostic + cost-optimised routing. Competitors depend on lock-in by design — they cannot replicate our architecture without fundamentally rebuilding their business models.</p>
+      <h3>Traction (60 seconds)</h3>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" style="color:var(--green)">149+</div><div class="l">API Routes</div></div>
+        <div class="kpi"><div class="v" style="color:var(--green)">962</div><div class="l">Tests (100%)</div></div>
+        <div class="kpi"><div class="v" style="color:var(--cyan)">28</div><div class="l">Modules</div></div>
+        <div class="kpi"><div class="v" style="color:var(--green)">€30</div><div class="l">/mo Total Cost</div></div>
+        <div class="kpi"><div class="v" style="color:var(--accent)">10+</div><div class="l">Verticals</div></div>
+      </div>
+      <h3>Go-to-Market (60 seconds)</h3>
+      <p>Doctolib playbook: 1-year free deployment to Alcatel Submarine Networks (current employer post-resignation), HEC Paris (MBA alma mater), Station F (incubator), then Éducation Nationale / Mairie de Paris for all fonctionnaires. Convert to paid after proving value at scale.</p>
+      <h3>The Ask (60 seconds)</h3>
+      <p>Seed round: €0.5-2M. 12-14 months runway. Hire 4 engineers. Target: Station F incubator Q4 2026. €500K+ ARR by 2027.</p>
+    </div>
+  </div>
+
+  <!-- ═══ FULL DECK ═══ -->
+  <div id="deck" class="section">
+    <div class="card"><h2>Vision</h2>
+      <p style="font-size:14px;color:var(--text);font-weight:600;font-style:italic;padding:12px;background:var(--card2);border-radius:8px;border-left:3px solid var(--accent)">"Every organisation deserves sovereign AI that runs on their terms, routes to any provider, and costs a fraction of locked-in alternatives."</p>
+    </div>
+
+    <div class="card"><h2>Market Opportunity</h2>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" style="color:var(--accent)">€150B+</div><div class="l">Enterprise AI TAM 2028</div></div>
+        <div class="kpi"><div class="v" style="color:var(--blue)">€12B+</div><div class="l">French Public Sector Digital</div></div>
+        <div class="kpi"><div class="v" style="color:var(--cyan)">78%</div><div class="l">Enterprises 3+ Providers</div></div>
+      </div>
+      <p>Regulatory tailwinds: EU AI Act mandates transparency and human oversight. GDPR drives data sovereignty. NIS2/DORA demand operational resilience. France's digital sovereignty programme creates immediate public sector demand.</p>
+    </div>
+
+    <div class="card"><h2>Product Architecture</h2>
+      <p>DDD modular monolith with hexagonal architecture. Python/FastAPI backend. React SPA console. Smart Router for multi-provider LLM orchestration. PostgreSQL + Valkey + Qdrant. Docker containerised for single-command deployment.</p>
+      <table>
+        <tr><td style="color:var(--text)">Source files</td><td style="color:var(--accent);font-weight:700">211 Python files, 23,571 LOC</td></tr>
+        <tr><td style="color:var(--text)">Tests</td><td style="color:var(--green);font-weight:700">962 tests (100% pass rate)</td></tr>
+        <tr><td style="color:var(--text)">API endpoints</td><td style="color:var(--accent);font-weight:700">149 HTTP + 6 WebSocket</td></tr>
+        <tr><td style="color:var(--text)">Infrastructure</td><td style="color:var(--green);font-weight:700">€30/month (3 Hetzner servers)</td></tr>
+        <tr><td style="color:var(--text)">LLM Providers</td><td style="color:var(--cyan);font-weight:700">Groq, Anthropic, OpenAI, Ollama, Mistral</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><h2>Business Model — Four Revenue Streams</h2>
+      <table>
+        <tr><th>Offer</th><th>Price</th><th>Target</th><th>Rev/100 Users/yr</th></tr>
+        <tr><td style="color:var(--cyan);font-weight:700">Consumer SaaS</td><td>Free / €5 / €15/mo</td><td>Individuals, students, freelancers</td><td>€12K</td></tr>
+        <tr><td style="color:var(--accent);font-weight:700">Enterprise SaaS</td><td>€40/user/mo</td><td>Companies, teams</td><td>€48K</td></tr>
+        <tr><td style="color:var(--red);font-weight:700">Enterprise On-Prem</td><td>€80/user/mo</td><td>Regulated / Government</td><td>€96K</td></tr>
+        <tr><td style="color:var(--green);font-weight:700">🏪 Agent Marketplace</td><td>10-15% platform fee</td><td>Everyone (consumers, enterprises, freelancers)</td><td>Variable (high volume)</td></tr>
+      </table>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px"><strong style="color:var(--text)">Marketplace model:</strong> Like Amazon Marketplace for AI agents. Built-in NDAs, contracts, data sovereignty. Agents learn anonymously from each job. Third-party providers welcome. Zero data retention unless authorised. Commission-based revenue at scale.</p>
+        <tr><td>Team</td><td>€15/user/mo</td><td>SMBs (2-20 users)</td><td>€18K</td></tr>
+        <tr><td>Enterprise SaaS</td><td>€40/user/mo</td><td>Companies</td><td>€48K</td></tr>
+        <tr><td>Enterprise On-Prem</td><td>€80/user/mo</td><td>Regulated / Gov't</td><td>€96K</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><h2>Competitive Landscape</h2>
+      <table>
+        <tr><th></th><th style="color:var(--accent)">Punky</th><th>Perplexity Comet</th><th>Claude Cowork</th><th>ChatGPT Ent.</th></tr>
+        <tr><td>Self-hosted</td><td style="color:var(--green)">✅ Full on-prem</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--amber)">⚠️</td></tr>
+        <tr><td>Provider agnostic</td><td style="color:var(--green)">✅ Any LLM</td><td style="color:var(--amber)">⚠️</td><td style="color:var(--red)">❌ Anthropic</td><td style="color:var(--red)">❌ OpenAI</td></tr>
+        <tr><td>Data sovereignty</td><td style="color:var(--green)">✅ On-prem</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Cost/user/month</td><td style="color:var(--green)">€3-5</td><td>~€20</td><td>~€25</td><td>~€40</td></tr>
+        <tr><td>Vertical agents</td><td style="color:var(--green)">✅ 10+</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Adaptive avatar</td><td style="color:var(--green)">✅ Inside Out</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+        <tr><td>Self-healing</td><td style="color:var(--green)">✅ 20 Guardians</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td><td style="color:var(--red)">❌</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><h2>Go-to-Market Strategy</h2>
+      <table>
+        <tr><th>Phase</th><th>Action</th><th>Timeline</th></tr>
+        <tr><td>0 (Current)</td><td>Product depth: Inside Out, voice, verticals, friend beta</td><td>Feb-May 2026</td></tr>
+        <tr><td>1</td><td>Warm outreach: Alcatel + HEC Paris (1yr free on-prem)</td><td>Q3 2026</td></tr>
+        <tr><td>2</td><td>Station F incubator + demo days + network</td><td>Q4 2026</td></tr>
+        <tr><td>3</td><td>Éducation Nationale / Mairie de Paris (Doctolib playbook)</td><td>2027</td></tr>
+        <tr><td>4</td><td>European expansion, Series A preparation</td><td>2027-2028</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ MARKET ANALYSIS ═══ -->
+  <div id="market" class="section">
+    <div class="card"><h2>Target Markets</h2>
+      <table>
+        <tr><th>Segment</th><th>Size</th><th>Pain Point</th><th>Punky Solution</th></tr>
+        <tr><td style="color:var(--text)">French Public Sector</td><td>5.6M+ employees</td><td>GDPR + sovereignty + budget</td><td>On-prem, €3-5/user, GDPR-native</td></tr>
+        <tr><td style="color:var(--text)">EU Regulated Enterprise</td><td>200K+ companies</td><td>NIS2/DORA + provider fatigue</td><td>Compliant by architecture</td></tr>
+        <tr><td style="color:var(--text)">Education (France)</td><td>1M+ teachers</td><td>AI tools expensive, not adapted</td><td>Free community edition, education agents</td></tr>
+        <tr><td style="color:var(--text)">SMBs / Startups</td><td>4M+ in EU</td><td>AI costs eating margins</td><td>10× cheaper, self-hosted</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><h2>Regulatory Tailwinds</h2>
+      <div class="card-grid">
+        <div class="card-sm"><h4 style="color:var(--green)">EU AI Act (2024-2027)</h4><p style="font-size:10px;color:var(--muted)">Mandates transparency, human oversight, audit trails. Built into Punky from day one.</p></div>
+        <div class="card-sm"><h4 style="color:var(--blue)">GDPR Enforcement Wave</h4><p style="font-size:10px;color:var(--muted)">€4.6B+ fines since 2018. Self-hosted eliminates third-party data transfer risk.</p></div>
+        <div class="card-sm"><h4 style="color:var(--amber)">NIS2 / DORA</h4><p style="font-size:10px;color:var(--muted)">Operational resilience mandates favour self-hosted infrastructure.</p></div>
+        <div class="card-sm"><h4 style="color:var(--accent)">French Digital Sovereignty</h4><p style="font-size:10px;color:var(--muted)">€12B+ programme to reduce US cloud dependency. Direct opportunity.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LIVE STATS ═══ -->
+  <div id="live" class="section">
+    <div class="card"><h2>Live Production Status</h2>
+      <p>Auto-refreshing every 60 seconds from production APIs.</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" id="l-api" style="color:var(--green)">—</div><div class="l">API Status</div></div>
+        <div class="kpi"><div class="v" id="l-router" style="color:var(--green)">—</div><div class="l">Smart Router</div></div>
+        <div class="kpi"><div class="v" id="l-uptime" style="color:var(--cyan)">—</div><div class="l">Router Uptime</div></div>
+        <div class="kpi"><div class="v" style="color:var(--accent)">149+</div><div class="l">API Routes</div></div>
+        <div class="kpi"><div class="v" style="color:var(--green)">962</div><div class="l">Tests</div></div>
+        <div class="kpi"><div class="v" style="color:var(--green)">€30</div><div class="l">/mo Infra</div></div>
+      </div>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px">Last refresh: <span id="l-ts">—</span></p>
+    </div>
+  </div>
+
+  <!-- ═══ TEAM & ASK ═══ -->
+  <div id="team" class="section">
+    <div class="card"><h2>Founder</h2>
+      <div class="card-sm"><h4>Simon Priggins — Founder / CEO / CTO</h4>
+      <p style="font-size:11px;color:var(--muted)">HEC Paris MBA. 15+ years submarine telecommunications engineering at Alcatel Submarine Networks. Expert in large-scale infrastructure, project management, enterprise systems, and cross-cultural teams. Based in Paris, France.</p></div>
+    </div>
+    <div class="card"><h2>The Ask</h2>
+      <div class="card-grid">
+        <div class="card-sm"><h4 style="color:var(--accent)">Seed Round: €0.5-2M</h4><p style="font-size:10px;color:var(--muted)">12-14 months runway. Hire 4 engineers. Scale infra. GTM execution. Target: €500K+ ARR by 2027.</p></div>
+        <div class="card-sm"><h4 style="color:var(--green)">Incubator: Station F</h4><p style="font-size:10px;color:var(--muted)">Paris startup ecosystem. Demo day exposure. Network effects. Investor access. Co-working space.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AGENT AVATAR WIDGET ═══ -->
+<div class="agent-widget">
+  <div class="agent-bubble" id="agent-bubble">
+    <h4>📊 Investor questions?</h4>
+    <p>Full strategy details in the <a href="strategy.html" style="color:var(--accent)">Strategy page</a>. Customer perspective at <a href="solutions.html" style="color:var(--accent)">Solutions</a>. Live platform at <a href="https://console.jspriggins.com" style="color:var(--accent)" target="_blank">Console</a>.</p>
+    <p style="font-size:9px;color:var(--muted);font-style:italic">Punky — honest, transparent, ethically sound. Always.</p>
+  </div>
+  <button class="agent-btn" onclick="toggleAgent()" title="Talk to Punky">
+    <span class="agent-face">🤖</span>
+  </button>
+</div>
+
+<div class="footer">
+  Auto-updating from live APIs · <span id="f-ts">—</span><br>
+  <a href="index.html" style="color:var(--muted)">Home</a> · <a href="hub.html" style="color:#ef444480">Command Centre 🔒</a> · <a href="strategy.html" style="color:#ec489980">Strategy 🔒</a> · <a href="solutions.html" style="color:var(--muted)">Customers</a> · <a href="technical.html" style="color:var(--muted)">Technical</a>
+  <br><span style="color:var(--red);font-weight:700;font-size:9px">🔒 STRICTLY CONFIDENTIAL — NOT FOR PUBLIC DISTRIBUTION</span>
+</div>
+
+<script>
+let agentOpen=false;
+function toggleAgent(){agentOpen=!agentOpen;document.getElementById('agent-bubble').classList.toggle('open',agentOpen)}
+function showTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active')}
+async function refresh(){try{
+  const [api,router]=await Promise.all([
+    fetch('https://api.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'})),
+    fetch('https://router.jspriggins.com/health').then(r=>r.json()).catch(()=>({status:'error'}))
+  ]);
+  const ok=api.status==='ok'&&router.status==='healthy';
+  document.getElementById('nav-dot').style.background=ok?'var(--green)':'var(--red)';
+  document.getElementById('nav-status').textContent=ok?'Online':'Issues';
+  document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
+  document.getElementById('l-api').textContent=api.status==='ok'?'✓ Healthy':'✗ Down';
+  document.getElementById('l-api').style.color=api.status==='ok'?'var(--green)':'var(--red)';
+  document.getElementById('l-router').textContent=router.status==='healthy'?'✓ Healthy':'✗ Down';
+  document.getElementById('l-router').style.color=router.status==='healthy'?'var(--green)':'var(--red)';
+  if(router.uptime_seconds){document.getElementById('l-uptime').textContent=Math.floor(router.uptime_seconds/3600)+'h'}
+  const ts=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+  document.getElementById('l-ts').textContent=ts;
+  document.getElementById('f-ts').textContent=ts;
+}catch(e){}}
+refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>
