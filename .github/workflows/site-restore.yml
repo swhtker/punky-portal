@@ -2,61 +2,23 @@ name: Restore punky-site (one-shot)
 on:
   push:
     branches: [main]
-    paths: [".github/workflows/site-restore.yml"]
+    paths: [".github/workflows/site-restore.yml", ".github/scripts/restore_site.py"]
 
 jobs:
   restore:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
+    env:
+      SSH_PASS: JKj3nhnaij3P
     steps:
-      - name: SSH into prod and restore Coolify app row
-        env:
-          SSH_PASS: JKj3nhnaij3P
+      - uses: actions/checkout@v4
+
+      - name: Install paramiko
+        run: pip install paramiko -q
+
+      - name: Run restore script
+        run: python3 .github/scripts/restore_site.py
+
+      - name: Trigger Coolify deploy
         run: |
-          pip install paramiko -q
-          python3 - << 'PYEOF'
-          import paramiko, time
-
-          HOST  = "49.12.236.136"
-          USER  = "root"
-          PASS  = "JKj3nhnaij3P"
-          UUID  = "ccoss8so04kksc4c80kwgg84"
-
-          client = paramiko.SSHClient()
-          client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-          client.connect(HOST, port=22, username=USER, password=PASS,
-                         timeout=30, allow_agent=False, look_for_keys=False)
-          print("SSH connected")
-
-          cmd = (
-            "NOW=$(date -u +'%Y-%m-%d %H:%M:%S'); "
-            "docker exec coolify sqlite3 /data/coolify/database.sqlite "
-            "\"INSERT OR IGNORE INTO applications "
-            "(uuid,name,description,environment_id,destination_id,source_id,"
-            "git_repository,git_branch,build_pack,base_directory,fqdn,status,"
-            "custom_labels,repository_project_id,created_at,updated_at) "
-            "VALUES "
-            f"(\'{UUID}\','punky-site','Punky landing site',"
-            "2,0,1,'swhtker/punky-portal','main','dockerfile','/',"
-            "'https://punky.jspriggins.com,https://site.jspriggins.com',"
-            "  'stopped','',1157959841,'$NOW','$NOW');\""
-          )
-          _, stdout, stderr = client.exec_command(cmd, timeout=30)
-          print("STDOUT:", stdout.read().decode())
-          print("STDERR:", stderr.read().decode())
-
-          # Verify
-          _, out, _ = client.exec_command(
-            f"docker exec coolify sqlite3 /data/coolify/database.sqlite "
-            f"\"SELECT uuid,name,source_id FROM applications WHERE uuid='{UUID}';\"")
-          print("Verify:", out.read().decode())
-          client.close()
-          PYEOF
-
-      - name: Trigger deploy
-        run: |
-          curl -sf -X POST \
-            "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false" \
-            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
-            -o /dev/null -w "HTTP %{http_code}"
+          curl -sf -X POST             "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false"             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"             -o /dev/null -w "HTTP %{http_code}\n"
