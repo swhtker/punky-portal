@@ -1,0 +1,22 @@
+name: Cleanup stale container (one-shot)
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/container-cleanup.yml' ]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Remove stale punky-site container
+        env:
+          SERVER_PASS: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SERVER_PASS" ssh \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            root@49.12.236.136 \
+            "docker ps -a --format '{{.Names}}' | grep -E 'ccoss8so04kksc4c80kwgg84|punky.site' && docker stop ccoss8so04kksc4c80kwgg84 || true; docker rm ccoss8so04kksc4c80kwgg84 || true; echo done"
