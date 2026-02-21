@@ -1,0 +1,17 @@
+name: Final diag — all containers + Traefik dir
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/fix4.yml' ]
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: SSH diagnostics
+        env:
+          SP: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SP" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@49.12.236.136 "docker ps --format 'NAME={{.Names}} STATUS={{.Status}}' && echo '---' && ls -la /data/coolify/proxy/dynamic/ 2>/dev/null && echo '---' && cat /data/coolify/proxy/dynamic/*.yml 2>/dev/null | head -200 || true"
