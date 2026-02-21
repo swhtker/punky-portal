@@ -1,0 +1,17 @@
+name: Inspect punky-api and unknown containers
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/fix11.yml' ]
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: Inspect all containers with jspriggins labels
+        env:
+          SP: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SP" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@49.12.236.136 "for C in $(docker ps -q); do LABELS=$(docker inspect $C --format '{{json .Config.Labels}}' 2>/dev/null); if echo $LABELS | grep -q jspriggins; then NAME=$(docker inspect $C --format '{{.Name}}'); echo === $NAME ===; echo $LABELS | python3 -c \"import sys,json; L=json.load(sys.stdin); [print(k,v) for k,v in L.items() if 'jspriggins' in v or 'traefik.http' in k]\" 2>/dev/null; fi; done"
