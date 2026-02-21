@@ -135,20 +135,20 @@ h2{font-family:'Syne',sans-serif}
 
 <!-- ═══ HERO ═══ -->
 <div class="hero">
-  <div class="hero-badge" id="status-badge">● Platform Online · <span id="route-count">149</span>+ API Endpoints · <span id="uptime-display">—</span> Uptime</div>
+  <div class="hero-badge" id="status-badge">● Platform Online · <span id="route-count">168</span>+ API Endpoints · <span id="uptime-display">—</span> Uptime</div>
   <h1><span>Your AI. Your Infrastructure.</span><br>Your Rules.</h1>
   <p>The self-hosted, provider-agnostic autonomous agent platform. Run anywhere. Route to any LLM. 10× cheaper than locked-in alternatives. Four ways to use Punky — from free consumer accounts to on-premises enterprise and a freelance agent marketplace.</p>
   <div class="hero-cta">
-    <a href="solutions.html" class="cta-primary">Explore Solutions</a>
-    <a href="technical.html" class="cta-secondary">Technical Docs</a>
+    <a href="https://console.jspriggins.com" class="cta-primary" target="_blank">🚀 Try Live Demo</a>
+    <a href="solutions.html" class="cta-secondary">Explore Solutions</a>
     <a href="marketplace.html" class="cta-market">🏪 Agent Marketplace</a>
   </div>
 </div>
 
 <!-- ═══ LIVE STATS TICKER ═══ -->
 <div class="ticker">
-  <div class="tick"><div class="v" style="color:var(--green)" id="t-routes">149+</div><div class="l">API Endpoints</div></div>
-  <div class="tick"><div class="v" style="color:var(--green)">962</div><div class="l">Tests (100%)</div></div>
+  <div class="tick"><div class="v" style="color:var(--green)" id="t-routes">168+</div><div class="l">API Endpoints</div></div>
+  <div class="tick"><div class="v" style="color:var(--green)">990+</div><div class="l">Tests (100%)</div></div>
   <div class="tick"><div class="v" style="color:var(--cyan)">28</div><div class="l">Modules</div></div>
   <div class="tick"><div class="v" style="color:var(--accent)">5+</div><div class="l">LLM Providers</div></div>
   <div class="tick"><div class="v" style="color:var(--amber)">20</div><div class="l">Guardian Agents</div></div>
@@ -492,6 +492,24 @@ h2{font-family:'Syne',sans-serif}
   </div>
 </div>
 
+
+<!-- ═══ LIVE DEMO CALLOUT ═══ -->
+<div style="background:linear-gradient(135deg,#0d0d1a,#12122a);border:1px solid #a855f730;border-radius:16px;padding:40px 32px;text-align:center;max-width:700px;margin:48px auto 32px">
+  <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">● Live Production Environment</div>
+  <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:12px">See Punky Running Right Now</h2>
+  <p style="color:var(--muted);font-size:13px;line-height:1.7;max-width:500px;margin:0 auto 24px">Our production instance is live at <strong style="color:var(--text)">api.jspriggins.com</strong> — not a mockup. Browse the console, create an agent, run an ESG analysis. No sign-up required for the demo.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="https://console.jspriggins.com" target="_blank" style="padding:12px 28px;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif">Open Console →</a>
+    <a href="https://api.jspriggins.com/docs" target="_blank" style="padding:12px 28px;border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;font-family:'Syne',sans-serif">API Reference →</a>
+  </div>
+  <div style="margin-top:20px;display:flex;gap:24px;justify-content:center;font-size:10px;color:var(--muted)">
+    <span id="demo-api-status">● Checking API…</span>
+    <span>168+ endpoints</span>
+    <span>6 phases complete</span>
+    <span>99.9% uptime target</span>
+  </div>
+</div>
+
 <!-- ═══ AGENT AVATAR WIDGET ═══ -->
 <div class="agent-widget">
   <div class="agent-bubble" id="agent-bubble">
@@ -511,7 +529,7 @@ h2{font-family:'Syne',sans-serif}
     <a href="solutions.html">Solutions</a> ·
     <a href="marketplace.html" style="color:var(--green)">🏪 Marketplace</a> ·
     <a href="technical.html">Technical</a> ·
-    <a href="hub.html" style="color:#ef444480">Command Centre 🔒</a> ·
+    <a href="hub.html" style="color:var(--red)">⬡ Command Centre</a> ·
     <a href="strategy.html" style="color:#ec489980">Strategy 🔒</a> ·
     <a href="investors.html" style="color:#a855f780">Investors 🔒</a>
   </div>
@@ -532,6 +550,9 @@ async function refresh(){try{
   document.getElementById('nav-status').style.color=ok?'var(--green)':'var(--red)';
   if(router.uptime_seconds){document.getElementById('uptime-display').textContent=Math.floor(router.uptime_seconds/3600)+'h'}
   document.getElementById('f-ts').textContent=new Date().toISOString().slice(0,19).replace('T',' ')+' UTC';
+  const badge=document.getElementById('demo-api-status');
+  if(badge)badge.textContent=ok?'● API Online':'⚠ API Issues';
+  if(badge)badge.style.color=ok?'var(--green)':'var(--amber)';
 }catch(e){}}
 refresh();setInterval(refresh,60000);
 setTimeout(()=>{if(!agentOpen){agentOpen=true;document.getElementById('agent-bubble').classList.add('open')}},8000);
