@@ -1,0 +1,17 @@
+name: Deep diag 2 — certs, networks, 503 config
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/fix6.yml' ]
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: SSH deep diag
+        env:
+          SP: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SP" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@49.12.236.136 "cat /data/coolify/proxy/dynamic/default_redirect_503.yaml && echo --- && docker inspect bgwco0cgcsw4ws8w840cs0kg-135919028869 --format Networks:{{range dollar_k,v := .NetworkSettings.Networks}}{{dollar_k}} {{end}} 2>/dev/null || echo no-container && echo --- && python3 -c \"import json; d=json.load(open('/data/coolify/proxy/acme.json')); certs=[e.get('domain',{}).get('main','') for r in d.values() for e in r.get('Certificates',[])] if d else []; print(sorted(set(certs)))\" 2>/dev/null || echo no-acme && echo --- && docker network ls --format NAME={{.Name}}"
