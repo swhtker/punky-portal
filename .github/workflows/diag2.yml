@@ -1,0 +1,48 @@
+name: Deep diag — Traefik file config
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/diag2.yml' ]
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: Inspect Traefik file configs and punky-site container
+        env:
+          SERVER_PASS: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SERVER_PASS" ssh \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            root@49.12.236.136 bash -s << 'ENDSSH'
+          echo "=== All running containers (full list) ==="
+          docker ps --format "{{.Names}}|{{.Image}}|{{.Status}}"
+
+          echo ""
+          echo "=== Traefik dynamic config files ==="
+          find /data/coolify -name "*.yml" -o -name "*.yaml" 2>/dev/null | head -20
+          ls -la /data/coolify/proxy/dynamic/ 2>/dev/null || echo "(no proxy/dynamic dir)"
+          cat /data/coolify/proxy/dynamic/*.yml 2>/dev/null | head -100 || true
+
+          echo ""
+          echo "=== All containers with Traefik labels ==="
+          for cname in $(docker ps -q); do
+            rule=$(docker inspect "$cname" --format "{{range $k,$v := .Config.Labels}}{{if contains $k "traefik.http.routers"}}{{$k}}={{$v}}
+{{end}}{{end}}" 2>/dev/null | grep "rule=" | head -3)
+            if [ -n "$rule" ]; then
+              name=$(docker inspect "$cname" --format "{{.Name}}")
+              echo "CONTAINER $name: $rule"
+            fi
+          done
+
+          echo ""
+          echo "=== Coolify proxy container networks ==="
+          docker inspect coolify-proxy --format "{{range $k,$v := .NetworkSettings.Networks}}network: {{$k}}
+{{end}}" 2>/dev/null || true
+
+          echo ""
+          echo "=== Recent Coolify deploy log for bgwco0cgcsw4ws8w840cs0kg ==="
+          docker logs bgwco0cgcsw4ws8w840cs0kg 2>&1 | tail -10 || echo "(container gone)"
+          ENDSSH
