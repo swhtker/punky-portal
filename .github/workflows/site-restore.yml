@@ -1,29 +1,39 @@
 name: Restore punky-site (one-shot)
 on:
   push:
-    branches: [ main ]
-    paths: [ '.github/workflows/site-restore.yml' ]
+    branches: [main]
+    paths: [".github/workflows/site-restore.yml"]
 
 jobs:
   restore:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     steps:
-      - name: SSH into prod and insert application row
+      - name: SSH into prod and insert Coolify SQLite row
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_IP }}
+          host: 49.12.236.136
           username: root
-          password: ${{ secrets.SERVER_PASS }}
+          password: JKj3nhnaij3P
           port: 22
+          timeout: 60s
           script: |
-            docker exec coolify sqlite3 /data/coolify/database.sqlite 'INSERT OR IGNORE INTO applications(uuid,name,description,environment_id,destination_id,source_id,git_repository,git_branch,build_pack,base_directory,fqdn,status,custom_labels,created_at,updated_at) VALUES('ccoss8so04kksc4c80kwgg84','punky-site','Punky landing site',2,0,1,'swhtker/punky-portal','main','dockerfile','/','https://punky.jspriggins.com,https://site.jspriggins.com','stopped','',datetime('now'),datetime('now'));'
-            echo "Verify:"
-            docker exec coolify sqlite3 /data/coolify/database.sqlite "SELECT uuid,name,source_id FROM applications WHERE uuid='ccoss8so04kksc4c80kwgg84';"
+            NOW=$(date -u +"%Y-%m-%d %H:%M:%S")
+            UUID="ccoss8so04kksc4c80kwgg84"
+            docker exec coolify sqlite3 /data/coolify/database.sqlite \
+              "INSERT OR IGNORE INTO applications (uuid,name,description,environment_id,destination_id,source_id,git_repository,git_branch,build_pack,base_directory,fqdn,status,custom_labels,repository_project_id,created_at,updated_at) VALUES ('$UUID','punky-site','Punky landing site',2,0,1,'swhtker/punky-portal','main','dockerfile','/','https://punky.jspriggins.com,https://site.jspriggins.com','stopped','',1157959841,'$NOW','$NOW');"
+            echo "=== Verify row ==="
+            docker exec coolify sqlite3 /data/coolify/database.sqlite \
+              "SELECT uuid,name,source_id,git_repository,status FROM applications WHERE uuid='$UUID';"
 
       - name: Trigger Coolify deploy
         run: |
-          curl -s -X POST \
+          curl -sf -X POST \
             "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false" \
-            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
-          echo "Deploy triggered"
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" | python3 -c "
+          import sys,json
+          d=json.load(sys.stdin)
+          depls=d.get('deployments',[{}])
+          print('Deploy UUID:', depls[0].get('deployment_uuid','?'))
+          "
