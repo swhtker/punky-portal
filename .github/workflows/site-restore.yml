@@ -8,85 +8,58 @@ jobs:
   restore:
     runs-on: ubuntu-latest
     timeout-minutes: 8
+
     steps:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Write remote script
+      - name: Write fix script via Python
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          cat > /tmp/fix.sh << 'EOF'
-#!/bin/bash
-set -e
-SITE_UUID="ccoss8so04kksc4c80kwgg84"
-NOW=$(date -u +"%Y-%m-%d %H:%M:%S")
-PAT="${{ secrets.GH_PAT }}"
-COOLIFY_DB="/data/coolify/database.sqlite"
+          python3 -c "
+          import os, textwrap
+          pat = os.environ['GH_PAT']
+          script = '''#!/bin/bash
+          set -e
+          DB=/data/coolify/database.sqlite
+          UUID=ccoss8so04kksc4c80kwgg84
+          NOW=$(date -u +\"%Y-%m-%d %H:%M:%S\")
 
-echo "=== Checking Coolify container ==="
-docker ps | grep coolify | head -3
+          echo \"=== Schema ===\"
+          docker exec coolify sqlite3 \"\$DB\" \".schema applications\" 2>/dev/null | head -80
 
-echo "=== Checking if row already exists ==="
-docker exec coolify sqlite3 "$COOLIFY_DB" \
-  "SELECT uuid FROM applications WHERE uuid='$SITE_UUID';" 2>/dev/null && \
-  echo "Row exists — deleting stale row..." && \
-  docker exec coolify sqlite3 "$COOLIFY_DB" \
-    "DELETE FROM applications WHERE uuid='$SITE_UUID';" || true
+          echo \"=== Purge stale row ===\"
+          docker exec coolify sqlite3 \"\$DB\" \"DELETE FROM applications WHERE uuid='\$UUID';\" || true
 
-echo "=== Checking applications table schema ==="
-docker exec coolify sqlite3 "$COOLIFY_DB" ".schema applications" 2>/dev/null | head -60
+          echo \"=== Insert ===\"
+          docker exec coolify sqlite3 \"\$DB\" \"INSERT INTO applications (uuid,name,description,environment_id,destination_id,source_id,git_repository,git_branch,build_pack,base_directory,fqdn,status,created_at,updated_at) VALUES ('\$UUID','punky-site','Punky landing site',2,0,NULL,'https://'''+pat+'''@github.com/swhtker/punky-portal.git','main','dockerfile','/','https://punky.jspriggins.com,https://site.jspriggins.com','stopped','\$NOW','\$NOW');\"
 
-echo "=== Inserting punky-site via Eloquent artisan ==="
-docker exec coolify php artisan tinker --execute="
-use App\Models\Application;
-use App\Models\Environment;
+          echo \"=== Verify ===\"
+          docker exec coolify sqlite3 \"\$DB\" \"SELECT uuid,name,source_id,git_repository FROM applications WHERE uuid='\$UUID';\"
+          '''
+          with open('/tmp/fix.sh','w') as f:
+              f.write(script)
+          print('Script written')
+          "
 
-\$env = Environment::find(2);
-\$app = new Application();
-\$app->uuid = 'ccoss8so04kksc4c80kwgg84';
-\$app->name = 'punky-site';
-\$app->description = 'Punky landing site';
-\$app->environment_id = 2;
-\$app->destination_id = 0;
-\$app->source_id = null;
-\$app->git_repository = 'https://${PAT}@github.com/swhtker/punky-portal.git';
-\$app->git_branch = 'main';
-\$app->build_pack = 'dockerfile';
-\$app->base_directory = '/';
-\$app->fqdn = 'https://punky.jspriggins.com,https://site.jspriggins.com';
-\$app->status = 'stopped';
-\$app->save();
-echo 'Created: '.\$app->uuid.PHP_EOL;
-"
-
-echo "=== Verifying row ==="
-docker exec coolify sqlite3 "$COOLIFY_DB" \
-  "SELECT uuid, name, source_id, git_repository FROM applications WHERE uuid='$SITE_UUID';"
-EOF
-          chmod +x /tmp/fix.sh
-          echo "Script written"
-          cat /tmp/fix.sh
-
-      - name: Copy and run script on prod server
+      - name: SCP and run on prod server
         env:
           SERVER_PASS: JKj3nhnaij3P
         run: |
-          sshpass -p "$SERVER_PASS" scp -o StrictHostKeyChecking=no \
-            -o UserKnownHostsFile=/dev/null \
+          sshpass -p "$SERVER_PASS" scp \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
             /tmp/fix.sh root@49.12.236.136:/tmp/fix.sh
-          sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no \
-            -o UserKnownHostsFile=/dev/null \
-            root@49.12.236.136 "bash /tmp/fix.sh && rm /tmp/fix.sh"
+          sshpass -p "$SERVER_PASS" ssh \
+            -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            root@49.12.236.136 "bash /tmp/fix.sh; rm -f /tmp/fix.sh"
 
-      - name: Trigger Coolify deploy for punky-site
+      - name: Trigger Coolify deploy
         env:
           COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
         run: |
-          sleep 3
+          sleep 4
           RESP=$(curl -s -X POST \
             "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false" \
             -H "Authorization: Bearer $COOLIFY_TOKEN")
-          echo "Deploy response: $RESP"
-
-      - name: Cleanup workflow file
-        run: |
-          echo "Deploy triggered — workflow can now be removed manually."
+          echo "Deploy: $RESP"
