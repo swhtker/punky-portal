@@ -1,24 +1,92 @@
 name: Restore punky-site (one-shot)
 on:
   push:
-    branches: [main]
-    paths: [".github/workflows/site-restore.yml", ".github/scripts/restore_site.py"]
+    branches: [ main ]
+    paths: [ '.github/workflows/site-restore.yml' ]
 
 jobs:
   restore:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    env:
-      SSH_PASS: JKj3nhnaij3P
+    timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-      - name: Install paramiko
-        run: pip install paramiko -q
-
-      - name: Run restore script
-        run: python3 .github/scripts/restore_site.py
-
-      - name: Trigger Coolify deploy
+      - name: Write remote script
         run: |
-          curl -sf -X POST             "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false"             -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"             -o /dev/null -w "HTTP %{http_code}\n"
+          cat > /tmp/fix.sh << 'EOF'
+#!/bin/bash
+set -e
+SITE_UUID="ccoss8so04kksc4c80kwgg84"
+NOW=$(date -u +"%Y-%m-%d %H:%M:%S")
+PAT="${{ secrets.GH_PAT }}"
+COOLIFY_DB="/data/coolify/database.sqlite"
+
+echo "=== Checking Coolify container ==="
+docker ps | grep coolify | head -3
+
+echo "=== Checking if row already exists ==="
+docker exec coolify sqlite3 "$COOLIFY_DB" \
+  "SELECT uuid FROM applications WHERE uuid='$SITE_UUID';" 2>/dev/null && \
+  echo "Row exists — deleting stale row..." && \
+  docker exec coolify sqlite3 "$COOLIFY_DB" \
+    "DELETE FROM applications WHERE uuid='$SITE_UUID';" || true
+
+echo "=== Checking applications table schema ==="
+docker exec coolify sqlite3 "$COOLIFY_DB" ".schema applications" 2>/dev/null | head -60
+
+echo "=== Inserting punky-site via Eloquent artisan ==="
+docker exec coolify php artisan tinker --execute="
+use App\Models\Application;
+use App\Models\Environment;
+
+\$env = Environment::find(2);
+\$app = new Application();
+\$app->uuid = 'ccoss8so04kksc4c80kwgg84';
+\$app->name = 'punky-site';
+\$app->description = 'Punky landing site';
+\$app->environment_id = 2;
+\$app->destination_id = 0;
+\$app->source_id = null;
+\$app->git_repository = 'https://${PAT}@github.com/swhtker/punky-portal.git';
+\$app->git_branch = 'main';
+\$app->build_pack = 'dockerfile';
+\$app->base_directory = '/';
+\$app->fqdn = 'https://punky.jspriggins.com,https://site.jspriggins.com';
+\$app->status = 'stopped';
+\$app->save();
+echo 'Created: '.\$app->uuid.PHP_EOL;
+"
+
+echo "=== Verifying row ==="
+docker exec coolify sqlite3 "$COOLIFY_DB" \
+  "SELECT uuid, name, source_id, git_repository FROM applications WHERE uuid='$SITE_UUID';"
+EOF
+          chmod +x /tmp/fix.sh
+          echo "Script written"
+          cat /tmp/fix.sh
+
+      - name: Copy and run script on prod server
+        env:
+          SERVER_PASS: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SERVER_PASS" scp -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            /tmp/fix.sh root@49.12.236.136:/tmp/fix.sh
+          sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            root@49.12.236.136 "bash /tmp/fix.sh && rm /tmp/fix.sh"
+
+      - name: Trigger Coolify deploy for punky-site
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: |
+          sleep 3
+          RESP=$(curl -s -X POST \
+            "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false" \
+            -H "Authorization: Bearer $COOLIFY_TOKEN")
+          echo "Deploy response: $RESP"
+
+      - name: Cleanup workflow file
+        run: |
+          echo "Deploy triggered — workflow can now be removed manually."
