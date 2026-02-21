@@ -1,0 +1,55 @@
+name: Restore punky-site (one-shot)
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/site-restore.yml' ]
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Create punky-site via Coolify SQLite
+        env:
+          SERVER_IP: 49.12.236.136
+          SERVER_PASS: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null root@$SERVER_IP << 'SSHEOF'
+
+          SITE_UUID="ccoss8so04kksc4c80kwgg84"
+          NOW=$(date -u +"%Y-%m-%d %H:%M:%S")
+          PAT="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"
+
+          docker exec coolify sqlite3 /data/coolify/database.sqlite "
+          INSERT OR IGNORE INTO applications (
+            uuid, name, description,
+            environment_id, destination_id, source_id,
+            git_repository, git_branch, build_pack,
+            base_directory, fqdn,
+            status,
+            custom_labels,
+            created_at, updated_at
+          ) VALUES (
+            '$SITE_UUID', 'punky-site', 'Punky landing site',
+            2, 0, 1,
+            'swhtker/punky-portal', 'main', 'dockerfile',
+            '/', 'https://punky.jspriggins.com,https://site.jspriggins.com',
+            'stopped',
+            '',
+            '$NOW', '$NOW'
+          );"
+
+          echo "Row inserted. Verifying..."
+          docker exec coolify sqlite3 /data/coolify/database.sqlite \
+            "SELECT uuid, name, source_id, git_repository FROM applications WHERE uuid='$SITE_UUID';"
+          SSHEOF
+
+      - name: Trigger Coolify deploy
+        run: |
+          curl -s -X POST \
+            "https://coolify.jspriggins.com/api/v1/deploy?uuid=ccoss8so04kksc4c80kwgg84&force=false" \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
