@@ -1,0 +1,17 @@
+name: Test routing from server itself
+on:
+  push:
+    branches: [ main ]
+    paths: [ '.github/workflows/fix9.yml' ]
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: curl from server with Host headers
+        env:
+          SP: JKj3nhnaij3P
+        run: |
+          sshpass -p "$SP" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@49.12.236.136 "curl -sk -H 'Host: site.jspriggins.com' https://localhost/ | head -c 200 && echo --- && curl -sk -H 'Host: punky.jspriggins.com' https://localhost/ | head -c 200 && echo --- && curl -sk -H 'Host: api.jspriggins.com' https://localhost/health 2>&1 | head -c 200"
